@@ -9,5 +9,6 @@ package view;
  *
  * @author philippnienhuser
  */
-public class Viewmodel {
+public class RestFrontendController {
+    
 }
