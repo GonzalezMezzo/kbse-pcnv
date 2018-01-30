@@ -11,6 +11,16 @@
             <h:outputText value="Nützer: " />
             <h:inputText value="user" />
             <h:commandButton value="Nutzer ändern" action="#{viewmodel.changeUser()}" />
+            <h:commandButton value="zur Bewertung" action="#{viewmodel.rating()}" /><br/><br/>
+            <h:outputText value="Begründung: " />
+            <h:inputText value="Eine unglaublich kreatibe Art der Darstellung." /><br/>
+            <h:outputText value="Link: " />
+            <h:inputText value="www.google.de." /><br/>
+            <h:commandButton value="übernehmen" action="#{viewmodel.submit()}" /><br/><br/>
+            <h:outputText value="Meine Vorschläge: " /><br/>
+            <h:outputText value="Nummer Begründung / Link " />
+            
+            
         </h:form>
     </h:body>
 </html>
