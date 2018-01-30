@@ -5,6 +5,7 @@
  */
 package access;
 
+import enitities.Post;
 import java.io.Serializable;
 
 /**
@@ -26,6 +27,25 @@ public class PostDTO implements Serializable{
         this.comment = comment;
         this.creator = creator;
         this.rating = rating;
+    }
+    
+    public PostDTO(long id, String url, String comment, String creator, int rating) {
+        this.url = url;
+        this.comment = comment;
+        this.creator = creator;
+        this.rating = rating;
+    }
+    
+    public static PostDTO toPostDTO(Post p){
+        if(p == null){
+            return null;
+        }
+        return new PostDTO(p.getId(), p.getUrl(), p.getComment(), p.getCreator(), p.getRating());
+    }
+    
+    public Post toPost(){
+        return PostBuilder.create().id(this.id).url(this.url).comment(this.comment)
+                .creator(this.creator).rating(this.rating).build();
     }
     
     public long getId() {

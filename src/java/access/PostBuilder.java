@@ -26,7 +26,7 @@ public class PostBuilder implements Serializable{
         return new PostBuilder();
     }
     
-    public PostBuilder id(int id){
+    public PostBuilder id(long id){
         this.id = id;
         return this;
     } 
