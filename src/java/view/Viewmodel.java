@@ -32,6 +32,14 @@ public class Viewmodel implements Serializable{
         return INDEX;
         
     }
+    
+    public String rating(){
+        return INDEX;
+    }
+    
+    public String submit(){
+        return INDEX;
+    }
 
         /*--------------------------------------------------------------------------
     getter
