@@ -5,10 +5,15 @@
  */
 package controller;
 
+import javax.ejb.Stateless;
+import javax.ws.rs.Path;
+
 /**
  *
  * @author philippnienhuser
  */
+@Stateless
+@Path("")
 public class RESTBoundary {
     
 }
