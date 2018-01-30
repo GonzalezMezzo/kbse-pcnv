@@ -10,6 +10,7 @@ import db.Persistence;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJBException;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,5 +33,31 @@ public class ModelController implements Serializable{
            this.postList = db.getAllPosts();
     }
     
+    public boolean addPost(PostDTO p){
+        try{
+            db.addPost(p);
+        }catch(EJBException | NullPointerException e){
+            /**
+             * todo: error handling
+             */
+            return false;
+        }
+        return true;
+    }
     
+    public boolean deletePost(PostDTO p){
+        try{
+            db.deletePost(p);
+        }catch(EJBException e){
+            /**
+             * todo: error handling
+             */
+            return false;
+        }
+        return true;
+    }
+        
+    public void refreshState(){
+        this.postList = db.getAllPosts();
+    }
 }

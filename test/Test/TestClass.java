@@ -37,7 +37,7 @@ public class TestClass {
     
     @Deployment
     public static WebArchive createDeployment(){
-        return ShrinkWrap.createFromZipFile(WebArchive.class, new File("dist/KBSE_Nienhueser_Koschmann_Schaefer_Oldemeier.war"));
+        return ShrinkWrap.createFromZipFile(WebArchive.class, new File("dist/KBSE_Nienhueser_Koschman_Schaefer_Oldemeier.war"));
     }
     
     @Test

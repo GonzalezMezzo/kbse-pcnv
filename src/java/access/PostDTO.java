@@ -7,6 +7,7 @@ package access;
 
 import enitities.Post;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  *
@@ -18,34 +19,35 @@ public class PostDTO implements Serializable{
     private String url;
     private String comment;
     private String creator;
-    private int rating;
+    private int totalRating;
+    private Map<String,Integer> ratings;
 
     public PostDTO(){}
 
-    public PostDTO(String url, String comment, String creator, int rating) {
+    public PostDTO(String url, String comment, String creator, int totalRating, Map<String,Integer> ratings) {
         this.url = url;
         this.comment = comment;
         this.creator = creator;
-        this.rating = rating;
+        this.totalRating = totalRating;
     }
     
-    public PostDTO(long id, String url, String comment, String creator, int rating) {
+    public PostDTO(long id, String url, String comment, String creator, int rating, Map<String,Integer> ratings){
         this.url = url;
         this.comment = comment;
         this.creator = creator;
-        this.rating = rating;
+        this.totalRating = rating;
     }
     
     public static PostDTO toPostDTO(Post p){
         if(p == null){
             return null;
         }
-        return new PostDTO(p.getId(), p.getUrl(), p.getComment(), p.getCreator(), p.getRating());
+        return new PostDTO(p.getId(), p.getUrl(), p.getComment(), p.getCreator(), p.getTotalRating(), p.getRatings());
     }
     
     public Post toPost(){
         return PostBuilder.create().id(this.id).url(this.url).comment(this.comment)
-                .creator(this.creator).rating(this.rating).build();
+                .creator(this.creator).totalRating(this.totalRating).ratings(this.ratings).build();
     }
     
     public long getId() {
@@ -80,12 +82,12 @@ public class PostDTO implements Serializable{
         this.creator = creator;
     }
 
-    public int getRating() {
-        return rating;
+    public int getTotalRating() {
+        return totalRating;
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
+    public void setTotalRating(int totalRating) {
+        this.totalRating = totalRating;
     }
     
     

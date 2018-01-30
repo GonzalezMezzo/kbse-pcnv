@@ -7,6 +7,7 @@ package access;
 
 import enitities.Post;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  *
@@ -18,7 +19,8 @@ public class PostBuilder implements Serializable{
     private String url;
     private String comment;
     private String creator;
-    private int rating;
+    private int totalRating;
+    private Map<String,Integer> ratings;
     
     private PostBuilder(){};
     
@@ -46,8 +48,13 @@ public class PostBuilder implements Serializable{
         return this;
     }
     
-    public PostBuilder rating(int rating){
-        this.rating = rating;
+    public PostBuilder totalRating(int rating){
+        this.totalRating = rating;
+        return this;
+    }
+    
+    public PostBuilder ratings(Map<String,Integer> ratings){
+        this.ratings = ratings;
         return this;
     }
     
@@ -57,7 +64,8 @@ public class PostBuilder implements Serializable{
         res.setUrl(this.url);
         res.setComment(this.comment);
         res.setCreator(this.creator);
-        res.setRating(this.rating);
+        res.setTotalRating(this.totalRating);
+        res.setRatings(this.ratings);
         return res;
     }
 }

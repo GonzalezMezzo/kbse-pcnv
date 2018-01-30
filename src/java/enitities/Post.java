@@ -6,11 +6,14 @@
 package enitities;
 
 import java.io.Serializable;
+import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Version;
 
 /**
@@ -18,6 +21,9 @@ import javax.persistence.Version;
  * @author philippnienhuser
  */
 @Entity
+@NamedQueries({
+    @NamedQuery(name = "Post.findAll", query= "SELECT s FROM Post s")
+})
 public class Post implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,10 +45,14 @@ public class Post implements Serializable {
             nullable=false,
             unique=false)
     private String creator;
-    @Column(name="rating",
+    @Column(name="totalRating",
             nullable=true,
             unique=false)
-    private int rating;
+    private int totalRating;
+    @Column(name="ratings",
+            nullable=true,
+            unique=false)
+    private Map<String, Integer> ratings;
     @Version
     private int version;
 
@@ -78,12 +88,28 @@ public class Post implements Serializable {
         this.creator = creator;
     }
 
-    public int getRating() {
-        return rating;
+    public int getTotalRating() {
+        return totalRating;
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
+    public void setTotalRating(int totalRating) {
+        this.totalRating = totalRating;
+    }
+
+    public Map<String, Integer> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(Map<String, Integer> ratings) {
+        this.ratings = ratings;
+    }
+    
+    public void calcTotalRating(){
+        int res= 0;
+        for(Map.Entry<String,Integer> entry : this.ratings.entrySet()){
+            res += entry.getValue();
+        }
+        setTotalRating(res);
     }
     
     @Override
