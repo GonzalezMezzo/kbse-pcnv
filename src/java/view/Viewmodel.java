@@ -29,35 +29,44 @@ public class Viewmodel implements Serializable{
     ModelController mdlctrl;
     
     private static final String INDEX = "/index.xhtml?faces-redirect=true";
+    private static final String RATING = "/rating.xhtml?faces-redirect=true";
     
     private List<PostDTO> postList;
     private String inputTextUser;
     private boolean changeUserBool = false;
     private boolean changeUebernehmenBool = false;
-    private int nummer = 1;
-    private String comment = "Begründung";
-    private String url = "www.Google.de";
+    private int inputTextNumber =0;
+    private String comment = "Comment";
+    private String url = "www.google.de";
+
     
     
     @PostConstruct
     public void init(){
-        this.inputTextUser = "-User-";
+        this.inputTextUser = "User";
         this.postList = refreshState();
     }
     
-    public String changeUser(){
-        changeUserBool = true;
-        return INDEX;
+    public String changeUser(int i){
+        if(i==0)
+            return INDEX;
+        return RATING;
     }
     
     public String rating(){
+        return RATING;
+    }
+    
+    public String postLink(){
         return INDEX;
     }
     
     public String submit(){
         changeUebernehmenBool = true;
         PostDTO post = new PostDTO(url,comment,inputTextUser,0,new HashMap<String,Integer>());
+        post.getRatings().put(inputTextUser, 0);
         mdlctrl.addPost(post);
+        this.postList = refreshState();
         return INDEX;
     }
     
@@ -70,6 +79,24 @@ public class Viewmodel implements Serializable{
     public List<PostDTO> refreshState(){
         return mdlctrl.refreshState();
     }
+    
+    /**
+     * Get user's rating on index i on the current rendered list of posts
+     * @param i
+     * @return rating
+     */
+    public int getPersonalRating(int i){
+        //int rating = this.postList.get(i).getRatings().get(inputTextUser);
+        return 0;
+    }
+    
+    public boolean renderInputForRating(int i){
+        if(inputTextUser.equals(postList.get(i).getCreator()))
+            return false;
+        return true;
+    }
+    
+    public void submitRating(){}
 
         /*--------------------------------------------------------------------------
     getter
@@ -83,12 +110,12 @@ public class Viewmodel implements Serializable{
         this.inputTextUser = inputTextUser;
     }
 
-    public int getNummer() {
-        return nummer;
+    public int getInputTextNumber() {
+        return inputTextNumber;
     }
 
-    public void setNummer(int Nummer) {
-        this.nummer = Nummer;
+    public void setInputTextNumber(int inputTextNumber) {
+        this.inputTextNumber = inputTextNumber;
     }
 
     public String getComment() {
@@ -130,6 +157,7 @@ public class Viewmodel implements Serializable{
     public void setPostList(List<PostDTO> postList) {
         this.postList = postList;
     }
+
 
     
     
