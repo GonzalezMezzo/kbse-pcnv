@@ -5,10 +5,14 @@
  */
 package view;
 
+import access.PostDTO;
+import controller.ModelController;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
@@ -19,15 +23,18 @@ import javax.inject.Named;
 @Named(value = "viewmodel")
 @SessionScoped
 public class Viewmodel implements Serializable{
-    private static final String INDEX = "/index.xhtml?faces-redirect=true";
     
+    @Inject
+    ModelController mdlctrl;
+    
+    private static final String INDEX = "/index.xhtml?faces-redirect=true";
     
     private String inputTextUser;
     private boolean changeUserBool = false;
     private boolean changeUebernehmenBool = false;
-    private int Nummer = 1;
-    private String Begründung = "Begründung";
-    private String Link = "www.Google.de";
+    private int nummer = 1;
+    private String comment = "Begründung";
+    private String url = "www.Google.de";
     
     
     @PostConstruct
@@ -38,7 +45,6 @@ public class Viewmodel implements Serializable{
     public String changeUser(){
         changeUserBool = true;
         return INDEX;
-        
     }
     
     public String rating(){
@@ -47,6 +53,8 @@ public class Viewmodel implements Serializable{
     
     public String submit(){
         changeUebernehmenBool = true;
+        PostDTO post = new PostDTO(url,comment,inputTextUser,0,new HashMap<String,Integer>());
+        mdlctrl.addPost(post);
         return INDEX;
     }
     
@@ -67,27 +75,27 @@ public class Viewmodel implements Serializable{
     }
 
     public int getNummer() {
-        return Nummer;
+        return nummer;
     }
 
     public void setNummer(int Nummer) {
-        this.Nummer = Nummer;
+        this.nummer = Nummer;
     }
 
     public String getBegründung() {
-        return Begründung;
+        return comment;
     }
 
     public void setBegründung(String Begründung) {
-        this.Begründung = Begründung;
+        this.comment = Begründung;
     }
 
     public String getLink() {
-        return Link;
+        return url;
     }
 
     public void setLink(String Link) {
-        this.Link = Link;
+        this.url = Link;
     }
     
 
