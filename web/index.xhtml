@@ -16,15 +16,15 @@
                     <h:inputText value="#{viewmodel.inputTextUser}" />
                     <h:commandButton value="Nutzer ändern" action="#{viewmodel.changeUser()}" />
                 
-                <h:panelGrid id="p2" rendered="#{viewmodel.changeUserBool}">
+                <h:panelGrid id="p2" rendered="true">
                     <h:commandButton value="zur Bewertung" action="#{viewmodel.rating()}" />
                 </h:panelGrid>
                 </h:panelGrid>
             </h:panelGroup>
-            <h:panelGrid columns="4" id="p3" rendered="#{viewmodel.changeUserBool}">
+            <h:panelGrid columns="4" id="p3" rendered="true">
 
-                <h:outputText value="Begründung: " />
-                <h:inputTextarea value="Eine unglaublich kreatibe Art der Darstellung." rows="3"/>
+                <h:outputText value="Comment" />
+                <h:inputTextarea value="#{viewmodel.comment}" rows="3"/>
                 <h:outputText value="Link: " />
                 <h:inputText value="www.google.de." />
 
@@ -32,19 +32,22 @@
             
                 <h:outputText value="Meine Vorschläge: " />
                 </h:panelGrid>
-            <h:panelGrid columns="4" id="p4" rendered="#{viewmodel.changeUebernehmenBool}">
-                <ui:repeat value="#{viewmodel.nummer}" var="">
-
+            <h:panelGrid columns="4" id="p4" rendered="true">
+                <ui:repeat value="#{viewmodel.postList}" var="post" varStatus="i">
+                    <!--
                     <h:outputText value="Nummer " />
-                    <h:inputText value="#{viewmodel.nummer}" />
+                    <h:outputText value="#{post.id}" />
+                    -->
+                    <h:outputText value="Comment: " />
+                    <h:outputText value="#{post.comment}" /><br/>
 
-                    <h:outputText value="Begründung " />
-                    <h:inputText value="#{viewmodel.begründung}" />
-
-                    <h:outputText value="Link " />
-                    <h:inputText value="#{viewmodel.link}" />
+                    <h:outputText value="Link: " />
+                    <h:outputText value="#{post.url}" /><br/>
                     
-                    <h:commandButton value="Löschen" action="#{viewmodel.delete()}" />
+                    <h:outputText value="Rating: " />
+                    <h:outputText value="#{post.totalRating}" /><br/>
+                    
+                    <h:commandButton value="Löschen" action="#{viewmodel.delete(post)}" />
 
                 </ui:repeat>
             </h:panelGrid>

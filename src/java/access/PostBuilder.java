@@ -60,7 +60,7 @@ public class PostBuilder implements Serializable{
     
     public Post build(){
         Post res = new Post();
-        res.setId(this.id);
+        //res.setId(this.id);
         res.setUrl(this.url);
         res.setComment(this.comment);
         res.setCreator(this.creator);

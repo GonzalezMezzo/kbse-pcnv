@@ -23,19 +23,22 @@ public class PostDTO implements Serializable{
     private Map<String,Integer> ratings;
 
     public PostDTO(){}
-
-    public PostDTO(String url, String comment, String creator, int totalRating, Map<String,Integer> ratings) {
+    
+    public PostDTO(String url, String comment, String creator, int totalRating, Map<String,Integer> ratings){
         this.url = url;
         this.comment = comment;
         this.creator = creator;
         this.totalRating = totalRating;
+        this.ratings = ratings;
     }
     
-    public PostDTO(long id, String url, String comment, String creator, int rating, Map<String,Integer> ratings){
+    public PostDTO(long id, String url, String comment, String creator, int totalRating, Map<String,Integer> ratings){
+        this.id =id;
         this.url = url;
         this.comment = comment;
         this.creator = creator;
-        this.totalRating = rating;
+        this.totalRating = totalRating;
+        this.ratings = ratings;
     }
     
     public static PostDTO toPostDTO(Post p){
@@ -46,8 +49,9 @@ public class PostDTO implements Serializable{
     }
     
     public Post toPost(){
-        return PostBuilder.create().id(this.id).url(this.url).comment(this.comment)
-                .creator(this.creator).totalRating(this.totalRating).ratings(this.ratings).build();
+        return new Post(this.url, this.comment, this.creator, this.totalRating, this.ratings);
+        //return PostBuilder.create().url(this.url).comment(this.comment)
+        //        .creator(this.creator).totalRating(this.totalRating).ratings(this.ratings).build();
     }
     
     public long getId() {

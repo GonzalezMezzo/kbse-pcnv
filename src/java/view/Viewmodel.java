@@ -9,6 +9,7 @@ import access.PostDTO;
 import controller.ModelController;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -29,6 +30,7 @@ public class Viewmodel implements Serializable{
     
     private static final String INDEX = "/index.xhtml?faces-redirect=true";
     
+    private List<PostDTO> postList;
     private String inputTextUser;
     private boolean changeUserBool = false;
     private boolean changeUebernehmenBool = false;
@@ -40,6 +42,7 @@ public class Viewmodel implements Serializable{
     @PostConstruct
     public void init(){
         this.inputTextUser = "-User-";
+        this.postList = refreshState();
     }
     
     public String changeUser(){
@@ -58,8 +61,14 @@ public class Viewmodel implements Serializable{
         return INDEX;
     }
     
-    public String delete(){
+    public String delete(PostDTO p){
+        mdlctrl.deletePost(p);
+        this.postList = refreshState();
         return INDEX;
+    }
+    
+    public List<PostDTO> refreshState(){
+        return mdlctrl.refreshState();
     }
 
         /*--------------------------------------------------------------------------
@@ -82,22 +91,21 @@ public class Viewmodel implements Serializable{
         this.nummer = Nummer;
     }
 
-    public String getBegründung() {
+    public String getComment() {
         return comment;
     }
 
-    public void setBegründung(String Begründung) {
-        this.comment = Begründung;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
-    public String getLink() {
+    public String getUrl() {
         return url;
     }
 
-    public void setLink(String Link) {
-        this.url = Link;
+    public void setUrl(String url) {
+        this.url = url;
     }
-    
 
     public boolean isChangeUserBool() {
         return changeUserBool;
@@ -115,7 +123,15 @@ public class Viewmodel implements Serializable{
         this.changeUebernehmenBool = changeUebernehmenBool;
     }
 
- 
+    public List<PostDTO> getPostList() {
+        return postList;
+    }
+
+    public void setPostList(List<PostDTO> postList) {
+        this.postList = postList;
+    }
+
+    
     
     
     

@@ -30,12 +30,11 @@ public class Post implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id",
-            nullable=false,
             unique=true)
-    private Long id;
+    private long id;
     @Column(name="url",
             nullable=false,
-            unique=true)
+            unique=false)
     private String url;
     @Column(name="comment",
             nullable=true,
@@ -56,11 +55,22 @@ public class Post implements Serializable {
     @Version
     private int version;
 
-    public Long getId() {
+    public Post() {
+    }
+
+    public Post(String url, String comment, String creator, int totalRating, Map<String, Integer> ratings) {
+        this.url = url;
+        this.comment = comment;
+        this.creator = creator;
+        this.totalRating = totalRating;
+        this.ratings = ratings;
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -111,7 +121,7 @@ public class Post implements Serializable {
         }
         setTotalRating(res);
     }
-    
+    /*
     @Override
     public int hashCode() {
         int hash = 0;
@@ -131,7 +141,7 @@ public class Post implements Serializable {
         }
         return true;
     }
-
+*/
     @Override
     public String toString() {
         return "enitities.Post[ id=" + id + " ]";

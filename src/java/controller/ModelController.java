@@ -40,6 +40,7 @@ public class ModelController implements Serializable{
             /**
              * todo: error handling
              */
+            System.out.println("addPost -> exception");
             return false;
         }
         return true;
@@ -52,12 +53,14 @@ public class ModelController implements Serializable{
             /**
              * todo: error handling
              */
+            System.out.println("deletePost -> exception");
             return false;
         }
         return true;
     }
         
-    public void refreshState(){
+    public List<PostDTO> refreshState(){
         this.postList = db.getAllPosts();
+        return this.postList;
     }
 }

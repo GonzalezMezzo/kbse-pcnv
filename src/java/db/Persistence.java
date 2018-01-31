@@ -36,7 +36,8 @@ public class Persistence {
     }
     
     public void addPost(PostDTO p){
-        persist(p.toPost());
+        Post tmp = p.toPost();
+        persist(tmp);
     }
 
     public List<PostDTO> getAllPosts() {
