@@ -8,13 +8,10 @@ package view;
 import access.PostDTO;
 import controller.ModelController;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -26,6 +23,10 @@ import javax.inject.Named;
 @Named(value = "viewmodel")
 @SessionScoped
 public class Viewmodel implements Serializable{
+    /*
+    @Inject
+    RestFrontendController rfctrl;
+    */
     
     @Inject
     ModelController mdlctrl;
@@ -93,6 +94,7 @@ public class Viewmodel implements Serializable{
     public void refreshState(){
         this.postList = mdlctrl.refreshState();
         ratingCollector = new int[postList.size()];
+        inputTextNumber = 0;
     }
     
     /**
@@ -112,12 +114,15 @@ public class Viewmodel implements Serializable{
     }
     
     public void submitRating(){
-        //validate();//method stub
+        if (validate()==true){//method stub
         for(int i =0;i<ratingCollector.length;i++){
-            this.postList.get(i).getRatings().put(inputTextUser, new Integer(ratingCollector[i]));
+            if(ratingCollector[i]!=0)
+                this.postList.get(i).getRatings().put(inputTextUser, new Integer(ratingCollector[i]));
+            mdlctrl.updateRatings(this.postList);
         }
-        mdlctrl.updateRatings(this.postList);
         refreshState();
+        }
+        
     }
     
     /**
@@ -196,14 +201,16 @@ public class Viewmodel implements Serializable{
         this.ratingCollector = ratingCollector;
     }
 
-    private void validate() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private boolean validate() {
+        int n1 =0;
+        for(int i =0; i<ratingCollector.length; i++){
+            n1 += ratingCollector[i];
+            
+            System.out.println("test" + n1);
+            if(ratingCollector[i]<0 || ratingCollector[i]>10 || n1>10){
+                return false;
+            }
+        }
+        return true;      
     }
-
-    
-        
-    
-    
-    
-    
 }
