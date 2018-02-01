@@ -63,4 +63,15 @@ public class ModelController implements Serializable{
         this.postList = db.getAllPosts();
         return this.postList;
     }
+
+    public void updateRatings(List<PostDTO> postList) {
+        try{
+            db.updateRatings(postList);
+        }catch(EJBException e){
+            /**
+             * todo: error handling
+             */
+            System.out.println("refreshRatings -> exception");
+        }
+    }
 }

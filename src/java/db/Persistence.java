@@ -55,6 +55,14 @@ public class Persistence {
     public void refrehRating(){}
     
     public void addRating(){}
+
+    public void updateRatings(List<PostDTO> postList) {
+        for(PostDTO pdto: postList){
+                Post p = pdto.toPost();
+                p.calcTotalRating();
+                merge(p); 
+            }
+    }
     
     
 }

@@ -7,7 +7,8 @@ and open the template in the editor.
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <h:outputStylesheet library="css" name="style.css"/>
         <title>KAK!</title>
@@ -26,8 +27,9 @@ and open the template in the editor.
                     </h:panelGrid>
                 </h:panelGrid>
             </h:panelGroup>
-            
+            <h:commandButton value="Submit Rating" action="#{viewmodel.submitRating()}" /><br/>
             <h:panelGrid columns="4" id="p4" rendered="true">
+                
                 <ui:repeat value="#{viewmodel.postList}" var="post" varStatus="i">
                     <!--
                     <h:outputText value="Nummer " />
@@ -39,15 +41,16 @@ and open the template in the editor.
                     <h:outputText value="Link: " />
                     <h:commandLink value="#{post.url}" /><br/>
                     
-                    <h:inputText value="#{viewmodel.inputTextNumber}" rendered="#{viewmodel.renderInputForRating(i.index)}"/>
-                    
+                    <h:inputText value="#{viewmodel.inputTextNumber}" rendered="#{viewmodel.renderInputForRating(i.index)}" >
+                        <f:ajax listener="#{viewmodel.addRating(i.index)}"/>
+                    </h:inputText>
+                   
                     <h:outputText value="Rating: " />
                     <h:outputText value="#{post.totalRating}" /><br/>
                     
                     
 
                 </ui:repeat>
-                <h:commandButton value="Submit Rating" action="#{viewmodel.submitRating()}" /><br/>
             </h:panelGrid>
         </h:form>
     </h:body>

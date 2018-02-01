@@ -49,7 +49,7 @@ public class PostDTO implements Serializable{
     }
     
     public Post toPost(){
-        return PostBuilder.create().url(this.url).comment(this.comment)
+        return PostBuilder.create().id(this.id).url(this.url).comment(this.comment)
                 .creator(this.creator).totalRating(this.totalRating).ratings(this.ratings).build();
     }
     

@@ -52,9 +52,10 @@ public class Post implements Serializable {
             nullable=true,
             unique=false)
     private Map<String, Integer> ratings;
+    /*
     @Version
     private int version;
-
+    */
     public Post() {
     }
 

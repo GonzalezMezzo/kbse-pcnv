@@ -8,11 +8,13 @@ package view;
 import access.PostDTO;
 import controller.ModelController;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -38,13 +40,25 @@ public class Viewmodel implements Serializable{
     private int inputTextNumber =0;
     private String comment = "Comment";
     private String url = "www.google.de";
+    private int[] ratingCollector;
+    
+    private int test;
+
+    public int getTest() {
+        return test;
+    }
+
+    public void setTest(int test) {
+        this.test = test;
+    }
 
     
     
     @PostConstruct
     public void init(){
         this.inputTextUser = "User";
-        this.postList = refreshState();
+        refreshState();
+        ratingCollector = new int[postList.size()];
     }
     
     public String changeUser(int i){
@@ -66,18 +80,19 @@ public class Viewmodel implements Serializable{
         PostDTO post = new PostDTO(url,comment,inputTextUser,0,new HashMap<String,Integer>());
         post.getRatings().put(inputTextUser, 0);
         mdlctrl.addPost(post);
-        this.postList = refreshState();
+        refreshState();
         return INDEX;
     }
     
     public String delete(PostDTO p){
         mdlctrl.deletePost(p);
-        this.postList = refreshState();
+        refreshState();
         return INDEX;
     }
     
-    public List<PostDTO> refreshState(){
-        return mdlctrl.refreshState();
+    public void refreshState(){
+        this.postList = mdlctrl.refreshState();
+        ratingCollector = new int[postList.size()];
     }
     
     /**
@@ -96,7 +111,22 @@ public class Viewmodel implements Serializable{
         return true;
     }
     
-    public void submitRating(){}
+    public void submitRating(){
+        //validate();//method stub
+        for(int i =0;i<ratingCollector.length;i++){
+            this.postList.get(i).getRatings().put(inputTextUser, new Integer(ratingCollector[i]));
+        }
+        mdlctrl.updateRatings(this.postList);
+        refreshState();
+    }
+    
+    /**
+     * fetches rating input for post at pos i 
+     * @param i 
+     */
+    public void addRating(int i){
+        ratingCollector[i] = inputTextNumber;
+    }
 
         /*--------------------------------------------------------------------------
     getter
@@ -158,7 +188,20 @@ public class Viewmodel implements Serializable{
         this.postList = postList;
     }
 
+    public int[] getRatingCollector() {
+        return ratingCollector;
+    }
 
+    public void setRatingCollector(int[] ratingCollector) {
+        this.ratingCollector = ratingCollector;
+    }
+
+    private void validate() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
+        
     
     
     
