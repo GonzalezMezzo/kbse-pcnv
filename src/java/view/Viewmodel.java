@@ -23,9 +23,13 @@ import javax.inject.Named;
 @Named(value = "viewmodel")
 @SessionScoped
 public class Viewmodel implements Serializable{
-    
+    /*
     @Inject
     RestFrontendController rfctrl;
+    */
+    
+    @Inject
+    ModelController mdlctrl;
     
     private static final String INDEX = "/index.xhtml?faces-redirect=true";
     private static final String RATING = "/rating.xhtml?faces-redirect=true";
@@ -72,23 +76,23 @@ public class Viewmodel implements Serializable{
         return INDEX;
     }
     
-    /*public String submit(){
+    public String submit(){
         changeUebernehmenBool = true;
         PostDTO post = new PostDTO(url,comment,inputTextUser,0,new HashMap<String,Integer>());
         post.getRatings().put(inputTextUser, 0);
-        rfctrl.addPost(post);
+        mdlctrl.addPost(post);
         refreshState();
         return INDEX;
-    }*/
+    }
     
     public String delete(PostDTO p){
-        rfctrl.deletePost(p);
+        mdlctrl.deletePost(p);
         refreshState();
         return INDEX;
     }
     
     public void refreshState(){
-        this.postList = rfctrl.refreshState();
+        this.postList = mdlctrl.refreshState();
         ratingCollector = new int[postList.size()];
         inputTextNumber = 0;
     }
@@ -110,12 +114,15 @@ public class Viewmodel implements Serializable{
     }
     
     public void submitRating(){
-        //validate();//method stub
+        if (validate()==true){//method stub
         for(int i =0;i<ratingCollector.length;i++){
-            this.postList.get(i).getRatings().put(inputTextUser, new Integer(ratingCollector[i]));
+            if(ratingCollector[i]!=0)
+                this.postList.get(i).getRatings().put(inputTextUser, new Integer(ratingCollector[i]));
+            mdlctrl.updateRatings(this.postList);
         }
-        rfctrl.updateRatings(this.postList);
         refreshState();
+        }
+        
     }
     
     /**
@@ -194,14 +201,16 @@ public class Viewmodel implements Serializable{
         this.ratingCollector = ratingCollector;
     }
 
-    private void validate() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private boolean validate() {
+        int n1 =0;
+        for(int i =0; i<ratingCollector.length; i++){
+            n1 += ratingCollector[i];
+            
+            System.out.println("test" + n1);
+            if(ratingCollector[i]<0 || ratingCollector[i]>10 || n1>10){
+                return false;
+            }
+        }
+        return true;      
     }
-
-    
-        
-    
-    
-    
-    
 }
