@@ -49,13 +49,6 @@ public class Persistence {
         return res;
     }
     
-    /**
-     * TODO
-     */
-    public void refrehRating(){}
-    
-    public void addRating(){}
-
     public void updateRatings(List<PostDTO> postList) {
         for(PostDTO pdto: postList){
                 Post p = pdto.toPost();
@@ -63,6 +56,10 @@ public class Persistence {
                 merge(p); 
             }
     }
+    
+    /**
+     * TODO
+     */
     
     
 }
