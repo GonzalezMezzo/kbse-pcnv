@@ -1,6 +1,6 @@
 dist/
 build/
-
+lib/*
 nbproject/*
 
 !lib/gson-2.6.2.jar
