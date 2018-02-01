@@ -112,12 +112,14 @@ public class Viewmodel implements Serializable{
     }
     
     public void submitRating(){
-        //validate();//method stub
+        if (validate()==true){//method stub
         for(int i =0;i<ratingCollector.length;i++){
             this.postList.get(i).getRatings().put(inputTextUser, new Integer(ratingCollector[i]));
         }
         mdlctrl.updateRatings(this.postList);
         refreshState();
+        }
+        
     }
     
     /**
@@ -196,14 +198,16 @@ public class Viewmodel implements Serializable{
         this.ratingCollector = ratingCollector;
     }
 
-    private void validate() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private boolean validate() {
+        int n1 =0;
+        for(int i =0; i<ratingCollector.length; i++){
+            n1 += ratingCollector[i];
+            
+            System.out.println("test" + n1);
+            if(ratingCollector[i]<0 || ratingCollector[i]>10 || n1>10){
+                return false;
+            }
+        }
+        return true;      
     }
-
-    
-        
-    
-    
-    
-    
 }
