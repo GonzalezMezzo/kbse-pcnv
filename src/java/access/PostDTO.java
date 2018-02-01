@@ -5,9 +5,16 @@
  */
 package access;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import enitities.Post;
 import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.Map;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 /**
  *
@@ -55,6 +62,34 @@ public class PostDTO implements Serializable{
     public Post toPost(){
         return PostBuilder.create().id(this.id).url(this.url).comment(this.comment)
                 .creator(this.creator).totalRating(this.totalRating).ratings(this.ratings).build();
+    }
+    
+    public JsonObject toJsonObject(){
+        JsonObjectBuilder js = Json.createObjectBuilder();
+        Gson gson = new Gson();
+        String tmp = gson.toJson(this.ratings);
+        js.add("id", this.id)
+                .add("url", this.url)
+                .add("comment", this.comment)
+                .add("creator", this.creator)
+                .add("totalRating", this.totalRating)
+                .add("ratings", tmp);
+        return js.build();
+    }
+    
+    public static PostDTO toPOJO(JsonObject js){
+        Gson gson = new Gson();
+        Type listType = new TypeToken<Map<String, Thread>>() {
+		}.getType();
+        
+        PostDTO p = new PostDTO();
+        p.setId(js.getJsonNumber("id").longValue());
+        p.setUrl(js.getString("url"));
+        p.setComment(js.getString("comment"));
+        p.setCreator(js.getString("creator"));
+        p.setTotalRating(js.getInt("totalRating"));
+        p.setRatings(gson.fromJson(js.getString("rating"),listType));
+        return p;
     }
     
     public long getId() {
