@@ -1,7 +1,9 @@
 /dist/
 /build/
-/lib/
+/lib/*
 /nbproject/*
 
+!gson-2.6.2.jar
+!BootsFaces-OSP-1.2.0-dist-default.jar
 *.log
 *.DS_Store
