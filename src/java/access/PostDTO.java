@@ -14,6 +14,10 @@ import java.util.Map;
  * @author philippnienhuser
  */
 public class PostDTO implements Serializable{
+
+    public static PostDTO toPOJO() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     private long id;
     private String url;
