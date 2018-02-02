@@ -30,8 +30,8 @@ public class Persistence {
         return em.merge(o);
     }
     
-    public void deletePost(PostDTO p){
-        Post tmp = em.find(Post.class, p.getId());
+    public void deletePost(long id){
+        Post tmp = em.find(Post.class, id);
         em.remove(tmp);
     }
     

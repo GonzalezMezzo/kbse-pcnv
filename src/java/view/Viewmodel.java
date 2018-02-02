@@ -86,7 +86,7 @@ public class Viewmodel implements Serializable{
     }
     
     public String delete(PostDTO p){
-        mdlctrl.deletePost(p);
+        mdlctrl.deletePost(p.getId());
         refreshState();
         return INDEX;
     }

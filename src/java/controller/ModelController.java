@@ -46,9 +46,9 @@ public class ModelController implements Serializable{
         return true;
     }
     
-    public boolean deletePost(PostDTO p){
+    public boolean deletePost(long id){
         try{
-            db.deletePost(p);
+            db.deletePost(id);
         }catch(EJBException e){
             /**
              * todo: error handling

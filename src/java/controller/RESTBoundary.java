@@ -36,27 +36,5 @@ public class RESTBoundary {
     private UriInfo uriInfo;
     
     
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/addPost")
-    public JsonObject addPost(JsonObject jo){
-        PostDTO p = PostDTO.toPOJO();
-        return Json.createObjectBuilder().add("success", mdlctrl.addPost(p)).build();   
-    }
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/deletePost")
-    public JsonObject deletePost(JsonObject jo){
-        PostDTO p = PostDTO.toPOJO();
-        return Json.createObjectBuilder().add("success", mdlctrl.deletePost(p)).build();   
-    }
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/refreshState")
-    public JsonObject refreshState(JsonObject jo){
-        PostDTO p = PostDTO.toPOJO();
-        return null;
-        //return Json.createObjectBuilder().add("success", mdlctrl.refreshState(p)).build();   
-    }
+
 }
