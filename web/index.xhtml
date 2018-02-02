@@ -55,7 +55,7 @@
                             <h:outputText value="URL"/>
                         </b:column>
                         <b:column>
-                            <b:inputText id="url"/>
+                            <b:inputText id="url"  value="#{viewmodel.url}"/>
                         </b:column>
                         <b:column>
                             <b:message for="url" />
@@ -66,7 +66,7 @@
                             <h:outputText value="Comment"/>
                         </b:column>
                         <b:column>
-                            <b:inputTextarea id="comment" field-size="md"/>
+                            <b:inputTextarea id="comment" value="#{viewmodel.comment}" field-size="md"/>
                         </b:column>
                         <b:column>
                             <b:message for="comment" />
