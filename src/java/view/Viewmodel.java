@@ -5,9 +5,11 @@
  */
 package view;
 
+import access.CommentDTO;
 import access.PostDTO;
 import controller.ModelController;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -36,6 +38,7 @@ public class Viewmodel implements Serializable{
     
     private List<PostDTO> postList;
     private String inputTextUser;
+    private String inputTextComment;
     private boolean changeUserBool = false;
     private boolean changeUebernehmenBool = false;
     private int inputTextNumber =0;
@@ -44,6 +47,7 @@ public class Viewmodel implements Serializable{
     private int[] ratingCollector;
     
     private int test;
+    private Long currentPostId;
 
     public int getTest() {
         return test;
@@ -53,8 +57,6 @@ public class Viewmodel implements Serializable{
         this.test = test;
     }
 
-    
-    
     @PostConstruct
     public void init(){
         this.inputTextUser = "User";
@@ -76,9 +78,9 @@ public class Viewmodel implements Serializable{
         return INDEX;
     }
     
-    public String submit(){
-        changeUebernehmenBool = true;
-        PostDTO post = new PostDTO(url,comment,inputTextUser,0,new HashMap<String,Integer>());
+    public String submitLink(){
+        PostDTO post = new PostDTO(url,comment,inputTextUser,0,new HashMap<String,Integer>(), new ArrayList<CommentDTO>());
+        post.getComments().add(new CommentDTO(comment, inputTextUser));
         post.getRatings().put(inputTextUser, 0);
         mdlctrl.addPost(post);
         refreshState();
@@ -87,6 +89,13 @@ public class Viewmodel implements Serializable{
     
     public String delete(PostDTO p){
         mdlctrl.deletePost(p.getId());
+        refreshState();
+        return INDEX;
+    }
+    
+    public String submitComment(){
+        CommentDTO comment = new CommentDTO(inputTextComment, inputTextUser);
+        mdlctrl.addComment(currentPostId, comment);
         refreshState();
         return INDEX;
     }
@@ -143,6 +152,14 @@ public class Viewmodel implements Serializable{
 
     public void setInputTextUser(String inputTextUser) {
         this.inputTextUser = inputTextUser;
+    }
+
+    public String getInputTextComment() {
+        return inputTextComment;
+    }
+
+    public void setInputTextComment(String inputTextComment) {
+        this.inputTextComment = inputTextComment;
     }
 
     public int getInputTextNumber() {

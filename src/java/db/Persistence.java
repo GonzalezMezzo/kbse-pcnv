@@ -5,6 +5,7 @@
  */
 package db;
 
+import access.CommentDTO;
 import access.PostDTO;
 import enitities.Post;
 import java.util.ArrayList;
@@ -55,6 +56,10 @@ public class Persistence {
                 p.calcTotalRating();
                 merge(p); 
             }
+    }
+
+    public void addComment(Long id, CommentDTO comment) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     /**

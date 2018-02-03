@@ -5,8 +5,10 @@
  */
 package access;
 
+import enitities.Comment;
 import enitities.Post;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -17,12 +19,12 @@ public class PostBuilder implements Serializable{
     
     private long id;
     private String url;
-    private String comment;
+    private ArrayList<Comment> comments;
     private String creator;
     private int totalRating;
     private Map<String,Integer> ratings;
     
-    private PostBuilder(){};
+    private PostBuilder(){}
     
     public static PostBuilder create(){
         return new PostBuilder();
@@ -38,8 +40,8 @@ public class PostBuilder implements Serializable{
         return this;
     }
     
-    public PostBuilder comment(String comment){
-        this.comment = comment;
+    public PostBuilder comment(ArrayList comments){
+        this.comments = comments;
         return this;
     }
     
@@ -57,12 +59,16 @@ public class PostBuilder implements Serializable{
         this.ratings = ratings;
         return this;
     }
+
+    public PostBuilder comments(ArrayList<Comment> comments) {
+        return this;
+    }
     
     public Post build(){
         Post res = new Post();
         res.setId(this.id);
         res.setUrl(this.url);
-        res.setComment(this.comment);
+        res.setComments(this.comments);
         res.setCreator(this.creator);
         res.setTotalRating(this.totalRating);
         res.setRatings(this.ratings);

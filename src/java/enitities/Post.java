@@ -6,15 +6,20 @@
 package enitities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Version;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -31,7 +36,7 @@ public class Post implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="id",
             unique=true)
-    private long id;
+    private Long id;
     @Column(name="url",
             nullable=false,
             unique=false)
@@ -52,6 +57,11 @@ public class Post implements Serializable {
             nullable=true,
             unique=false)
     private Map<String, Integer> ratings;
+    @JoinColumn(name="comments",
+            nullable=true,
+            unique=false)
+    private List<Comment> comments;
+    
     /*
     @Version
     private int version;
@@ -59,19 +69,20 @@ public class Post implements Serializable {
     public Post() {
     }
 
-    public Post(String url, String comment, String creator, int totalRating, Map<String, Integer> ratings) {
+    public Post(String url, String comment, List<Comment> comments, String creator, int totalRating, Map<String, Integer> ratings) {
         this.url = url;
         this.comment = comment;
+        this.comments = new ArrayList<>();
         this.creator = creator;
         this.totalRating = totalRating;
         this.ratings = ratings;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -90,7 +101,7 @@ public class Post implements Serializable {
     public void setComment(String comment) {
         this.comment = comment;
     }
-
+    
     public String getCreator() {
         return creator;
     }
@@ -114,10 +125,21 @@ public class Post implements Serializable {
     public void setRatings(Map<String, Integer> ratings) {
         this.ratings = ratings;
     }
-    
+    public void addComment(Comment e){
+        this.comments.add(e);
+    }
+     public void setComments(ArrayList<Comment> comments) {
+        this.comments = comments;
+    }
+     public List<Comment> getComments(){
+         return this.comments;
+     }
+    public void deleteComment(Comment e){
+        this.comments.remove(e);
+    }
     public void calcTotalRating(){
         int res= 0;
-        for(Map.Entry<String,Integer> entry : this.ratings.entrySet()){
+        for(HashMap.Entry<String,Integer> entry : this.ratings.entrySet()){
             res += entry.getValue();
         }
         setTotalRating(res);

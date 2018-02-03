@@ -5,6 +5,7 @@
  */
 package controller;
 
+import access.CommentDTO;
 import access.PostDTO;
 import db.Persistence;
 import java.io.Serializable;
@@ -72,6 +73,17 @@ public class ModelController implements Serializable{
              * todo: error handling
              */
             System.out.println("refreshRatings -> exception");
+        }
+    }
+
+    public void addComment(Long id, CommentDTO comment) {
+        try{
+            db.addComment(id, comment);
+        }catch(EJBException e){
+            /**
+             * todo: error handling
+             */
+            System.out.println("addComment -> exception");
         }
     }
 }

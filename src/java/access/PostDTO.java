@@ -7,10 +7,12 @@ package access;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import enitities.Comment;
 import enitities.Post;
 import java.io.Serializable;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -26,27 +28,30 @@ public class PostDTO implements Serializable{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    private long id;
+    private Long id;
     private String url;
     private String comment;
     private String creator;
     private int totalRating;
+    private List<CommentDTO> comments;
     private Map<String,Integer> ratings;
 
     public PostDTO(){}
     
-    public PostDTO(String url, String comment, String creator, int totalRating, Map<String,Integer> ratings){
+    public PostDTO(String url, String comment, String creator, int totalRating, Map<String,Integer> ratings, List<CommentDTO> comments){
         this.url = url;
         this.comment = comment;
+        this.comments = comments;
         this.creator = creator;
         this.totalRating = totalRating;
         this.ratings = ratings;
     }
     
-    public PostDTO(long id, String url, String comment, String creator, int totalRating, Map<String,Integer> ratings){
+    public PostDTO(Long id, String url,String comment, String creator, int totalRating, Map<String,Integer> ratings, List<CommentDTO> comments){
         this.id =id;
-        this.url = url;
         this.comment = comment;
+        this.url = url;
+        this.comments = new ArrayList<>();
         this.creator = creator;
         this.totalRating = totalRating;
         this.ratings = ratings;
@@ -56,11 +61,15 @@ public class PostDTO implements Serializable{
         if(p == null){
             return null;
         }
-        return new PostDTO(p.getId(), p.getUrl(), p.getComment(), p.getCreator(), p.getTotalRating(), p.getRatings());
+        List<CommentDTO> comments = new ArrayList<CommentDTO>();
+        for(Comment c: p.getComments()){
+            comments.add(CommentDTO.toCommentDTO(c));
+        }
+        return new PostDTO(p.getId(), p.getComment(), p.getUrl(), p.getCreator(), p.getTotalRating(), p.getRatings(), comments);
     }
     
     public Post toPost(){
-        return PostBuilder.create().id(this.id).url(this.url).comment(this.comment)
+        return PostBuilder.create().url(this.url)
                 .creator(this.creator).totalRating(this.totalRating).ratings(this.ratings).build();
     }
     
@@ -92,11 +101,11 @@ public class PostDTO implements Serializable{
         return p;
     }
     
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -139,6 +148,15 @@ public class PostDTO implements Serializable{
     public void setRatings(Map<String, Integer> ratings) {
         this.ratings = ratings;
     }
+
+    public List<CommentDTO> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentDTO> comments) {
+        this.comments = comments;
+    }
+    
     
     
     

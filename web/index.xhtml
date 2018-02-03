@@ -74,7 +74,7 @@
                     </b:row>
                     <b:row>
                         <b:column>                        
-                            <b:commandButton value="Submit" action="#{viewmodel.submit()}" large-screen="full-width"/>
+                            <b:commandButton value="Submit" action="#{viewmodel.submitLink()}" large-screen="full-width"/>
                         </b:column>
                     </b:row>
                 </b:form>
@@ -92,6 +92,7 @@
                                 <h:outputText value="#{post.id}" />
                                 <h:outputText value="#{post.url}" />
                                 <b:badge style="margin-left:10px; background-color:#5cb85c" value="#{post.totalRating}"  />
+                                
                             </f:facet>
                             <b:row>
                                 <b:column>
