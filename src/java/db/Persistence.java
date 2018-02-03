@@ -58,8 +58,10 @@ public class Persistence {
             }
     }
 
-    public void addComment(Long id, CommentDTO comment) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void addComment(Long id, CommentDTO c) {
+        Post p= em.find(Post.class, id);
+        p.getComments().add(c.toComment());
+        merge(p);
     }
     
     /**
