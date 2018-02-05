@@ -144,7 +144,7 @@ public class Post implements Serializable {
         }
         setTotalRating(res);
     }
-    /*
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -164,7 +164,7 @@ public class Post implements Serializable {
         }
         return true;
     }
-*/
+
     @Override
     public String toString() {
         return "enitities.Post[ id=" + id + " ]";
