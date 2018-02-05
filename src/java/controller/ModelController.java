@@ -76,14 +76,16 @@ public class ModelController implements Serializable{
         }
     }
 
-    public void addComment(Long id, CommentDTO comment) {
+    public boolean addComment(CommentDTO comment) {
         try{
-            db.addComment(id, comment);
+            db.addComment(comment);
+            return true;
         }catch(EJBException e){
             /**
              * todo: error handling
              */
             System.out.println("addComment -> exception");
+            return false;
         }
     }
 }

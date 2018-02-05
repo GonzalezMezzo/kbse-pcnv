@@ -41,10 +41,10 @@ public class Post implements Serializable {
             nullable=false,
             unique=false)
     private String url;
-    @Column(name="comment",
+    @Column(name="description",
             nullable=true,
             unique=false)
-    private String comment;
+    private String description;
     @Column(name="creator",
             nullable=false,
             unique=false)
@@ -60,6 +60,7 @@ public class Post implements Serializable {
     @JoinColumn(name="comments",
             nullable=true,
             unique=false)
+    @OneToMany(mappedBy="owner")
     private List<Comment> comments;
     
     /*
@@ -71,7 +72,7 @@ public class Post implements Serializable {
 
     public Post(String url, String comment, List<Comment> comments, String creator, int totalRating, Map<String, Integer> ratings) {
         this.url = url;
-        this.comment = comment;
+        this.description = comment;
         this.comments = new ArrayList<>();
         this.creator = creator;
         this.totalRating = totalRating;
@@ -94,12 +95,12 @@ public class Post implements Serializable {
         this.url = url;
     }
 
-    public String getComment() {
-        return comment;
+    public String getDescription() {
+        return description;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setDescription(String description) {
+        this.description = description;
     }
     
     public String getCreator() {

@@ -30,7 +30,7 @@ public class PostDTO implements Serializable{
     
     private Long id;
     private String url;
-    private String comment;
+    private String description;
     private String creator;
     private int totalRating;
     private List<CommentDTO> comments;
@@ -40,7 +40,7 @@ public class PostDTO implements Serializable{
     
     public PostDTO(String url, String comment, String creator, int totalRating, Map<String,Integer> ratings){
         this.url = url;
-        this.comment = comment;
+        this.description = comment;
         this.comments = new ArrayList<>();
         this.creator = creator;
         this.totalRating = totalRating;
@@ -49,7 +49,7 @@ public class PostDTO implements Serializable{
     
     public PostDTO(Long id, String url,String comment, String creator, int totalRating, Map<String,Integer> ratings, List<CommentDTO> comments){
         this.id =id;
-        this.comment = comment;
+        this.description = comment;
         this.url = url;
         this.comments = comments;
         this.creator = creator;
@@ -65,43 +65,44 @@ public class PostDTO implements Serializable{
         for(Comment c: p.getComments()){
             comments.add(CommentDTO.toCommentDTO(c));
         }
-        return new PostDTO(p.getId(), p.getComment(), p.getUrl(), p.getCreator(), p.getTotalRating(), p.getRatings(), comments);
+        return new PostDTO(p.getId(),p.getUrl(),p.getDescription(), p.getCreator(), p.getTotalRating(), p.getRatings(), comments);
     }
     
     public Post toPost(){
-        return PostBuilder.create().url(this.url)
-                .creator(this.creator).totalRating(this.totalRating).ratings(this.ratings).build();
+        return PostBuilder.create().url(this.url).comment(this.description).creator(this.creator).totalRating(this.totalRating).ratings(this.ratings).build();
     }
     
     public JsonObject toJsonObject(){
         JsonObjectBuilder js = Json.createObjectBuilder();
         Gson gson = new Gson();
-        String tmp = gson.toJson(this.ratings);
+        String mapString = gson.toJson(this.ratings);
+        String listString = gson.toJson(this.comments);
         if(this.id != null){
             js.add("id", this.id);
         }
         js.add("url", this.url)
-           .add("comment", this.comment)
+           .add("description", this.description)
            .add("creator", this.creator)
            .add("totalRating", this.totalRating)
-           .add("ratings", tmp);
+           .add("ratings", mapString)
+           .add("comments", listString);
         return js.build();
     }
     
     public static PostDTO toPOJO(JsonObject js){
         Gson gson = new Gson();
-        Type listType = new TypeToken<Map<String, Integer>>() {
-		}.getType();
         
         PostDTO p = new PostDTO();
         if(js.getJsonNumber("id")!= null){
             p.setId(js.getJsonNumber("id").longValue());
         }
         p.setUrl(js.getString("url"));
-        p.setComment(js.getString("comment"));
+        p.setDescription(js.getString("description"));
         p.setCreator(js.getString("creator"));
         p.setTotalRating(js.getInt("totalRating"));
-        p.setRatings(gson.fromJson(js.getString("ratings"),listType));
+        p.setComments(gson.fromJson(js.getString("comments"), new TypeToken<List<CommentDTO>>(){}.getType()));
+        p.setRatings(gson.fromJson(js.getString("ratings"),new TypeToken<Map<String, Integer>>() {
+		}.getType()));
         return p;
     }
     
@@ -121,12 +122,12 @@ public class PostDTO implements Serializable{
         this.url = url;
     }
 
-    public String getComment() {
-        return comment;
+    public String getDescription() {
+        return description;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getCreator() {

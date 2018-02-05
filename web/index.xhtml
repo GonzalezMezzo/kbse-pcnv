@@ -66,14 +66,15 @@
                             <h:outputText value="Comment"/>
                         </b:column>
                         <b:column>
-                            <b:inputTextarea id="comment" value="#{viewmodel.comment}" field-size="md"/>
+                            <b:inputTextarea id="comment" value="#{viewmodel.description}" field-size="md"/>
                         </b:column>
                         <b:column>
                             <b:message for="comment" />
                         </b:column>
                     </b:row>
                     <b:row>
-                        <b:column>                        
+                        <b:column>            
+                             <b:commandButton value="add Comment" action="#{viewmodel.submitComment()}" large-screen="full-width"/>
                             <b:commandButton value="Submit" action="#{viewmodel.submitLink()}" large-screen="full-width"/>
                         </b:column>
                     </b:row>
@@ -96,7 +97,7 @@
                             </f:facet>
                             <b:row>
                                 <b:column>
-                                    <b:inputTextarea span="12" readonly="true" value="#{post.comment}"/>
+                                    <b:inputTextarea span="12" readonly="true" value="#{post.description}"/>
                                 </b:column>
                             </b:row>
                             <b:row>

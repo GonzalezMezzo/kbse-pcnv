@@ -19,6 +19,7 @@ public class PostBuilder implements Serializable{
     
     private long id;
     private String url;
+    private String description;
     private ArrayList<Comment> comments;
     private String creator;
     private int totalRating;
@@ -40,8 +41,8 @@ public class PostBuilder implements Serializable{
         return this;
     }
     
-    public PostBuilder comment(ArrayList comments){
-        this.comments = comments;
+    public PostBuilder comment(String comment){
+        this.description = comment;
         return this;
     }
     
@@ -61,6 +62,7 @@ public class PostBuilder implements Serializable{
     }
 
     public PostBuilder comments(ArrayList<Comment> comments) {
+        this.comments = comments;
         return this;
     }
     
@@ -68,6 +70,7 @@ public class PostBuilder implements Serializable{
         Post res = new Post();
         res.setId(this.id);
         res.setUrl(this.url);
+        res.setDescription(this.description);
         res.setComments(this.comments);
         res.setCreator(this.creator);
         res.setTotalRating(this.totalRating);

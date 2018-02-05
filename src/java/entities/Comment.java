@@ -41,18 +41,20 @@ public class Comment implements Serializable {
             nullable=false,
             unique=false)
     private String timestamp;
-    /*
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="OWNER_POST_ID")
+    @JoinColumn(name="OWNER_POST_ID",
+            nullable=false,
+            unique = false)
     private Post owner;
-    */
+   
     public Comment() {
     }
     
-    public Comment(String message, String creator){
+    public Comment(String message, String creator, Post owner){
         this.creator = creator;
         this.timestamp = new SimpleDateFormat("HHmmss_ddMMyyyy").format(Calendar.getInstance().getTime());
         this.message = message;
+        this.owner = owner;
     }
 
     @Override
@@ -91,6 +93,16 @@ public class Comment implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public Post getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Post owner) {
+        this.owner = owner;
+    }
+    
+    
 
     @Override
     public int hashCode() {

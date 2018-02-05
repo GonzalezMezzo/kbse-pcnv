@@ -38,16 +38,17 @@ public class Viewmodel implements Serializable{
     
     private List<PostDTO> postList;
     private String inputTextUser;
-    private String inputTextComment;
+    private String inputTextComment = "standard";
     private boolean changeUserBool = false;
     private boolean changeUebernehmenBool = false;
     private int inputTextNumber =0;
-    private String comment = "Comment";
+    private String description = "Comment";
     private String url = "www.google.de";
     private int[] ratingCollector;
+
     
     private int test;
-    private Long currentPostId;
+    private PostDTO currentPost;
 
     public int getTest() {
         return test;
@@ -61,6 +62,13 @@ public class Viewmodel implements Serializable{
     public void init(){
         this.inputTextUser = "User";
         refreshState();
+        /**
+         * CRITICAL CODE !!!!!!!
+         */
+        currentPost = postList.get(0);
+        /**
+         * CRITICAL CODE !!!!!!!
+         */
         ratingCollector = new int[postList.size()];
     }
     
@@ -79,8 +87,8 @@ public class Viewmodel implements Serializable{
     }
     
     public String submitLink(){
-        PostDTO post = new PostDTO(url,comment,inputTextUser,0,new HashMap<String,Integer>());
-        post.getComments().add(new CommentDTO(comment, inputTextUser));
+        PostDTO post = new PostDTO(url,description,inputTextUser,0,new HashMap<String,Integer>());
+        post.getComments().add(new CommentDTO(description, inputTextUser, currentPost));
         post.getRatings().put(inputTextUser, 0);
         rfctrl.addPost(post);
         refreshState();
@@ -94,12 +102,11 @@ public class Viewmodel implements Serializable{
     }
     
     public String submitComment(){
-        CommentDTO comment = new CommentDTO(inputTextComment, inputTextUser);
-        rfctrl.addComment(currentPostId, comment);
+        CommentDTO comment = new CommentDTO(inputTextComment, inputTextUser, currentPost);
+        rfctrl.addComment(comment);
         refreshState();
         return INDEX;
     }
-    
     public void refreshState(){
         this.postList = rfctrl.refreshState();
         ratingCollector = new int[postList.size()];
@@ -169,12 +176,12 @@ public class Viewmodel implements Serializable{
         this.inputTextNumber = inputTextNumber;
     }
 
-    public String getComment() {
-        return comment;
+    public String getDescription() {
+        return description;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getUrl() {
@@ -229,4 +236,5 @@ public class Viewmodel implements Serializable{
         }
         return true;      
     }
+    
 }

@@ -5,6 +5,7 @@
  */
 package controller;
 
+import access.CommentDTO;
 import access.PostDTO;
 import com.google.gson.Gson;
 import java.util.List;
@@ -21,6 +22,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -51,18 +53,27 @@ public class RESTBoundary {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/deletePost/{id}")
-    public JsonObject deletePost(@PathParam("id")long id){
-        return Json.createObjectBuilder().add("success", mdlctrl.deletePost(id)).build();   
+    public JsonObject deletePost(@PathParam("id") long id) {
+        return Json.createObjectBuilder().add("success", mdlctrl.deletePost(id)).build();
     }
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/refreshState")
     public JsonObject refreshState() {
-        //  PostDTO p = PostDTO.toPOJO();
         JsonArrayBuilder builder = Json.createArrayBuilder();
         List<PostDTO> list = mdlctrl.refreshState();
         Gson gson = new Gson();
-        return Json.createObjectBuilder().add("list", gson.toJson(list)).build();    
+        return Json.createObjectBuilder().add("list", gson.toJson(list)).build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/addComment")
+    public JsonObject addComment(JsonObject jo) {
+        CommentDTO c = CommentDTO.toPOJO(jo);
+        mdlctrl.addComment(c);
+        return Json.createObjectBuilder().add("success", true).build();
     }
 }

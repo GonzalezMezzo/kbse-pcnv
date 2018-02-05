@@ -58,8 +58,8 @@ public class Persistence {
             }
     }
 
-    public void addComment(Long id, CommentDTO c) {
-        Post p= em.find(Post.class, id);
+    public void addComment(CommentDTO c) {
+        Post p= em.find(Post.class, c.getOwner().getId());
         p.getComments().add(c.toComment());
         merge(p);
     }

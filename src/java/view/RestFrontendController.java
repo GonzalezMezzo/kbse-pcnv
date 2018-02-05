@@ -11,11 +11,14 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -67,7 +70,6 @@ public class RestFrontendController implements Serializable {
             return false;
         }
     }
-    
     List<PostDTO> refreshState() {
         this.wt = client.target(ADRESS+"/refreshState");
        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
@@ -88,8 +90,38 @@ public class RestFrontendController implements Serializable {
         this.wt = client.target(ADRESS+"/updateRatings");
         
     }
-
-    void addComment(Long currentPostId, CommentDTO comment) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    boolean addComment(CommentDTO comment) {
+        this.wt = client.target(ADRESS+"/addComment");
+        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+        Entity entity = Entity.entity(comment.toJsonObject(), MediaType.APPLICATION_JSON);
+        try{           
+            JsonObject res = build.post(entity, JsonObject.class);
+            return res.getBoolean("success");
+            
+        }catch(Exception e){
+            e.printStackTrace();
+            System.out.println("addComment(rest) ->");
+        }
+        return false;
     }
+    
+    /*
+    boolean addComment(Long currentPostId, CommentDTO comment) {
+        this.wt = client.target(ADRESS+"/addComment");
+        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+        JsonObjectBuilder js = Json.createObjectBuilder();
+        js.add("postid", currentPostId).add("comment", comment.toJsonObject());
+        Entity entity = Entity.entity(js.build(), MediaType.APPLICATION_JSON);
+        try{           
+            
+            JsonObject res = build.post(entity, JsonObject.class);
+            return res.getBoolean("success");
+            
+        }catch(Exception e){
+            e.printStackTrace();
+            System.out.println("addComment(rest) ->");
+        }
+        return false;
+    }*/
 }
