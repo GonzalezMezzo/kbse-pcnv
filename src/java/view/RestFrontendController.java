@@ -5,6 +5,7 @@
  */
 package view;
 
+import access.CommentDTO;
 import access.PostDTO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -53,10 +54,9 @@ public class RestFrontendController implements Serializable {
         }
         return false;
     }
-    
 
-    boolean deletePost(PostDTO post) {
-        this.wt = client.target(ADRESS+"/deletePost/"+post.getId());
+    boolean deletePost(long id) {
+        this.wt = client.target(ADRESS+"/deletePost/"+id);
 
         Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
         try{         
@@ -67,6 +67,7 @@ public class RestFrontendController implements Serializable {
             return false;
         }
     }
+    
     List<PostDTO> refreshState() {
         this.wt = client.target(ADRESS+"/refreshState");
        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
@@ -86,5 +87,9 @@ public class RestFrontendController implements Serializable {
     void updateRatings(List<PostDTO> postList) {
         this.wt = client.target(ADRESS+"/updateRatings");
         
+    }
+
+    void addComment(Long currentPostId, CommentDTO comment) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
