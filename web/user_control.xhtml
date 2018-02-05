@@ -50,10 +50,10 @@
                             </b:row>
                             <b:row>
                                 <b:column >
-                                    <h:outputText value="E-Mail"/>
+                                    <h:outputText value="E-Mail:"/>
                                 </b:column>
                                 <b:column >
-                                    <b:inputText placeholder="sample@sample.com" id="email">
+                                    <b:inputText placeholder="sample@sample.com" id="email" value="#{viewmodel.inputTextEMail}">
                                         <f:facet name="prepend">
                                             <h:outputText value="@" />
                                         </f:facet>
@@ -68,7 +68,7 @@
                                     <h:outputText value="Forename:"/>
                                 </b:column>
                                 <b:column >
-                                    <b:inputText placeholder="Hans" id="fname" value="" >
+                                    <b:inputText placeholder="Hans" id="fname" value="#{viewmodel.inputTextFName}" >
                                         <f:facet name="prepend">
                                             <b:icon name="user" />
                                         </f:facet>
@@ -80,10 +80,10 @@
                             </b:row>
                             <b:row>
                                 <b:column >
-                                    <h:outputText value="Lastname"/>
+                                    <h:outputText value="Lastname:"/>
                                 </b:column>
                                 <b:column >
-                                    <b:inputText placeholder="Peter" id="lname" value="">
+                                    <b:inputText placeholder="Peter" id="lname" value="#{viewmodel.inputTextLName}">
                                         <f:facet name="prepend">
                                             <b:icon name="user" />
                                         </f:facet>
@@ -106,7 +106,7 @@
                     </b:row>
                     <b:row>
                         <b:column>
-                            <b:commandButton value="Submit Changes" action="#{viewmodel.changeUser(0)}" large-screen="full-width"/>
+                            <b:commandButton value="Submit Changes" action="#{viewmodel.changeUser()}" large-screen="full-width"/>
                         </b:column>
                     </b:row>                    
                 </b:form>
@@ -128,7 +128,7 @@
                             </f:facet>
                             <b:row>
                                 <b:column>
-                                    <b:inputTextarea span="12" readonly="true" value="#{post.comment}"/>
+                                    <b:inputTextarea span="12" readonly="true" value="#{post.description}"/>
                                 </b:column>
                             </b:row>
                             <b:row>
