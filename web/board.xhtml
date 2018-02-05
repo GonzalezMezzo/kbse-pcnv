@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <h:outputStylesheet library="css" name="style.css"/>
+        <title>KBSE - Board</title>
+    </h:head>
+    <h:body>
+        <!--b:modal id="editVote" title="Modal Example" styleClass="modalPseudoClass">
+            <f:facet name="footer">
+                <b:button value="Close" dismiss="modal" />
+                <b:button value="Ok" look="primary" dismiss="modal" />
+            </f:facet>
+        </b:modal-->
+        <b:navBar brand="SuperDuperForum" fluid="false" inverse="true" position="top" sticky="false">
+            <h:form>
+                <b:navbarLinks>
+                    <b:navCommandLink value="Home" action="#{viewmodel.getINDEX()}" />
+                    <b:navCommandLink value="Forum" action="#{viewmodel.getBOARD()}" />
+                    <b:navCommandLink value="UserCenter" action="#{viewmodel.getUSER_CONTROL()}" />
+                    <b:navCommandLink value="About" action="#{viewmodel.getABOUT()}" />
+                </b:navbarLinks>
+            </h:form>
+        </b:navBar>
+        <b:container>
+            <b:panel title="Add Website for Rating" icon="flag" icon-align="left" collapsible="true" collapsed="true">
+                <b:form>
+                    <b:row>
+                        <b:column>
+                            <h:outputText value="Website:"/>
+                        </b:column>
+                        <b:column>
+                            <b:inputText id="url" placeholder="www.sample.com" value="#{viewmodel.url}"/>
+                        </b:column>
+                        <b:column>
+                            <b:message for="url" />
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column>
+                            <h:outputText value="Comment"/>
+                        </b:column>
+                        <b:column>
+                            <b:inputTextarea id="comment" placeholder="Your honourable Opininion..." value="#{viewmodel.comment}" field-size="md"/>
+                        </b:column>
+                        <b:column>
+                            <b:message for="comment" />
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column>                        
+                            <b:commandButton value="Submit" action="#{viewmodel.submitLink()}" large-screen="full-width"/>
+                        </b:column>
+                    </b:row>
+                </b:form>
+            </b:panel>
+        </b:container>
+
+        <b:container>
+            <b:form>
+                <b:panel collapsible="true" collapsed="false" title="All Threads" icon="flag">
+                    <h:outputText value="Some text..."/>
+                    <!--TODO add eventlistener-->
+                    <b:dataTable value="#{viewmodel.postList}" 
+                                 var="post" 
+                                 select="true"
+                                 selected-items="row"
+                                 responsive="true"
+                                 searching="false" 
+                                 paginated="false"
+                                 saveState="true">
+                        <b:dataTableColumn value="#{post.id}" label="ID" order="asc"/>
+                        <b:dataTableColumn value="#{post.url}" label="Website"/>
+                        <b:dataTableColumn value="#{post.creator}" label="OP"/>
+                        <b:dataTableColumn value="#{post.totalRating}" label="Total Rating"/>
+                    </b:dataTable>
+                </b:panel>
+            </b:form>
+        </b:container>
+    </h:body>
+</html>

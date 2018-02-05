@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <h:outputStylesheet library="css" name="style.css"/>
+        <title>KBSE - User Center</title>
+    </h:head>
+    <h:body>
+        <!--b:modal id="editVote" title="Modal Example" styleClass="modalPseudoClass">
+            <f:facet name="footer">
+                <b:button value="Close" dismiss="modal" />
+                <b:button value="Ok" look="primary" dismiss="modal" />
+            </f:facet>
+        </b:modal-->
+        <b:navBar brand="SuperDuperForum" fluid="false" inverse="true" position="top" sticky="false">
+            <h:form>
+                <b:navbarLinks>
+                    <b:navCommandLink value="Home" action="#{viewmodel.getINDEX()}" />
+                    <b:navCommandLink value="Forum" action="#{viewmodel.getBOARD()}" />
+                    <b:navCommandLink value="UserCenter" action="#{viewmodel.getUSER_CONTROL()}" />
+                    <b:navCommandLink value="About" action="#{viewmodel.getABOUT()}" />
+                </b:navbarLinks>
+            </h:form>
+        </b:navBar>
+        
+        <b:container>
+            <b:panel title="User" icon="user" icon-align="left" showCollapseLink="false">
+                <b:form enctype="multipart/form-data">
+                    <b:row>
+                        <b:column col-md="6">
+                            <b:row>
+                                <b:column >
+                                    <h:outputText value="Username:"/>
+                                </b:column>
+                                <b:column >
+                                    <b:inputText placeholder="Username" id="username" value="#{viewmodel.inputTextUser}">
+                                        <f:facet name="prepend">
+                                            <b:icon name="user" />
+                                        </f:facet>
+                                    </b:inputText>
+                                </b:column>
+                                <b:column >
+                                    <b:message for="username" />
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column >
+                                    <h:outputText value="E-Mail"/>
+                                </b:column>
+                                <b:column >
+                                    <b:inputText placeholder="sample@sample.com" id="email">
+                                        <f:facet name="prepend">
+                                            <h:outputText value="@" />
+                                        </f:facet>
+                                    </b:inputText>
+                                </b:column>
+                                <b:column >
+                                    <b:message for="email" />
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column >
+                                    <h:outputText value="Forename:"/>
+                                </b:column>
+                                <b:column >
+                                    <b:inputText placeholder="Hans" id="fname" value="" >
+                                        <f:facet name="prepend">
+                                            <b:icon name="user" />
+                                        </f:facet>
+                                    </b:inputText>
+                                </b:column>
+                                <b:column >
+                                    <b:message for="fname" />
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column >
+                                    <h:outputText value="Lastname"/>
+                                </b:column>
+                                <b:column >
+                                    <b:inputText placeholder="Peter" id="lname" value="">
+                                        <f:facet name="prepend">
+                                            <b:icon name="user" />
+                                        </f:facet>
+                                    </b:inputText>
+                                </b:column>
+                                <b:column >
+                                    <b:message for="lname" />
+                                </b:column>
+                            </b:row>
+                        </b:column>
+                        <b:column col-md="6">                           
+                            <b:thumbnail>
+                                <img data-src="holder.js/100%x180/sky" alt="Generic placeholder thumbnail"/>
+                                <f:facet name="caption" transient="false">
+                                    <p>Upload Image-File</p>
+                                    <h:inputFile/>
+                                </f:facet>
+                            </b:thumbnail>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column>
+                            <b:commandButton value="Submit Changes" action="#{viewmodel.changeUser(0)}" large-screen="full-width"/>
+                        </b:column>
+                    </b:row>                    
+                </b:form>
+            </b:panel>
+        </b:container>
+        
+        <b:container>
+            <b:panel title="My Ratings" icon="book" icon-align="left" collapsed="true">
+                <!--b:accordion-->
+                <ui:repeat value="#{viewmodel.postList}" var="post" varStatus="i">
+                    <b:form>
+                        <b:panel icon="star" icon-align="left" collapsible="true" collapsed="true">
+                            <f:facet name="heading">
+                                <b:icon name="flag" style="padding-right:20px" />
+                                <h:outputText value="#{post.id}" />
+                                <h:outputText value=" "/>
+                                <h:outputText value="#{post.url}" />
+                                <b:badge style="margin-left:10px; background-color:#5cb85c" value="#{post.totalRating}"  />
+                            </f:facet>
+                            <b:row>
+                                <b:column>
+                                    <b:inputTextarea span="12" readonly="true" value="#{post.comment}"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column>
+                                    <b:commandButton value="Delete" action="#{viewmodel.delete(post)}" large-screen="full-width" look="danger"/>
+                                </b:column>
+                            </b:row>
+                        </b:panel>
+                    </b:form>
+                </ui:repeat>
+                <!--/b:accordion-->
+            </b:panel>
+        </b:container>
+    </h:body>
+</html>
