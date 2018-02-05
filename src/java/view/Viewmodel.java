@@ -59,6 +59,7 @@ public class Viewmodel implements Serializable {
         this.inputTextEMail = "sample@sample.com";
         this.inputTextFName = "Hans";
         this.inputTextLName = "Peter";
+        this.inputTexTURL = "www.google.de";
 
         refreshState();
         /**
@@ -183,6 +184,7 @@ public class Viewmodel implements Serializable {
     /*--------------------------------------------------------------------------
     getter
     --------------------------------------------------------------------------*/
+    
 
     public String getInputTexTURL() {
         return inputTexTURL;
