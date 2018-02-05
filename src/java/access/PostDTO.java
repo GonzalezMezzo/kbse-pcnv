@@ -7,8 +7,8 @@ package access;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import enitities.Comment;
-import enitities.Post;
+import entities.Comment;
+import entities.Post;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -38,10 +38,10 @@ public class PostDTO implements Serializable{
 
     public PostDTO(){}
     
-    public PostDTO(String url, String comment, String creator, int totalRating, Map<String,Integer> ratings, List<CommentDTO> comments){
+    public PostDTO(String url, String comment, String creator, int totalRating, Map<String,Integer> ratings){
         this.url = url;
         this.comment = comment;
-        this.comments = comments;
+        this.comments = new ArrayList<>();
         this.creator = creator;
         this.totalRating = totalRating;
         this.ratings = ratings;
@@ -51,7 +51,7 @@ public class PostDTO implements Serializable{
         this.id =id;
         this.comment = comment;
         this.url = url;
-        this.comments = new ArrayList<>();
+        this.comments = comments;
         this.creator = creator;
         this.totalRating = totalRating;
         this.ratings = ratings;
@@ -77,27 +77,31 @@ public class PostDTO implements Serializable{
         JsonObjectBuilder js = Json.createObjectBuilder();
         Gson gson = new Gson();
         String tmp = gson.toJson(this.ratings);
-        js.add("id", this.id)
-                .add("url", this.url)
-                .add("comment", this.comment)
-                .add("creator", this.creator)
-                .add("totalRating", this.totalRating)
-                .add("ratings", tmp);
+        if(this.id != null){
+            js.add("id", this.id);
+        }
+        js.add("url", this.url)
+           .add("comment", this.comment)
+           .add("creator", this.creator)
+           .add("totalRating", this.totalRating)
+           .add("ratings", tmp);
         return js.build();
     }
     
     public static PostDTO toPOJO(JsonObject js){
         Gson gson = new Gson();
-        Type listType = new TypeToken<Map<String, Thread>>() {
+        Type listType = new TypeToken<Map<String, Integer>>() {
 		}.getType();
         
         PostDTO p = new PostDTO();
-        p.setId(js.getJsonNumber("id").longValue());
+        if(js.getJsonNumber("id")!= null){
+            p.setId(js.getJsonNumber("id").longValue());
+        }
         p.setUrl(js.getString("url"));
         p.setComment(js.getString("comment"));
         p.setCreator(js.getString("creator"));
         p.setTotalRating(js.getInt("totalRating"));
-        p.setRatings(gson.fromJson(js.getString("rating"),listType));
+        p.setRatings(gson.fromJson(js.getString("ratings"),listType));
         return p;
     }
     

@@ -5,8 +5,8 @@
  */
 package access;
 
-import enitities.Comment;
-import enitities.Post;
+import entities.Comment;
+import entities.Post;
 
 /**
  *

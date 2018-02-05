@@ -79,7 +79,7 @@ public class Viewmodel implements Serializable{
     }
     
     public String submitLink(){
-        PostDTO post = new PostDTO(url,comment,inputTextUser,0,new HashMap<String,Integer>(), new ArrayList<CommentDTO>());
+        PostDTO post = new PostDTO(url,comment,inputTextUser,0,new HashMap<String,Integer>());
         post.getComments().add(new CommentDTO(comment, inputTextUser));
         post.getRatings().put(inputTextUser, 0);
         rfctrl.addPost(post);

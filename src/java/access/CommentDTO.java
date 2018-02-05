@@ -8,7 +8,7 @@ package access;
 import com.google.gson.Gson;
 import access.PostDTO;
 import com.google.gson.reflect.TypeToken;
-import enitities.Comment;
+import entities.Comment;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
