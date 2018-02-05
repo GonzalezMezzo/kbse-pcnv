@@ -7,7 +7,7 @@ package db;
 
 import access.CommentDTO;
 import access.PostDTO;
-import enitities.Post;
+import entities.Post;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
