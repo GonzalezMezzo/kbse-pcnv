@@ -32,6 +32,10 @@ public class Viewmodel implements Serializable{
 
     private static final String INDEX = "/index.xhtml?faces-redirect=true";
     private static final String RATING = "/rating.xhtml?faces-redirect=true";
+    private static final String BOARD = "/board.xhtml?faces-redirect=true";
+    private static final String USER_CONTROL = "/user_control.xhtml?faces-redirect=true";
+    private static final String ABOUT = "/about.xhtml?faces-redirect=true";
+    private static final String POST = "/post.xhtml?faces-redirect=true";
     
     private List<PostDTO> postList;
     private String inputTextUser;
@@ -47,14 +51,6 @@ public class Viewmodel implements Serializable{
     private int test;
     private PostDTO currentPost;
 
-    public int getTest() {
-        return test;
-    }
-
-    public void setTest(int test) {
-        this.test = test;
-    }
-
     @PostConstruct
     public void init(){
         this.inputTextUser = "User";
@@ -69,10 +65,36 @@ public class Viewmodel implements Serializable{
         ratingCollector = new int[postList.size()];
     }
     
+    /* routing */
+    public static String getINDEX() {
+        return INDEX;
+    }
+
+    public static String getRATING() {
+        return RATING;
+    }
+
+    public static String getBOARD() {
+        return BOARD;
+    }
+
+    public static String getUSER_CONTROL() {
+        return USER_CONTROL;
+    }
+
+    public static String getABOUT() {
+        return ABOUT;
+    }
+    
+    public static String getPOST() {
+        return POST;
+    }
+      
+    
     public String changeUser(int i){
         if(i==0)
             return INDEX;
-        return RATING;
+        return USER_CONTROL;
     }
     
     public String rating(){
