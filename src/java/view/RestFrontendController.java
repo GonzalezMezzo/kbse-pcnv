@@ -6,7 +6,11 @@
 package view;
 
 import access.PostDTO;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -24,7 +28,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Dependent
 public class RestFrontendController implements Serializable {
-    private final static String THREAD = "http://localhost:8080/kbse-pcnv";
+    private final static String ADRESS = "http://localhost:8080/kbse-pcnv/r";
     
     private Client client;
     private WebTarget wt;
@@ -32,13 +36,13 @@ public class RestFrontendController implements Serializable {
     @PostConstruct
     public void init(){
         this.client = ClientBuilder.newClient();
-        this.wt = client.target(THREAD);
+        this.wt = client.target(ADRESS);
     }
     
-    /*public Boolean addPost(PostDTO p){
-        this.wt = client.target(THREAD+"/addPost");
+    public Boolean addPost(PostDTO p){
+        this.wt = client.target(ADRESS+"/addPost");
         Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
-       TODO Entity entity = Entity.entity(p.toJsonObject(), MediaType.APPLICATION_JSON);
+        Entity entity = Entity.entity(p.toJsonObject(), MediaType.APPLICATION_JSON);
         
         try{
             JsonObject res = build.post(entity, JsonObject.class);
@@ -47,35 +51,40 @@ public class RestFrontendController implements Serializable {
         }catch(Exception e){
             System.out.println("addPost(rest) ->");
         }
-    }*/
+        return false;
+    }
+    
 
-    boolean deletePost(PostDTO p) {
-        this.wt = client.target(THREAD+"/deletePost");
+    boolean deletePost(PostDTO post) {
+        this.wt = client.target(ADRESS+"/deletePost/"+post.getId());
+
         Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
-        //Entity entity = Entity.entity(p.toJsonObject(), MediaType.APPLICATION_JSON);
-        try{          
+        try{         
             JsonObject res = build.delete(JsonObject.class);
             return res.getBoolean("success");
         }catch(Exception e){
             System.out.println("deletePost(rest) ->");
+            return false;
         }
-        return false;
     }
-
     List<PostDTO> refreshState() {
-        this.wt = client.target(THREAD+"/refreshState");
-        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+        this.wt = client.target(ADRESS+"/refreshState");
+       Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+        Gson gson = new Gson();
+        
         try{
             JsonObject res = build.get(JsonObject.class);
-            //TODO : json list
+            Type listType = new TypeToken<ArrayList<PostDTO>>(){}.getType();
+            return (List<PostDTO>)gson.fromJson(res.getString("list"), listType);
+                
         }catch(Exception e){
-        
+            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     void updateRatings(List<PostDTO> postList) {
-        this.wt = client.target(THREAD+"/updateRatings");
+        this.wt = client.target(ADRESS+"/updateRatings");
         
     }
 }
