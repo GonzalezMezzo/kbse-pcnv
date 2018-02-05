@@ -27,12 +27,9 @@ import javax.inject.Named;
 public class Viewmodel implements Serializable{
 
     @Inject
-    RestFrontendController rfctrl;
+    //RestFrontendController ctrl;
+    ModelController ctrl;
 
-    /*
-    @Inject
-    ModelController mdlctrl;
-    */
     private static final String INDEX = "/index.xhtml?faces-redirect=true";
     private static final String RATING = "/rating.xhtml?faces-redirect=true";
     
@@ -90,25 +87,25 @@ public class Viewmodel implements Serializable{
         PostDTO post = new PostDTO(url,description,inputTextUser,0,new HashMap<String,Integer>());
         post.getComments().add(new CommentDTO(description, inputTextUser, currentPost));
         post.getRatings().put(inputTextUser, 0);
-        rfctrl.addPost(post);
+        ctrl.addPost(post);
         refreshState();
         return INDEX;
     }
     
     public String delete(PostDTO p){
-        rfctrl.deletePost(p.getId());
+        ctrl.deletePost(p.getId());
         refreshState();
         return INDEX;
     }
     
     public String submitComment(){
         CommentDTO comment = new CommentDTO(inputTextComment, inputTextUser, currentPost);
-        rfctrl.addComment(comment);
+        ctrl.addComment(comment);
         refreshState();
         return INDEX;
     }
     public void refreshState(){
-        this.postList = rfctrl.refreshState();
+        this.postList = ctrl.refreshState();
         ratingCollector = new int[postList.size()];
         inputTextNumber = 0;
     }
@@ -134,7 +131,7 @@ public class Viewmodel implements Serializable{
         for(int i =0;i<ratingCollector.length;i++){
             if(ratingCollector[i]!=0)
                 this.postList.get(i).getRatings().put(inputTextUser, new Integer(ratingCollector[i]));
-            rfctrl.updateRatings(this.postList);
+            ctrl.updateRatings(this.postList);
         }
         refreshState();
         }
