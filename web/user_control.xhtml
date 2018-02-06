@@ -116,20 +116,34 @@
         <b:container>
             <b:panel title="My Ratings" icon="book" icon-align="left">
                 <b:form>
-                    <b:dataTable value="#{viewmodel.postList}" var="post" responsive="true">
-                        <b:dataTableColumn value="#{post.id}"  label="#" />
-                        <b:dataTableColumn value="#{post.url}" label="Website" />
-                        <b:dataTableColumn value="#{post.comments.size()}" label="Total Comments" />
-                        <b:dataTableColumn label="Total Ratings">
+                    <b:dataTable value="#{viewmodel.postList}" var="post" responsive="true" fixed-header="true">
+                        <f:facet name="header">
+                            <tr>
+                                <th colspan="2">Post</th>
+                                <th colspan="3">Total</th>
+                                <th colspan="1" rowspan="2">Tools</th>
+                            </tr>
+                            <tr>
+                                <th>ID</th>
+                                <th>Website</th>
+                                <th>Comments</th>
+                                <th>Ratings</th>
+                                <th>Rating</th>
+                            </tr>
+                        </f:facet>
+                        <b:dataTableColumn value="#{post.id}" />
+                        <b:dataTableColumn value="#{post.url}"/>
+                        <b:dataTableColumn value="#{post.comments.size()}"/>
+                        <b:dataTableColumn>
                             <b:badge  value="#{post.ratings.size()}"/>
                         </b:dataTableColumn>
-                        <b:dataTableColumn label="Total Rating" >
+                        <b:dataTableColumn>
                             <b:badge value="#{post.totalRating}"/>
                         </b:dataTableColumn>
-                        <b:dataTableColumn label="Tools" >
-                            <b:buttonGroup >
-                                <b:commandButton value="View" look="primary" icon="search"/>
-                                <b:commandButton value="Delete" look="danger" icon="trash"/>
+                        <b:dataTableColumn>
+                            <b:buttonGroup size="xs">
+                                <b:commandButton value="View" icon="search" look="primary" />
+                                <b:commandButton value="Delete" icon="trash" look="danger" />
                             </b:buttonGroup>
                         </b:dataTableColumn>
                     </b:dataTable>

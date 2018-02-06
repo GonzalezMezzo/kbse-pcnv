@@ -8,7 +8,7 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
         <h:outputStylesheet library="css" name="style.css"/>
-        <title>KBSE - Post #{currentPost.id} #{currentPost.url}</title>
+        <title>KBSE - Post</title>
     </h:head>
     <h:body>
         <!--b:modal id="editVote" title="Modal Example" styleClass="modalPseudoClass">
@@ -27,10 +27,77 @@
                 </b:navbarLinks>
             </h:form>
         </b:navBar>
-        
+
         <b:container>
-            some text...
+            <b:panel collapsible="false" collapsed="false">
+                <f:facet name="heading">
+                    <b:form>
+                        <b:icon name="star"/>
+                        <h:outputText value="ID: 1337 "/>
+                        <h:outputText value="Website: www.aliexpress.com"/>
+                        <b:buttonGroup size="xs" pull="right">
+                            <b:button icon="plus" look="success"/>
+                            <b:button icon="minus" look="danger"/>
+                        </b:buttonGroup>
+                    </b:form>
+                </f:facet>
+                <b:form>
+                    <b:row>
+                        <b:column col-md="2">
+                            <b:row>
+                                <b:column>
+                                    <h:outputText value="Username:"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column>
+                                    <h:outputText value="someUserName"/>
+                                </b:column>
+                            </b:row>
+                        </b:column>
+                        <b:column col-md="10">
+                            <b:inputTextarea readonly="true" rows="4" />
+                        </b:column>
+                    </b:row>
+                </b:form>
+            </b:panel>
         </b:container>
-       
+
+        <ui:repeat value="" var="comment" varStatus="i">
+            <b:container>
+                <b:panel collapsible="false" collapsed="false" title="&#35;#{i.index}">
+                    <!--f:facet name="heading">
+                        <b:form>
+                            <b:icon name="star"/>
+                            <h:outputText value="ID: 1337 "/>
+                            <h:outputText value="Website: www.aliexpress.com"/>
+                            <b:buttonGroup size="xs" pull="right">
+                                <b:button icon="plus" look="success"/>
+                                <b:button icon="minus" look="danger"/>
+                            </b:buttonGroup>
+                        </b:form>
+                    </f:facet-->
+                    <b:form>
+                        <b:row>
+                            <b:column col-md="2">
+                                <b:row>
+                                    <b:column>
+                                        <h:outputText value="Username:"/>
+                                    </b:column>
+                                </b:row>
+                                <b:row>
+                                    <b:column>
+                                        <h:outputText value="someUserName2"/>
+                                    </b:column>
+                                </b:row>
+                            </b:column>
+                            <b:column col-md="10">
+                                <b:inputTextarea readonly="true" rows="4" />
+                            </b:column>
+                        </b:row>
+                    </b:form>
+                </b:panel>
+            </b:container>
+        </ui:repeat>
     </h:body>
 </html>
