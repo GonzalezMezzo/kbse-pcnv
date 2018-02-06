@@ -8,7 +8,7 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
         <h:outputStylesheet library="css" name="style.css"/>
-        <title>KBSE - Post</title>
+        <title>KBSE - #{viewmodel.currentPost.id}&nbsp;#{viewmodel.currentPost.url}</title>
     </h:head>
     <h:body>
         <!--b:modal id="editVote" title="Modal Example" styleClass="modalPseudoClass">
@@ -33,8 +33,8 @@
                 <f:facet name="heading">
                     <b:form>
                         <b:icon name="star"/>
-                        <h:outputText value="ID: 1337 "/>
-                        <h:outputText value="Website: www.aliexpress.com"/>
+                        <h:outputText value="ID: #{viewmodel.currentPost.id}"/>
+                        <h:outputText value="Website: #{viewmodel.currentPost.url}"/>
                         <b:buttonGroup size="xs" pull="right">
                             <b:button icon="plus" look="success"/>
                             <b:button icon="minus" look="danger"/>
@@ -51,19 +51,19 @@
                             </b:row>
                             <b:row>
                                 <b:column>
-                                    <h:outputText value="someUserName"/>
+                                    <h:outputText value="#{viewmodel.currentPost.creator}"/>
                                 </b:column>
                             </b:row>
                         </b:column>
                         <b:column col-md="10">
-                            <b:inputTextarea readonly="true" rows="4" />
+                            <b:inputTextarea readonly="true" rows="4" value="#{viewmodel.currentPost.description}"/>
                         </b:column>
                     </b:row>
                 </b:form>
             </b:panel>
         </b:container>
 
-        <ui:repeat value="" var="comment" varStatus="i">
+        <ui:repeat value="#{viewmodel.currentPost.comments}" var="comment" varStatus="i">
             <b:container>
                 <b:panel collapsible="false" collapsed="false" title="&#35;#{i.index}">
                     <!--f:facet name="heading">
@@ -87,17 +87,39 @@
                                 </b:row>
                                 <b:row>
                                     <b:column>
-                                        <h:outputText value="someUserName2"/>
+                                        <h:outputText value="#{comment.creator}"/>
+                                    </b:column>
+                                </b:row>
+                                <b:row>
+                                    <b:column>
+                                        <h:outputText value="At #{comment.timeStamp}"/>
                                     </b:column>
                                 </b:row>
                             </b:column>
                             <b:column col-md="10">
-                                <b:inputTextarea readonly="true" rows="4" />
+                                <b:inputTextarea readonly="true" rows="4" value="#{comment.message}"/>
                             </b:column>
                         </b:row>
                     </b:form>
                 </b:panel>
             </b:container>
         </ui:repeat>
+        <b:container>
+            <b:panel>
+                <b:form>
+                    <b:row>
+                        <b:column col-md="2">
+                            
+                        </b:column>
+                        <b:column col-md="10">
+                            <b:inputTextarea readonly="false" rows="4" value="#{viewmodel.inputCommentMessage}"/>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:commandButton action="#{viewmodel.addComment()}"/>
+                    </b:row>
+                </b:form>
+            </b:panel>
+        </b:container>
     </h:body>
 </html>

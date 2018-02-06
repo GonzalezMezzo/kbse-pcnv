@@ -133,17 +133,20 @@
                         </f:facet>
                         <b:dataTableColumn value="#{post.id}" />
                         <b:dataTableColumn value="#{post.url}"/>
-                        <b:dataTableColumn value="#{post.comments.size()}"/>
+                        <b:dataTableColumn >
+                            <b:badge value="#{post.comments.size()}"/>
+                        </b:dataTableColumn>
                         <b:dataTableColumn>
-                            <b:badge  value="#{post.ratings.size()}"/>
+                            <b:badge value="#{post.ratings.size()}"/>
                         </b:dataTableColumn>
                         <b:dataTableColumn>
                             <b:badge value="#{post.totalRating}"/>
                         </b:dataTableColumn>
                         <b:dataTableColumn>
                             <b:buttonGroup size="xs">
-                                <b:commandButton value="View" icon="search" look="primary" />
-                                <b:commandButton value="Delete" icon="trash" look="danger" />
+                                <b:commandButton value="View" icon="search" look="primary" action="#{viewmodel.selectPost(post)}"/>
+                                <!--b:commandButton value="Edit" icon="edit" look="info" /-->
+                                <b:commandButton value="Delete" icon="trash" look="danger" action="#{postList.remove(post)}"/>
                             </b:buttonGroup>
                         </b:dataTableColumn>
                     </b:dataTable>

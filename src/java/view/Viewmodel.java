@@ -35,31 +35,34 @@ public class Viewmodel implements Serializable {
     private static final String USER_CONTROL = "/user_control.xhtml?faces-redirect=true";
     private static final String ABOUT = "/about.xhtml?faces-redirect=true";
     private static final String POST = "/post.xhtml?faces-redirect=true";
-
-    private List<PostDTO> postList;
+    
+    private List<PostDTO> postList; 
     private String inputTextUser;
     private String inputTextFName;
     private String inputTextLName;
     private String inputTextEMail;
     private String inputTextDescription;
     private String inputTexTURL;
-    private boolean changeUserBool = false;
-    private boolean changeUebernehmenBool = false;
-    private int inputTextNumber = 0;
-    //private String description = "Comment";
-    //private String url = "www.google.de";
+    private int inputTextNumber;
+    
+    private String inputCommentUser;
+    private String inputCommentMessage;
+    
     private int[] ratingCollector;
 
     private PostDTO currentPost;
 
     @PostConstruct
     public void init() {
+        /*
         this.inputTextUser = "User";
         this.inputTextDescription = "Dies das, ein bisschen länger";
         this.inputTextEMail = "sample@sample.com";
         this.inputTextFName = "Hans";
         this.inputTextLName = "Peter";
         this.inputTexTURL = "www.google.de";
+        this.inputTextNumber = 0;
+        */
 
         refreshState();
         /**
@@ -97,11 +100,6 @@ public class Viewmodel implements Serializable {
         return POST;
     }
 
-    /*public String changeUser(int i){
-        if(i==0)
-            return INDEX;
-        return USER_CONTROL;
-    }*/
     public String changeUser() {
         return USER_CONTROL;
     }
@@ -141,6 +139,12 @@ public class Viewmodel implements Serializable {
         ratingCollector = new int[postList.size()];
         inputTextNumber = 0;
     }
+    
+    public String selectPost(PostDTO i) {
+        this.postList = ctrl.refreshState();
+        this.currentPost = i;
+        return POST;
+    }
 
     /**
      * Get user's rating on index i on the current rendered list of posts
@@ -178,7 +182,7 @@ public class Viewmodel implements Serializable {
      * @param i
      */
     public void addRating(int i) {
-        ratingCollector[i] = inputTextNumber;
+        //ratingCollector[i] = inputTextNumber;
     }
 
     /*--------------------------------------------------------------------------
@@ -234,30 +238,6 @@ public class Viewmodel implements Serializable {
         this.inputTextDescription = inputTextDescription;
     }
 
-    public int getInputTextNumber() {
-        return inputTextNumber;
-    }
-
-    public void setInputTextNumber(int inputTextNumber) {
-        this.inputTextNumber = inputTextNumber;
-    }
-
-    public boolean isChangeUserBool() {
-        return changeUserBool;
-    }
-
-    public void setChangeUserBool(boolean changeUserBool) {
-        this.changeUserBool = changeUserBool;
-    }
-
-    public boolean isChangeUebernehmenBool() {
-        return changeUebernehmenBool;
-    }
-
-    public void setChangeUebernehmenBool(boolean changeUebernehmenBool) {
-        this.changeUebernehmenBool = changeUebernehmenBool;
-    }
-
     public List<PostDTO> getPostList() {
         return postList;
     }
@@ -274,6 +254,38 @@ public class Viewmodel implements Serializable {
         this.ratingCollector = ratingCollector;
     }
 
+    public int getInputTextNumber() {
+        return inputTextNumber;
+    }
+
+    public void setInputTextNumber(int inputTextNumber) {
+        this.inputTextNumber = inputTextNumber;
+    }
+
+    public PostDTO getCurrentPost() {
+        return currentPost;
+    }
+
+    public void setCurrentPost(PostDTO currentPost) {
+        this.currentPost = currentPost;
+    }
+
+    public String getInputCommentUser() {
+        return inputCommentUser;
+    }
+
+    public void setInputCommentUser(String inputCommentUser) {
+        this.inputCommentUser = inputCommentUser;
+    }
+
+    public String getInputCommentMessage() {
+        return inputCommentMessage;
+    }
+
+    public void setInputCommentMessage(String inputCommentMessage) {
+        this.inputCommentMessage = inputCommentMessage;
+    }
+    
     private boolean validate() {
         int n1 = 0;
         for (int i = 0; i < ratingCollector.length; i++) {
