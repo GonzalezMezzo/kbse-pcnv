@@ -27,7 +27,7 @@
                 </b:navbarLinks>
             </h:form>
         </b:navBar>
-        
+
         <b:container>
             <b:panel title="User" icon="user" icon-align="left" showCollapseLink="false">
                 <b:form enctype="multipart/form-data">
@@ -112,34 +112,28 @@
                 </b:form>
             </b:panel>
         </b:container>
-        
+
         <b:container>
-            <b:panel title="My Ratings" icon="book" icon-align="left" collapsed="true">
-                <!--b:accordion-->
-                <ui:repeat value="#{viewmodel.postList}" var="post" varStatus="i">
-                    <b:form>
-                        <b:panel icon="star" icon-align="left" collapsible="true" collapsed="true">
-                            <f:facet name="heading">
-                                <b:icon name="flag" style="padding-right:20px" />
-                                <h:outputText value="#{post.id}" />
-                                <h:outputText value=" "/>
-                                <h:outputText value="#{post.url}" />
-                                <b:badge style="margin-left:10px; background-color:#5cb85c" value="#{post.totalRating}"  />
-                            </f:facet>
-                            <b:row>
-                                <b:column>
-                                    <b:inputTextarea span="12" readonly="true" value="#{post.description}"/>
-                                </b:column>
-                            </b:row>
-                            <b:row>
-                                <b:column>
-                                    <b:commandButton value="Delete" action="#{viewmodel.delete(post)}" large-screen="full-width" look="danger"/>
-                                </b:column>
-                            </b:row>
-                        </b:panel>
-                    </b:form>
-                </ui:repeat>
-                <!--/b:accordion-->
+            <b:panel title="My Ratings" icon="book" icon-align="left">
+                <b:form>
+                    <b:dataTable value="#{viewmodel.postList}" var="post" responsive="true">
+                        <b:dataTableColumn value="#{post.id}"  label="#" />
+                        <b:dataTableColumn value="#{post.url}" label="Website" />
+                        <b:dataTableColumn value="#{post.comments.size()}" label="Total Comments" />
+                        <b:dataTableColumn label="Total Ratings">
+                            <b:badge  value="#{post.ratings.size()}"/>
+                        </b:dataTableColumn>
+                        <b:dataTableColumn label="Total Rating" >
+                            <b:badge value="#{post.totalRating}"/>
+                        </b:dataTableColumn>
+                        <b:dataTableColumn label="Tools" >
+                            <b:buttonGroup >
+                                <b:commandButton value="View" look="primary" icon="search"/>
+                                <b:commandButton value="Delete" look="danger" icon="trash"/>
+                            </b:buttonGroup>
+                        </b:dataTableColumn>
+                    </b:dataTable>
+                </b:form>
             </b:panel>
         </b:container>
     </h:body>

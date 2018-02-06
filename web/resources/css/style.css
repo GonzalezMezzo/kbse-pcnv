@@ -8,7 +8,16 @@ and open the template in the editor.
     Author     : philippnienhuser
 */
 
-a {
-    color: white;
+.col1 {
+    text-align: center;
 }
 
+.col2 {
+    width: 60%;
+    align-content: center;
+}
+
+.col3{
+    width: auto;
+    align-content: center;
+}
