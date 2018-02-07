@@ -28,36 +28,36 @@ public class CommentDTO implements Serializable {
     private String message;
     private String timeStamp;
     private String creator;
-    private PostDTO owner;
+    private Long ownerId;
 
     public CommentDTO() {
     }
 
-    public CommentDTO(String message, String creator, PostDTO owner) {
+    public CommentDTO(String message, String creator, Long ownerId) {
         this.creator = creator;
         this.timeStamp = new SimpleDateFormat("HHmmss_ddMMyyyy").format(Calendar.getInstance().getTime());
         this.message = message;
-        this.owner = owner;
+        this.ownerId = ownerId;
     }
 
-    public CommentDTO(Long id, String message, String creator, String timestamp, PostDTO owner) {
+    public CommentDTO(Long id, String message, String creator, String timestamp, Long ownerId) {
         this.id = id;
         this.creator = creator;
         this.timeStamp = timestamp;
         this.message = message;
-        this.owner = owner;
+        this.ownerId = ownerId;
     }
 
     public static CommentDTO toCommentDTO(Comment c) {
         if (c == null) {
             return null;
         }
-        return new CommentDTO(c.getId(), c.getCreator(), c.getTimestamp(), c.getMessage(), PostDTO.toPostDTO(c.getOwner()));
+        return new CommentDTO(c.getId(), c.getMessage(), c.getCreator(), c.getTimestamp(), c.getOwnerId());
     }
 
     public Comment toComment() {
         return CommentBuilder.create().message(this.message)
-                .creator(this.creator).timestamp(this.timeStamp).owner(this.owner.toPost()).build();
+                .creator(this.creator).timestamp(this.timeStamp).owner(this.ownerId).build();
     }
 
     public JsonObject toJsonObject() {
@@ -70,7 +70,7 @@ public class CommentDTO implements Serializable {
         js.add("message", this.message)
                 .add("timestamp", this.timeStamp)
                 .add("creator", this.creator)
-                .add("owner", this.owner.toJsonObject());
+                .add("owner", this.ownerId);
         return js.build();
     }
 
@@ -85,7 +85,7 @@ public class CommentDTO implements Serializable {
         c.setMessage(js.getString("message"));
         c.setTimeStamp(js.getString("timestamp"));
         c.setCreator(js.getString("creator"));
-        c.setOwner(PostDTO.toPOJO(js.getJsonObject("owner")));
+        c.setOwnerId(js.getJsonNumber("owner").longValue());
         return c;
     }
 
@@ -121,13 +121,15 @@ public class CommentDTO implements Serializable {
         this.creator = creator;
     }
 
-    public PostDTO getOwner() {
-        return owner;
+    public Long getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwner(PostDTO owner) {
-        this.owner = owner;
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
+
+    
     
     
 }

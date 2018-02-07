@@ -58,7 +58,8 @@ public class Post implements Serializable {
             nullable=true,
             unique=false)
     private Map<String, Integer> ratings;
-    @OneToMany(mappedBy="owner", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinColumn(name="ownerId")
+    @OneToMany( cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Comment> comments;
     
     /*
@@ -166,7 +167,7 @@ public class Post implements Serializable {
 
     @Override
     public String toString() {
-        return "enitities.Post[ id=" + id + " ]";
+        return "entities.Post[ id=" + id + " ]";
     }
     
 }

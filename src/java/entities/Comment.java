@@ -8,6 +8,7 @@ package entities;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,20 +42,19 @@ public class Comment implements Serializable {
             nullable=false,
             unique=false)
     private String timestamp;
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="OWNER_POST_ID",
-            nullable=false,
+    @Column(name="ownerId",
+            nullable = false,
             unique = false)
-    private Post owner;
+    private Long ownerId;
    
     public Comment() {
     }
     
-    public Comment(String message, String creator, Post owner){
+    public Comment(String message, String creator, Long id){
         this.creator = creator;
         this.timestamp = new SimpleDateFormat("HHmmss_ddMMyyyy").format(Calendar.getInstance().getTime());
         this.message = message;
-        this.owner = owner;
+        this.ownerId = id;
     }
 
     @Override
@@ -94,13 +94,15 @@ public class Comment implements Serializable {
         this.id = id;
     }
 
-    public Post getOwner() {
-        return owner;
+    public Long getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwner(Post owner) {
-        this.owner = owner;
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
+
+    
     
     
 

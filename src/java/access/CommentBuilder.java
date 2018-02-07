@@ -18,7 +18,7 @@ public class CommentBuilder {
     private String message;
     private String timeStamp;
     private String creator;
-    private Post owner;
+    private Long ownerId;
 
     private CommentBuilder(){}
     
@@ -32,7 +32,7 @@ public class CommentBuilder {
         res.setMessage(this.message);
         res.setTimestamp(this.timeStamp);
         res.setCreator(this.creator);
-        res.setOwner(this.owner);
+        res.setOwnerId(this.ownerId);
         return res;
     }
 
@@ -56,8 +56,8 @@ public class CommentBuilder {
         return this;
     }
     
-    public CommentBuilder owner(Post owner){
-        this.owner = owner;
+    public CommentBuilder owner(Long owner){
+        this.ownerId = owner;
         return this;
     }
 
