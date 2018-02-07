@@ -124,14 +124,14 @@ public class Viewmodel implements Serializable {
     public String delete(PostDTO p) {
         ctrl.deletePost(p.getId());
         refreshState();
-        return INDEX;
+        return USER_CONTROL;
     }
 
     public String submitComment() {
-        CommentDTO comment = new CommentDTO(this.inputTextDescription, this.inputTextUser, this.currentPost);
+        CommentDTO comment = new CommentDTO(this.inputCommentMessage, this.inputTextUser, this.currentPost);
         ctrl.addComment(comment);
         refreshState();
-        return INDEX;
+        return POST;
     }
 
     public void refreshState() {

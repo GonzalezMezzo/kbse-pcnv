@@ -20,53 +20,54 @@ import javax.persistence.EntityManager;
  */
 @Stateless
 public class Persistence {
+
     @Inject
     private EntityManager em;
-    
-    public void persist(Object o){
+
+    public void persist(Object o) {
         em.persist(o);
     }
-    
-    public Object merge(Object o){
+
+    public Object merge(Object o) {
         return em.merge(o);
     }
-    
-    public void deletePost(long id){
+
+    public void deletePost(long id) {
         Post tmp = em.find(Post.class, id);
         em.remove(tmp);
     }
-    
-    public void addPost(PostDTO p){
+
+    public void addPost(PostDTO p) {
         Post tmp = p.toPost();
         persist(tmp);
     }
 
     public List<PostDTO> getAllPosts() {
-        List<Post> tmp =  em.createNamedQuery("Post.findAll", Post.class).getResultList();
+        List<Post> tmp = em.createNamedQuery("Post.findAll", Post.class).getResultList();
         List<PostDTO> res = new ArrayList<PostDTO>();
-        for(Post p : tmp){
+        for (Post p : tmp) {
             res.add(PostDTO.toPostDTO(p));
         }
         return res;
     }
-    
+
     public void updateRatings(List<PostDTO> postList) {
-        for(PostDTO pdto: postList){
-                Post p = pdto.toPost();
-                p.calcTotalRating();
-                merge(p); 
-            }
+        for (PostDTO pdto : postList) {
+            Post p = pdto.toPost();
+            p.calcTotalRating();
+            merge(p);
+        }
     }
 
     public void addComment(CommentDTO c) {
-        Post p= em.find(Post.class, c.getOwner().getId());
+        Post p = em.find(Post.class, c.getOwner().getId());
+        em.detach(p);
+        em.persist(c.toComment());
         p.getComments().add(c.toComment());
-        merge(p);
+        em.merge(p);
     }
-    
+
     /**
      * TODO
      */
-    
-    
 }

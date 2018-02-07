@@ -33,7 +33,7 @@
                 <f:facet name="heading">
                     <b:form>
                         <b:icon name="star"/>
-                        <h:outputText value="ID: #{viewmodel.currentPost.id}"/>
+                        <h:outputText value="ID: #{viewmodel.currentPost.id}&nbsp;"/>
                         <h:outputText value="Website: #{viewmodel.currentPost.url}"/>
                         <b:buttonGroup size="xs" pull="right">
                             <b:button icon="plus" look="success"/>
@@ -105,7 +105,7 @@
             </b:container>
         </ui:repeat>
         <b:container>
-            <b:panel>
+            <b:panel collapsible="false" collapsed="false" title="Add Comment">
                 <b:form>
                     <b:row>
                         <b:column col-md="2">
@@ -116,7 +116,7 @@
                         </b:column>
                     </b:row>
                     <b:row>
-                        <b:commandButton action="#{viewmodel.addComment()}"/>
+                        <b:commandButton action="#{viewmodel.submitComment()}" value="Submit"/>
                     </b:row>
                 </b:form>
             </b:panel>

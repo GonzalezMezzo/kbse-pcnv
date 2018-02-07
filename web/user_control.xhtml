@@ -146,7 +146,7 @@
                             <b:buttonGroup size="xs">
                                 <b:commandButton value="View" icon="search" look="primary" action="#{viewmodel.selectPost(post)}"/>
                                 <!--b:commandButton value="Edit" icon="edit" look="info" /-->
-                                <b:commandButton value="Delete" icon="trash" look="danger" action="#{postList.remove(post)}"/>
+                                <b:commandButton value="Delete" icon="trash" look="danger" action="#{viewmodel.delete(post)}"/>
                             </b:buttonGroup>
                         </b:dataTableColumn>
                     </b:dataTable>

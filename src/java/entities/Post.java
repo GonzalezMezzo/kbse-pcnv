@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -57,10 +58,7 @@ public class Post implements Serializable {
             nullable=true,
             unique=false)
     private Map<String, Integer> ratings;
-    @JoinColumn(name="comments",
-            nullable=true,
-            unique=false)
-    @OneToMany(mappedBy="owner")
+    @OneToMany(mappedBy="owner", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Comment> comments;
     
     /*

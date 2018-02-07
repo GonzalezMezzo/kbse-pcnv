@@ -66,18 +66,14 @@
                 <b:panel collapsible="true" collapsed="false" title="All Threads" icon="flag">
                     <h:outputText value="Some text..."/>
                     <!--TODO add eventlistener-->
-                    <b:dataTable value="#{viewmodel.postList}" 
-                                 var="post" 
-                                 select="true"
-                                 selected-items="row"
-                                 responsive="true"
-                                 searching="false" 
-                                 paginated="false"
-                                 saveState="true">
+                    <b:dataTable value="#{viewmodel.postList}" var="post" responsive="true" fixed-header="true">
                         <b:dataTableColumn value="#{post.id}" label="ID" order="asc"/>
                         <b:dataTableColumn value="#{post.url}" label="Website"/>
                         <b:dataTableColumn value="#{post.creator}" label="OP"/>
                         <b:dataTableColumn value="#{post.totalRating}" label="Total Rating"/>
+                        <b:dataTableColumn label="Tools">
+                            <b:commandButton value="View" icon="search" look="primary" size="xs" action="#{viewmodel.selectPost(post)}"/>                            
+                        </b:dataTableColumn>
                     </b:dataTable>
                 </b:panel>
             </b:form>
