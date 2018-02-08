@@ -62,7 +62,8 @@ public class RESTBoundary {
     @Path("/refreshState")
     public JsonObject refreshState() {
         JsonArrayBuilder builder = Json.createArrayBuilder();
-        List<PostDTO> list = mdlctrl.refreshState();
+        mdlctrl.refreshState();
+        List<PostDTO> list = mdlctrl.getPostList();
         Gson gson = new Gson();
         return Json.createObjectBuilder().add("list", gson.toJson(list)).build();
     }

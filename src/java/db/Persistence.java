@@ -7,7 +7,9 @@ package db;
 
 import access.CommentDTO;
 import access.PostDTO;
+import access.SystemUserDTO;
 import entities.Post;
+import entities.SystemUser;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -24,14 +26,6 @@ public class Persistence {
     @Inject
     private EntityManager em;
 
-    public void persist(Object o) {
-        em.persist(o);
-    }
-
-    public Object merge(Object o) {
-        return em.merge(o);
-    }
-
     public void deletePost(long id) {
         Post tmp = em.find(Post.class, id);
         em.remove(tmp);
@@ -39,14 +33,28 @@ public class Persistence {
 
     public void addPost(PostDTO p) {
         Post tmp = p.toPost();
-        persist(tmp);
+        em.persist(tmp);
+    }
+
+    public void addSystemUser(SystemUserDTO u) {
+        SystemUser tmp = u.toSystemUser();
+        em.persist(tmp);
     }
 
     public List<PostDTO> getAllPosts() {
         List<Post> tmp = em.createNamedQuery("Post.findAll", Post.class).getResultList();
-        List<PostDTO> res = new ArrayList<PostDTO>();
+        List<PostDTO> res = new ArrayList<>();
         for (Post p : tmp) {
             res.add(PostDTO.toPostDTO(p));
+        }
+        return res;
+    }
+
+    public List<SystemUserDTO> getAllUsers() {
+        List<SystemUser> tmp = em.createNamedQuery("SystemUser.findAll", SystemUser.class).getResultList();
+        List<SystemUserDTO> res = new ArrayList<>();
+        for (SystemUser u : tmp) {
+            res.add(SystemUserDTO.toSystemUserDTO(u));
         }
         return res;
     }
@@ -55,8 +63,14 @@ public class Persistence {
         for (PostDTO pdto : postList) {
             Post p = pdto.toPost();
             p.calcTotalRating();
-            merge(p);
+            em.merge(p);
         }
+    }
+
+    public void updateSystemUSer(SystemUserDTO u) {
+        SystemUser su = em.find(SystemUser.class, u.getId());
+        su = u.toSystemUser();
+        em.merge(u);
     }
 
     public void addComment(CommentDTO c) {

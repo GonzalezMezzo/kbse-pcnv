@@ -7,8 +7,10 @@ package controller;
 
 import access.CommentDTO;
 import access.PostDTO;
+import access.SystemUserDTO;
 import db.Persistence;
 import java.io.Serializable;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJBException;
@@ -22,22 +24,24 @@ import javax.inject.Named;
  */
 @Named(value = "modelController")
 @SessionScoped
-public class ModelController implements Serializable{
-    
+public class ModelController implements Serializable {
+
     @Inject
     private Persistence db;
-    
+
     private List<PostDTO> postList;
-    
+    private List<SystemUserDTO> userList;
+
     @PostConstruct
-    public void init(){
-           this.postList = db.getAllPosts();
+    public void init() {
+        this.postList = db.getAllPosts();
+        this.userList = db.getAllUsers();
     }
-    
-    public boolean addPost(PostDTO p){
-        try{
+
+    public boolean addPost(PostDTO p) {
+        try {
             db.addPost(p);
-        }catch(EJBException | NullPointerException e){
+        } catch (EJBException | NullPointerException e) {
             /**
              * todo: error handling
              */
@@ -46,11 +50,11 @@ public class ModelController implements Serializable{
         }
         return true;
     }
-    
-    public boolean deletePost(long id){
-        try{
+
+    public boolean deletePost(long id) {
+        try {
             db.deletePost(id);
-        }catch(EJBException e){
+        } catch (EJBException e) {
             /**
              * todo: error handling
              */
@@ -59,28 +63,38 @@ public class ModelController implements Serializable{
         }
         return true;
     }
-        
-    public List<PostDTO> refreshState(){
+
+    public void refreshState() {
         this.postList = db.getAllPosts();
-        return this.postList;
+        this.userList = db.getAllUsers();
     }
 
     public void updateRatings(List<PostDTO> postList) {
-        try{
+        try {
             db.updateRatings(postList);
-        }catch(EJBException e){
+        } catch (EJBException e) {
             /**
              * todo: error handling
              */
             System.out.println("refreshRatings -> exception");
         }
     }
+    
+    public boolean updateSystemUser(SystemUserDTO su) {
+        try {
+            db.updateSystemUSer(su);
+            return true;
+        } catch (EJBException e) {
+            System.out.println("updateSystemUser -> exception");
+            return false;
+        }
+    }
 
     public boolean addComment(CommentDTO comment) {
-        try{
+        try {
             db.addComment(comment);
             return true;
-        }catch(EJBException e){
+        } catch (EJBException e) {
             /**
              * todo: error handling
              */
@@ -88,4 +102,27 @@ public class ModelController implements Serializable{
             return false;
         }
     }
+
+    public boolean addSystemUser(SystemUserDTO user) {
+        try {
+            db.addSystemUser(user);
+            return true;
+        } catch (EJBException e) {
+            /**
+             * todo: error handling
+             */
+            System.out.println("addUser -> exception");
+            System.out.println("addUser -> try edit instead...");
+            return updateSystemUser(user);
+        }
+    }
+
+    public List<PostDTO> getPostList() {
+        return postList;
+    }
+
+    public List<SystemUserDTO> getUserList() {
+        return userList;
+    }
+       
 }

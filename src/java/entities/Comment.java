@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 /**
  *
  * @author chrschae
@@ -27,47 +28,48 @@ public class Comment implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id",
+    @Column(name="commentId",
             unique=true)
     private Long id;
-    @Column(name="creator",
-            nullable=false,
-            unique=false)
-    private String creator;
+    
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Long creatorId;
+    
     @Column(name="message",
             nullable=false,
             unique=false)
     private String message;
+    
     @Column(name="timestamp",
             nullable=false,
             unique=false)
     private String timestamp;
-    @Column(name="ownerId",
-            nullable = false,
-            unique = false)
+    
+    @JoinColumn(name="ownerId")
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Long ownerId;
    
     public Comment() {
     }
     
-    public Comment(String message, String creator, Long id){
-        this.creator = creator;
-        this.timestamp = new SimpleDateFormat("HHmmss_ddMMyyyy").format(Calendar.getInstance().getTime());
+    public Comment(String message, Long creatorId, Long id){
+        this.creatorId = creatorId;
+        this.timestamp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
         this.message = message;
         this.ownerId = id;
     }
 
     @Override
     public String toString() {
-        return "Comment{" + "id=" + id + ", creator=" + creator + ", message=" + message + ", timestamp=" + timestamp +'}';
+        return "Comment{" + "id=" + id + ", creatorId=" + creatorId + ", message=" + message + ", timestamp=" + timestamp +'}';
     }
 
-    public String getCreator() {
-        return creator;
+    public Long getCreatorId() {
+        return creatorId;
     }
 
-    public void setCreator(String creator) {
-        this.creator = creator;
+    public void setCreatorId(Long creator) {
+        this.creatorId = creator;
     }
 
     public String getMessage() {
@@ -101,10 +103,6 @@ public class Comment implements Serializable {
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
-
-    
-    
-    
 
     @Override
     public int hashCode() {

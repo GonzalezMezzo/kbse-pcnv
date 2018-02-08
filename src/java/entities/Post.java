@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 /**
  *
@@ -28,52 +30,56 @@ import javax.persistence.OneToMany;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "Post.findAll", query= "SELECT s FROM Post s")
+    @NamedQuery(name = "Post.findAll", query = "SELECT s FROM Post s")
 })
 public class Post implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id",
-            unique=true)
+    @Column(name = "postId",
+            unique = true)
     private Long id;
-    @Column(name="url",
-            nullable=false,
-            unique=false)
-    private String url;
-    @Column(name="description",
-            nullable=true,
-            unique=false)
-    private String description;
-    @Column(name="creator",
-            nullable=false,
-            unique=false)
-    private String creator;
-    @Column(name="totalRating",
-            nullable=true,
-            unique=false)
-    private int totalRating;
-    @Column(name="ratings",
-            nullable=true,
-            unique=false)
-    private Map<String, Integer> ratings;
-    @JoinColumn(name="ownerId")
-    @OneToMany( cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<Comment> comments;
     
+    @Column(name = "url",
+            nullable = false,
+            unique = false)
+    private String url;
+    
+    @Column(name = "description",
+            nullable = true,
+            unique = false)
+    private String description;
+    
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Long creatorId;
+    
+    @Column(name = "totalRating",
+            nullable = true,
+            unique = false)
+    private int totalRating;
+    
+    @Column(name = "ratings",
+            nullable = true,
+            unique = false)
+    private Map<String, Integer> ratings;
+    
+    @JoinColumn(name = "ownerId")
+    @OneToMany(cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Comment> comments;
+
     /*
     @Version
     private int version;
-    */
+     */
     public Post() {
     }
 
-    public Post(String url, String comment, List<Comment> comments, String creator, int totalRating, Map<String, Integer> ratings) {
+    public Post(String url, String comment, List<Comment> comments, Long creatorId, int totalRating, Map<String, Integer> ratings) {
         this.url = url;
         this.description = comment;
         this.comments = new ArrayList<>();
-        this.creator = creator;
+        this.creatorId = creatorId;
         this.totalRating = totalRating;
         this.ratings = ratings;
     }
@@ -101,13 +107,13 @@ public class Post implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    public String getCreator() {
-        return creator;
+
+    public Long getCreatorId() {
+        return creatorId;
     }
 
-    public void setCreator(String creator) {
-        this.creator = creator;
+    public void setCreatorId(Long creatorId) {
+        this.creatorId = creatorId;
     }
 
     public int getTotalRating() {
@@ -125,21 +131,26 @@ public class Post implements Serializable {
     public void setRatings(Map<String, Integer> ratings) {
         this.ratings = ratings;
     }
-    public void addComment(Comment e){
+
+    public void addComment(Comment e) {
         this.comments.add(e);
     }
-     public void setComments(ArrayList<Comment> comments) {
+
+    public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
     }
-     public List<Comment> getComments(){
-         return this.comments;
-     }
-    public void deleteComment(Comment e){
+
+    public List<Comment> getComments() {
+        return this.comments;
+    }
+
+    public void deleteComment(Comment e) {
         this.comments.remove(e);
     }
-    public void calcTotalRating(){
-        int res= 0;
-        for(HashMap.Entry<String,Integer> entry : this.ratings.entrySet()){
+
+    public void calcTotalRating() {
+        int res = 0;
+        for (HashMap.Entry<String, Integer> entry : this.ratings.entrySet()) {
             res += entry.getValue();
         }
         setTotalRating(res);
@@ -169,5 +180,5 @@ public class Post implements Serializable {
     public String toString() {
         return "entities.Post[ id=" + id + " ]";
     }
-    
+
 }
