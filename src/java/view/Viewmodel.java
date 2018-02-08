@@ -8,6 +8,8 @@ package view;
 import access.CommentDTO;
 import access.PostDTO;
 import access.SystemUserDTO;
+import access.AvatarDTO;
+import access.RatingDTO;
 import controller.ModelController;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -124,8 +126,8 @@ public class Viewmodel implements Serializable {
     public String submitLink() {
         refreshState();
         
-        PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser.getId(), 0, new HashMap<String, Integer>());
-        post.getRatings().put(inputTextUser, 0);
+        PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<RatingDTO>());
+        
         ctrl.addPost(post);
         refreshState();
         return BOARD;
@@ -140,7 +142,7 @@ public class Viewmodel implements Serializable {
 
     public String submitComment() {
         refreshState();
-        CommentDTO comment = new CommentDTO(this.inputCommentMessage, this.currentUser.getId(), this.currentPost.getId());
+        CommentDTO comment = new CommentDTO(this.inputCommentMessage, this.currentUser, this.currentPost);
         ctrl.addComment(comment);
         refreshState();
         return POST;
@@ -210,11 +212,19 @@ public class Viewmodel implements Serializable {
     public void submitRating() {
         if (validate() == true) {//method stub
             for (int i = 0; i < ratingCollector.length; i++) {
+                if(ratingCollector[i] != 0) {
+                    this.postList.get(i).getRatings().add(new RatingDTO(ratingCollector[i], this.currentUser, this.currentPost));
+                }
+                ctrl.updateRatings(this.postList);
+            }
+            
+            /*
+            for (int i = 0; i < ratingCollector.length; i++) {
                 if (ratingCollector[i] != 0) {
                     this.postList.get(i).getRatings().put(inputTextUser, new Integer(ratingCollector[i]));
                 }
                 ctrl.updateRatings(this.postList);
-            }
+            }*/
             refreshState();
         }
     }

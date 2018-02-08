@@ -26,12 +26,12 @@ public class SystemUserDTO implements Serializable {
     private String fname;
     private String lname;
     private String email;
-    private byte[] avatar;
+    private AvatarDTO avatar;
 
     public SystemUserDTO() {
     }
 
-    public SystemUserDTO(Long id, String username, String fname, String lname, String email, byte[] avatar) {
+    public SystemUserDTO(Long id, String username, String fname, String lname, String email, AvatarDTO avatar) {
         this.id = id;
         this.username = username;
         this.fname = fname;
@@ -40,7 +40,7 @@ public class SystemUserDTO implements Serializable {
         this.avatar = avatar;
     }
 
-    public SystemUserDTO(String username, String fname, String lname, String email, byte[] avatar) {
+    public SystemUserDTO(String username, String fname, String lname, String email, AvatarDTO avatar) {
         this.username = username;
         this.fname = fname;
         this.lname = lname;
@@ -61,17 +61,17 @@ public class SystemUserDTO implements Serializable {
         }
 
         //conversation to come
-        return new SystemUserDTO(u.getId(), u.getUsername(), u.getFname(), u.getLname(), u.getEmail(), u.getAvatar());
+        return new SystemUserDTO(u.getId(), u.getUsername(), u.getFname(), u.getLname(), u.getEmail(), AvatarDTO.toAvatarDTO(u.getAvatar()));
     }
 
     public SystemUser toSystemUser() {
-        return SystemUserBuilder.create().username(this.username).firstname(this.fname).lastname(this.lname).email(this.email).avatar(this.avatar).build();
+        return SystemUserBuilder.create().username(this.username).firstname(this.fname).lastname(this.lname).email(this.email).avatar(this.avatar.toAvatar()).build();
     }
 
     public JsonObject toJsonObject() {
         JsonObjectBuilder js = Json.createObjectBuilder();
         Gson gson = new Gson();
-        String byteArrayString = gson.toJson(this.avatar, byte[].class);
+        String byteArrayString = gson.toJson(this.avatar, AvatarDTO.class);
 
         if (this.id != null) {
             js.add("id", this.id);
@@ -92,7 +92,7 @@ public class SystemUserDTO implements Serializable {
         u.setFname(js.getString("firstname"));
         u.setLname(js.getString("lastname"));
         u.setEmail(js.getString("email"));
-        u.setAvatar(gson.fromJson(js.getString("avatar"), byte[].class));
+        u.setAvatar(gson.fromJson("avatar", AvatarDTO.class));
         return u;
     }
 
@@ -136,11 +136,11 @@ public class SystemUserDTO implements Serializable {
         this.email = email;
     }
 
-    public byte[] getAvatar() {
+    public AvatarDTO getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(byte[] avatar) {
+    public void setAvatar(AvatarDTO avatar) {
         this.avatar = avatar;
     }
 

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jpa:entity-mappings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:java="http://jcp.org/en/jsr/detail?id=270" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jpa="http://java.sun.com/xml/ns/persistence/orm" ptype="MONOLITH" ppkg="de.hsos.kbse" epkg="entities" v="4.7" rws="_15180937169372" Pws="_15180937169372" cws="_15180937169372" persistenceUnitName="DEFAULT_PU" sm="false" xs="false" id="_15180937169361" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_1.xsd">
+    <jpa:entity compositePrimaryKeyClass="SystemUserPK" abs="false" class="SystemUser" v="true" jbn="false" xre="false" m="false" rootElement="_15180937169361" id="_1518093769369">
+        <jpa:ath>nolde</jpa:ath>
+        <jpa:attributes>
+            <jpa:basic attribute-type="String" v="true" xvt="" name="username" ft="false" id="_15180938008545">
+                <jpa:xwm/>
+                <jpa:xm/>
+                <jpa:column unique="true" nullable="false" insertable="true" updatable="true"/>
+            </jpa:basic>
+            <jpa:basic attribute-type="String" v="true" xvt="" name="fname" ft="false" id="_15180938097426">
+                <jpa:xwm/>
+                <jpa:xm/>
+                <jpa:column unique="false" nullable="false" insertable="true" updatable="true"/>
+            </jpa:basic>
+            <jpa:basic attribute-type="String" v="true" xvt="" name="lname" ft="false" id="_15180938131167">
+                <jpa:xwm/>
+                <jpa:xm/>
+                <jpa:column unique="false" nullable="false" insertable="true" updatable="true"/>
+            </jpa:basic>
+            <jpa:basic attribute-type="String" v="true" xvt="" name="email" ft="false" id="_15180938466069">
+                <jpa:xwm/>
+                <jpa:xm/>
+                <jpa:column unique="false" nullable="false" insertable="true" updatable="true"/>
+            </jpa:basic>
+            <jpa:one-to-many orp="false" collection-type="java.util.List" cit="java.util.ArrayList" connected-entity-id="_1518093897697" connected-attribute-id="_1518096976196160" v="true" xvt="" name="posts" id="_1518096976196161">
+                <jpa:xwm/>
+                <jpa:xm/>
+            </jpa:one-to-many>
+            <jpa:one-to-many collection-type="java.util.List" cit="java.util.ArrayList" connected-entity-id="_1518094519720" connected-attribute-id="_1518096989574162" v="true" name="comments" id="_1518096989574163"/>
+            <jpa:one-to-many collection-type="java.util.List" cit="java.util.ArrayList" connected-entity-id="_1518094049260" connected-attribute-id="_1518097020150164" v="true" name="ratings" id="_1518097020151165"/>
+            <jpa:one-to-one own="true" primaryKey="false" connected-entity-id="_1518099529654" v="true" name="avatar" id="_1518099696338194"/>
+            <jpa:id attribute-type="Long" v="true" xvt="" name="id" id="_15180937694103">
+                <jpa:xwm/>
+                <jpa:xm/>
+                <jpa:generated-value strategy="AUTO"/>
+            </jpa:id>
+        </jpa:attributes>
+        <jpa:nq e="false" name="SystemUser.findAll">
+            <jpa:query>Select e from SystemUser e</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="SystemUser.findByUsername">
+            <jpa:query>Select s from SystemUser s where s.username=:username</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="SystemUser.findByFname">
+            <jpa:query>Select s from SystemUser s where s.fname=:fname</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="SystemUser.findByLname">
+            <jpa:query>Select s from SystemUser s where s.lname=:lname</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="SystemUser.findByEmail">
+            <jpa:query>Select s from SystemUser s where s.email=:email</jpa:query>
+        </jpa:nq>
+    </jpa:entity>
+    <jpa:entity compositePrimaryKeyClass="PostPK" abs="false" class="Post" v="true" jbn="false" xre="false" m="false" rootElement="_15180937169361" id="_1518093897697">
+        <jpa:ath>nolde</jpa:ath>
+        <jpa:attributes>
+            <jpa:basic attribute-type="String" v="true" xvt="" name="url" ft="false" id="_151809390392516">
+                <jpa:xwm/>
+                <jpa:xm/>
+                <jpa:column unique="true" nullable="false" insertable="true" updatable="true"/>
+            </jpa:basic>
+            <jpa:basic attribute-type="String" v="true" xvt="" name="description" ft="false" id="_151809393973517">
+                <jpa:xwm/>
+                <jpa:xm/>
+                <jpa:column unique="false" nullable="false" insertable="true" updatable="true"/>
+            </jpa:basic>
+            <jpa:basic attribute-type="int" v="true" xvt="" name="totalRating" ft="false" id="_151809394473518">
+                <jpa:xwm/>
+                <jpa:xm/>
+                <jpa:column unique="false" nullable="false" insertable="true" updatable="true" precision="0"/>
+            </jpa:basic>
+            <jpa:many-to-one optional="true" primaryKey="false" connected-entity-id="_1518093769369" connected-attribute-id="_1518096976196161" v="true" xvt="" name="author" id="_1518096976196160">
+                <jpa:xwm/>
+                <jpa:xm/>
+            </jpa:many-to-one>
+            <jpa:one-to-many orp="false" collection-type="java.util.List" cit="java.util.ArrayList" connected-entity-id="_1518094519720" connected-attribute-id="_1518097167862166" v="true" xvt="" name="comments" id="_1518097167863167">
+                <jpa:xwm/>
+                <jpa:xm/>
+            </jpa:one-to-many>
+            <jpa:one-to-many orp="false" collection-type="java.util.List" cit="java.util.ArrayList" connected-entity-id="_1518094049260" connected-attribute-id="_1518097207685168" v="true" xvt="" name="ratings" id="_1518097207685169">
+                <jpa:xwm/>
+                <jpa:xm/>
+            </jpa:one-to-many>
+            <jpa:id attribute-type="Long" v="true" xvt="" name="id" id="_151809389769814">
+                <jpa:xwm/>
+                <jpa:xm/>
+                <jpa:generated-value strategy="AUTO"/>
+            </jpa:id>
+        </jpa:attributes>
+        <jpa:nq e="false" name="Post.findAll">
+            <jpa:query>Select e from Post e</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="Post.findByUrl">
+            <jpa:query>Select e from Post e where e.url=:url</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="Post.findByDescription">
+            <jpa:query>Select p from Post p where p.description=:description</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="Post.findByTotalRating">
+            <jpa:query>Select p from Post p where p.totalRating=:totalRating</jpa:query>
+        </jpa:nq>
+    </jpa:entity>
+    <jpa:entity compositePrimaryKeyClass="RatingPK" abs="false" class="Rating" v="true" jbn="false" xre="false" m="false" rootElement="_15180937169361" id="_1518094049260">
+        <jpa:ath>nolde</jpa:ath>
+        <jpa:attributes>
+            <jpa:basic attribute-type="int" v="true" xvt="" name="ratedValue" id="_151809405819921">
+                <jpa:xwm/>
+                <jpa:xm/>
+            </jpa:basic>
+            <jpa:many-to-one optional="true" primaryKey="false" connected-entity-id="_1518093769369" connected-attribute-id="_1518097020151165" v="true" xvt="" name="user" id="_1518097020150164">
+                <jpa:xwm/>
+                <jpa:xm/>
+            </jpa:many-to-one>
+            <jpa:many-to-one optional="true" primaryKey="false" connected-entity-id="_1518093897697" connected-attribute-id="_1518097207685169" v="true" xvt="" name="post" id="_1518097207685168">
+                <jpa:xwm/>
+                <jpa:xm/>
+            </jpa:many-to-one>
+            <jpa:id attribute-type="Long" v="true" xvt="" name="id" id="_151809404926119">
+                <jpa:xwm/>
+                <jpa:xm/>
+                <jpa:generated-value strategy="AUTO"/>
+            </jpa:id>
+        </jpa:attributes>
+        <jpa:nq e="false" name="Rating.findAll">
+            <jpa:query>Select e from Rating e</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="Rating.findByRatedValue">
+            <jpa:query>Select r from Rating r where r.ratedValue=:ratedValue</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="Rating.findByPostId">
+            <jpa:query>Select r from Rating r where r.postId=:postId</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="Rating.findByCreatorId">
+            <jpa:query>Select r from Rating r where r.creatorId=:creatorId</jpa:query>
+        </jpa:nq>
+    </jpa:entity>
+    <jpa:entity compositePrimaryKeyClass="CommentPK" abs="false" class="Comment" v="true" jbn="false" xre="false" m="false" rootElement="_15180937169361" id="_1518094519720">
+        <jpa:ath>nolde</jpa:ath>
+        <jpa:attributes>
+            <jpa:basic attribute-type="String" v="true" xvt="" name="message" id="_151809453032928">
+                <jpa:xwm/>
+                <jpa:xm/>
+            </jpa:basic>
+            <jpa:basic attribute-type="String" v="true" xvt="" name="timestamp" id="_151809456070329">
+                <jpa:xwm/>
+                <jpa:xm/>
+            </jpa:basic>
+            <jpa:many-to-one optional="true" primaryKey="false" connected-entity-id="_1518093769369" connected-attribute-id="_1518096989574163" v="true" xvt="" name="author" id="_1518096989574162">
+                <jpa:xwm/>
+                <jpa:xm/>
+            </jpa:many-to-one>
+            <jpa:many-to-one optional="true" primaryKey="false" connected-entity-id="_1518093897697" connected-attribute-id="_1518097167863167" v="true" xvt="" name="post" id="_1518097167862166">
+                <jpa:xwm/>
+                <jpa:xm/>
+            </jpa:many-to-one>
+            <jpa:id attribute-type="Long" v="true" xvt="" name="id" id="_151809451972126">
+                <jpa:xwm/>
+                <jpa:xm/>
+                <jpa:generated-value strategy="AUTO"/>
+            </jpa:id>
+        </jpa:attributes>
+        <jpa:nq e="false" name="Comment.findAll">
+            <jpa:query>Select e from Comment e</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="Comment.findByMessage">
+            <jpa:query>Select c from Comment c where c.message=:message</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="Comment.findByTimestamp">
+            <jpa:query>Select c from Comment c where c.timestamp=:timestamp</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="Comment.findByCreatorId">
+            <jpa:query>Select c from Comment c where c.creatorId=:creatorId</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="Comment.findByPostId">
+            <jpa:query>Select c from Comment c where c.postId=:postId</jpa:query>
+        </jpa:nq>
+    </jpa:entity>
+    <jpa:entity compositePrimaryKeyClass="AvatarPK" abs="false" class="Avatar" v="true" xre="false" m="false" rootElement="_15180937169361" id="_1518099529654">
+        <jpa:ath>nolde</jpa:ath>
+        <jpa:attributes>
+            <jpa:basic attribute-type="int" v="true" xvt="" name="imageHash" ft="false" id="_1518099607198192">
+                <jpa:xwm/>
+                <jpa:xm/>
+                <jpa:column unique="true" nullable="false" insertable="true" updatable="true" precision="0"/>
+            </jpa:basic>
+            <jpa:basic attribute-type="byte[]" v="true" xvt="" name="image" ft="false" id="_1518099564926191">
+                <jpa:xwm/>
+                <jpa:xm/>
+                <jpa:column unique="false" nullable="false" insertable="true" updatable="true"/>
+                <jpa:lob/>
+            </jpa:basic>
+            <jpa:id attribute-type="Long" v="true" xvt="" name="id" id="_1518099529659188">
+                <jpa:xwm/>
+                <jpa:xm/>
+                <jpa:generated-value strategy="AUTO"/>
+            </jpa:id>
+        </jpa:attributes>
+        <jpa:nq e="false" name="Avatar.findAll">
+            <jpa:query>Select e from Avatar e</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="Avatar.findByFile">
+            <jpa:query>Select a from Avatar a where a.file=:file</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="Avatar.findByImage">
+            <jpa:query>Select a from Avatar a where a.image=:image</jpa:query>
+        </jpa:nq>
+        <jpa:nq e="false" name="Avatar.findByImageHash">
+            <jpa:query>Select a from Avatar a where a.imageHash=:imageHash</jpa:query>
+        </jpa:nq>
+    </jpa:entity>
+    <jpa:snp loc="BEFORE_PACKAGE" e="true">/**
+ * This file was generated by the Jeddict
+ */</jpa:snp>
+    <jpa:c>
+        <ct>java.util.List</ct>
+        <ct>java.util.Set</ct>
+        <ct>java.util.Map</ct>
+        <ct>java.util.Collection</ct>
+        <cit>java.util.ArrayList</cit>
+        <cit>java.util.LinkedList</cit>
+        <cit>java.util.HashSet</cit>
+        <cit>java.util.TreeSet</cit>
+        <cit>java.util.HashMap</cit>
+    </jpa:c>
+    <jpa:wsl>
+        <jpa:ws n="Main" id="_15180937169372">
+            <i ref="_1518093897697" x="486" y="29"/>
+            <i ref="_1518099529654" x="667" y="523"/>
+            <i ref="_1518094519720" x="479" y="320"/>
+            <i ref="_1518094049260" x="486" y="557"/>
+            <i ref="_1518093769369" x="59" y="89"/>
+        </jpa:ws>
+    </jpa:wsl>
+</jpa:entity-mappings>

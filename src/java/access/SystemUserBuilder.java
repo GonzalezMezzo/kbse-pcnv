@@ -5,6 +5,7 @@
  */
 package access;
 
+import entities.Avatar;
 import entities.SystemUser;
 
 /**
@@ -18,7 +19,7 @@ public class SystemUserBuilder {
     private String fname;
     private String lname;
     private String email;
-    private byte[] avatar;
+    private Avatar avatar;
 
     private SystemUserBuilder() {
     }
@@ -52,7 +53,7 @@ public class SystemUserBuilder {
         return this;
     }
     
-    public SystemUserBuilder avatar(byte[] avatar) {
+    public SystemUserBuilder avatar(Avatar avatar) {
         this.avatar = avatar;
         return this;
     }

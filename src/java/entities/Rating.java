@@ -15,20 +15,17 @@ import javax.persistence.ManyToOne;
  * @author nolde
  */
 @Entity
-public class Comment implements Serializable {
+public class Rating implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Basic
-    private String message;
-
-    @Basic
-    private String timestamp;
+    private int ratedValue;
 
     @ManyToOne(targetEntity = SystemUser.class)
-    private SystemUser author;
+    private SystemUser user;
 
     @ManyToOne(targetEntity = Post.class)
     private Post post;
@@ -41,28 +38,20 @@ public class Comment implements Serializable {
         this.id = id;
     }
 
-    public String getMessage() {
-        return this.message;
+    public int getRatedValue() {
+        return this.ratedValue;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setRatedValue(int ratedValue) {
+        this.ratedValue = ratedValue;
     }
 
-    public String getTimestamp() {
-        return this.timestamp;
+    public SystemUser getUser() {
+        return this.user;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public SystemUser getAuthor() {
-        return this.author;
-    }
-
-    public void setAuthor(SystemUser author) {
-        this.author = author;
+    public void setUser(SystemUser user) {
+        this.user = user;
     }
 
     public Post getPost() {

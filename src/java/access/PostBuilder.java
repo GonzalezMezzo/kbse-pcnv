@@ -7,6 +7,8 @@ package access;
 
 import entities.Comment;
 import entities.Post;
+import entities.Rating;
+import entities.SystemUser;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
@@ -21,9 +23,9 @@ public class PostBuilder implements Serializable {
     private String url;
     private String description;
     private ArrayList<Comment> comments;
-    private Long creatorId;
+    private SystemUser creatorId;
     private int totalRating;
-    private Map<String, Integer> ratings;
+    private ArrayList<Rating> ratings;
 
     private PostBuilder() {
     }
@@ -47,7 +49,7 @@ public class PostBuilder implements Serializable {
         return this;
     }
 
-    public PostBuilder creator(Long creator) {
+    public PostBuilder creator(SystemUser creator) {
         this.creatorId = creatorId;
         return this;
     }
@@ -57,7 +59,7 @@ public class PostBuilder implements Serializable {
         return this;
     }
 
-    public PostBuilder ratings(Map<String, Integer> ratings) {
+    public PostBuilder ratings(ArrayList<Rating> ratings) {
         this.ratings = ratings;
         return this;
     }
@@ -73,7 +75,7 @@ public class PostBuilder implements Serializable {
         res.setUrl(this.url);
         res.setDescription(this.description);
         res.setComments(this.comments);
-        res.setCreatorId(this.creatorId);
+        res.setAuthor(this.creatorId);
         res.setTotalRating(this.totalRating);
         res.setRatings(this.ratings);
         return res;

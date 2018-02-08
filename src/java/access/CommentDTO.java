@@ -8,6 +8,8 @@ package access;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import entities.Comment;
+import entities.Post;
+import entities.SystemUser;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -27,20 +29,20 @@ public class CommentDTO implements Serializable {
     private Long id;
     private String message;
     private String timeStamp;
-    private Long creatorId;
-    private Long ownerId;
+    private SystemUserDTO creatorId;
+    private PostDTO ownerId;
 
     public CommentDTO() {
     }
 
-    public CommentDTO(String message, Long creatorId, Long ownerId) {
+    public CommentDTO(String message, SystemUserDTO creatorId, PostDTO ownerId) {
         this.creatorId = creatorId;
         this.timeStamp = new SimpleDateFormat("HHmmss_ddMMyyyy").format(Calendar.getInstance().getTime());
         this.message = message;
         this.ownerId = ownerId;
     }
 
-    public CommentDTO(Long id, String message, Long creatorId, String timestamp, Long ownerId) {
+    public CommentDTO(Long id, String message, SystemUserDTO creatorId, String timestamp, PostDTO ownerId) {
         this.id = id;
         this.creatorId = creatorId;
         this.timeStamp = timestamp;
@@ -52,25 +54,25 @@ public class CommentDTO implements Serializable {
         if (c == null) {
             return null;
         }
-        return new CommentDTO(c.getId(), c.getMessage(), c.getCreatorId(), c.getTimestamp(), c.getOwnerId());
+        return new CommentDTO(c.getId(), c.getMessage(), SystemUserDTO.toSystemUserDTO(c.getAuthor()), c.getTimestamp(), PostDTO.toPostDTO(c.getPost()));
     }
 
     public Comment toComment() {
         return CommentBuilder.create().message(this.message)
-                .creator(this.creatorId).timestamp(this.timeStamp).owner(this.ownerId).build();
+                .creator(this.creatorId.toSystemUser()).timestamp(this.timeStamp).owner(this.ownerId.toPost()).build();
     }
 
     public JsonObject toJsonObject() {
         Gson gson = new Gson();
-       
+
         JsonObjectBuilder js = Json.createObjectBuilder();
         if (this.id != null) {
             js.add("id", this.id);
         }
         js.add("message", this.message)
                 .add("timestamp", this.timeStamp)
-                .add("creatorId", this.creatorId)
-                .add("owner", this.ownerId);
+                .add("creatorId", this.creatorId.toJsonObject())
+                .add("owner", this.ownerId.toJsonObject());
         return js.build();
     }
 
@@ -78,14 +80,14 @@ public class CommentDTO implements Serializable {
         CommentDTO c = new CommentDTO();
         Gson gson = new Gson();
         //c = gson.fromJson(js.toString(), CommentDTO.class);
-                
+
         if (js.getJsonNumber("id") != null) {
             c.setId(js.getJsonNumber("id").longValue());
         }
         c.setMessage(js.getString("message"));
         c.setTimeStamp(js.getString("timestamp"));
-        c.setCreatorId(js.getJsonNumber("creatorId").longValue());
-        c.setOwnerId(js.getJsonNumber("owner").longValue());
+        c.setCreatorId(SystemUserDTO.toPOJO(js.getJsonObject("creatorId")));
+        c.setOwnerId(PostDTO.toPOJO(js.getJsonObject("owner")));
         return c;
     }
 
@@ -113,23 +115,20 @@ public class CommentDTO implements Serializable {
         this.timeStamp = timeStamp;
     }
 
-    public Long getCreatorId() {
+    public SystemUserDTO getCreatorId() {
         return creatorId;
     }
 
-    public void setCreatorId(Long creatorId) {
+    public void setCreatorId(SystemUserDTO creatorId) {
         this.creatorId = creatorId;
     }
 
-    public Long getOwnerId() {
+    public PostDTO getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(Long ownerId) {
+    public void setOwnerId(PostDTO ownerId) {
         this.ownerId = ownerId;
     }
 
-    
-    
-    
 }

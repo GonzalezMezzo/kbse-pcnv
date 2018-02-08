@@ -7,6 +7,7 @@ package access;
 
 import entities.Comment;
 import entities.Post;
+import entities.SystemUser;
 
 /**
  *
@@ -17,8 +18,8 @@ public class CommentBuilder {
     private long id;
     private String message;
     private String timeStamp;
-    private Long creatorId;
-    private Long ownerId;
+    private SystemUser creatorId;
+    private Post ownerId;
 
     private CommentBuilder(){}
     
@@ -31,8 +32,8 @@ public class CommentBuilder {
         res.setId(this.id);
         res.setMessage(this.message);
         res.setTimestamp(this.timeStamp);
-        res.setCreatorId(this.creatorId);
-        res.setOwnerId(this.ownerId);
+        res.setAuthor(this.creatorId);
+        res.setPost(this.ownerId);
         return res;
     }
 
@@ -51,12 +52,12 @@ public class CommentBuilder {
         return this;
     }
 
-    public CommentBuilder creator(Long creator) {
+    public CommentBuilder creator(SystemUser creator) {
         this.creatorId = creator;
         return this;
     }
     
-    public CommentBuilder owner(Long owner){
+    public CommentBuilder owner(Post owner){
         this.ownerId = owner;
         return this;
     }
