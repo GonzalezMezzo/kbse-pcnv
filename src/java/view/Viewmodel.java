@@ -45,8 +45,6 @@ public class Viewmodel implements Serializable {
     private String inputTexTURL;
     private int inputTextNumber;
     
-    
-    private String inputCommentUser;
     private String inputCommentMessage;
     
     private int[] ratingCollector;
@@ -114,7 +112,7 @@ public class Viewmodel implements Serializable {
     }
 
     public String submitLink() {
-        PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, inputTextUser, 0, new HashMap<String, Integer>());
+        PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.inputTextUser, 0, new HashMap<String, Integer>());
         post.getRatings().put(inputTextUser, 0);
         ctrl.addPost(post);
         refreshState();
@@ -282,15 +280,6 @@ public class Viewmodel implements Serializable {
     public void setCurrentPost(PostDTO currentPost) {
         this.currentPost = currentPost;
     }
-
-    public String getInputCommentUser() {
-        return inputCommentUser;
-    }
-
-    public void setInputCommentUser(String inputCommentUser) {
-        this.inputCommentUser = inputCommentUser;
-    }
-
     public String getInputCommentMessage() {
         return inputCommentMessage;
     }
