@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,7 +24,8 @@ import javax.persistence.OneToOne;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "SystemUser.findAll", query= "SELECT s FROM SystemUser s")
+    @NamedQuery(name = "SystemUser.findAll", query= "SELECT s FROM SystemUser s"),
+    @NamedQuery(name = "SystemUser.findByUsername", query="SELECT s FROM SystemUser s WHERE s.username = :username")
 })
 public class SystemUser implements Serializable {
 
@@ -47,8 +49,7 @@ public class SystemUser implements Serializable {
     @Basic
     private String email;
 
-    @JoinColumn(nullable = true, updatable = true)
-    @OneToOne(targetEntity = Avatar.class)
+    @OneToOne(targetEntity = Avatar.class, optional = true )
     private Avatar avatar;
 
     @OneToMany(targetEntity = Post.class, mappedBy = "author")

@@ -49,7 +49,7 @@ public class PostBuilder implements Serializable {
         return this;
     }
 
-    public PostBuilder creator(SystemUser creator) {
+    public PostBuilder creator(SystemUser creatorId) {
         this.creatorId = creatorId;
         return this;
     }

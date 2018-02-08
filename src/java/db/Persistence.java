@@ -35,7 +35,12 @@ public class Persistence {
 
     public void addPost(PostDTO p) {
         Post tmp = p.toPost();
+        String url = tmp.getUrl();
         em.persist(tmp);
+          
+        SystemUser su = em.find(SystemUser.class, url);
+        su.getPosts().add(tmp);
+        em.merge(su);
     }
 
     public void addSystemUser(SystemUserDTO u) {
@@ -71,11 +76,15 @@ public class Persistence {
 
     public void updateSystemUser(SystemUserDTO u) {
         List<SystemUser> tmp = em.createNamedQuery("SystemUser.findAll", SystemUser.class).getResultList();
-        long userId = 0L;
         for (SystemUser systemUser : tmp) {
             if(systemUser.getUsername().equals(u.getUsername())) {
-                systemUser = u.toSystemUser();
+                systemUser.setUsername(u.getUsername());
+                systemUser.setFname(u.getFname());
+                systemUser.setLname(u.getLname());
+                systemUser.setEmail(u.getEmail());
+                systemUser.setAvatar(u.getAvatar().toAvatar());
                 em.merge(systemUser);
+                break;
             }
         }
         //SystemUser su = em.find(SystemUser.class, userId);

@@ -127,7 +127,7 @@ public class Viewmodel implements Serializable {
     public String submitLink() {
         refreshState();
         
-        PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<RatingDTO>());
+        PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
         
         ctrl.addPost(post);
         refreshState();

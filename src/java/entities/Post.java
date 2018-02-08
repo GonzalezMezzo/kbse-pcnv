@@ -7,8 +7,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,7 +24,8 @@ import javax.persistence.OneToMany;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "Post.findAll", query= "SELECT s FROM Post s")
+    @NamedQuery(name = "Post.findAll", query= "SELECT s FROM Post s"),
+    @NamedQuery(name = "Post.findByUrl", query= "SELECT s FROM Post s WHERE s.url= :url")
 })
 public class Post implements Serializable {
 
@@ -42,7 +45,7 @@ public class Post implements Serializable {
     @Basic
     private int totalRating;
 
-    @ManyToOne(targetEntity = SystemUser.class)
+    @ManyToOne(targetEntity = SystemUser.class, cascade = CascadeType.MERGE)
     private SystemUser author;
 
     @OneToMany(targetEntity = Comment.class, mappedBy = "post")
