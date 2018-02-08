@@ -70,9 +70,17 @@ public class Persistence {
     }
 
     public void updateSystemUser(SystemUserDTO u) {
-        SystemUser su = em.find(SystemUser.class, u.getId());
-        su = u.toSystemUser();
-        em.merge(u);
+        List<SystemUser> tmp = em.createNamedQuery("SystemUser.findAll", SystemUser.class).getResultList();
+        long userId = 0L;
+        for (SystemUser systemUser : tmp) {
+            if(systemUser.getUsername().equals(u.getUsername())) {
+                systemUser = u.toSystemUser();
+                em.merge(systemUser);
+            }
+        }
+        //SystemUser su = em.find(SystemUser.class, userId);
+        //su = u.toSystemUser();
+        //em.merge(u);
     }
 
     public void addComment(CommentDTO c) {

@@ -31,6 +31,7 @@ public class SystemUserDTO implements Serializable {
     private AvatarDTO avatar;
 
     public SystemUserDTO() {
+        this.id = -1L;
     }
 
     public SystemUserDTO(Long id, String username, String fname, String lname, String email, AvatarDTO avatar) {

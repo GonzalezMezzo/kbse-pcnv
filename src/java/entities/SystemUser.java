@@ -35,19 +35,19 @@ public class SystemUser implements Serializable {
     @Basic
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = true)
     @Basic
     private String fname;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = true)
     @Basic
     private String lname;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = true)
     @Basic
     private String email;
 
-    @JoinColumn(nullable = true)
+    @JoinColumn(nullable = true, updatable = true)
     @OneToOne(targetEntity = Avatar.class)
     private Avatar avatar;
 

@@ -87,6 +87,7 @@ public class ModelController implements Serializable {
             return true;
         } catch (EJBException e) {
             System.out.println("updateSystemUser -> exception");
+            System.out.println(e.getCause().toString());
             return false;
         }
     }
