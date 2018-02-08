@@ -24,6 +24,9 @@ public class AvatarDTO implements Serializable {
     private List<Byte> image;
 
     public AvatarDTO() {
+        this.id = -1L;
+        this.imageHash = -1;
+        this.image = new ArrayList<>();
     }
 
     public AvatarDTO(int imageHash, List<Byte> image) {

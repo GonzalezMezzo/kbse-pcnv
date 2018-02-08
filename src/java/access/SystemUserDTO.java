@@ -11,6 +11,8 @@ import entities.SystemUser;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -53,6 +55,7 @@ public class SystemUserDTO implements Serializable {
         this.fname = fname;
         this.lname = lname;
         this.email = email;
+        this.avatar = new AvatarDTO();
     }
 
     public static SystemUserDTO toSystemUserDTO(SystemUser u) {

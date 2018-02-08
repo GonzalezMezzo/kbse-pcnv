@@ -69,6 +69,7 @@ public class Viewmodel implements Serializable {
         this.inputTexTURL = "www.google.de";
         this.inputTextNumber = 0;
          */
+        ctrl.addAvatar(new AvatarDTO());
 
         refreshState();
         /**

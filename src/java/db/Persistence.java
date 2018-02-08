@@ -5,9 +5,11 @@
  */
 package db;
 
+import access.AvatarDTO;
 import access.CommentDTO;
 import access.PostDTO;
 import access.SystemUserDTO;
+import entities.Avatar;
 import entities.Post;
 import entities.SystemUser;
 import java.util.ArrayList;
@@ -67,7 +69,7 @@ public class Persistence {
         }
     }
 
-    public void updateSystemUSer(SystemUserDTO u) {
+    public void updateSystemUser(SystemUserDTO u) {
         SystemUser su = em.find(SystemUser.class, u.getId());
         su = u.toSystemUser();
         em.merge(u);
@@ -79,7 +81,9 @@ public class Persistence {
         em.merge(p);
     }
 
-    /**
-     * TODO
-     */
+    public void addAvatar(AvatarDTO avatarDTO) {
+        Avatar tmp = avatarDTO.toAvatar();
+        em.persist(tmp);
+    }
+
 }

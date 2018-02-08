@@ -5,6 +5,7 @@
  */
 package controller;
 
+import access.AvatarDTO;
 import access.CommentDTO;
 import access.PostDTO;
 import access.SystemUserDTO;
@@ -82,7 +83,7 @@ public class ModelController implements Serializable {
     
     public boolean updateSystemUser(SystemUserDTO su) {
         try {
-            db.updateSystemUSer(su);
+            db.updateSystemUser(su);
             return true;
         } catch (EJBException e) {
             System.out.println("updateSystemUser -> exception");
@@ -112,6 +113,7 @@ public class ModelController implements Serializable {
              * todo: error handling
              */
             System.out.println("addUser -> exception");
+            System.out.println(e.getCause().toString());
             System.out.println("addUser -> try edit instead...");
             return updateSystemUser(user);
         }
@@ -123,6 +125,16 @@ public class ModelController implements Serializable {
 
     public List<SystemUserDTO> getUserList() {
         return userList;
+    }
+
+    public boolean addAvatar(AvatarDTO avatarDTO) {
+        try {
+            db.addAvatar(avatarDTO);
+            return true;
+        } catch (EJBException e) {
+            System.out.println("addAvatar -> exception");
+            return false;
+        }
     }
        
 }

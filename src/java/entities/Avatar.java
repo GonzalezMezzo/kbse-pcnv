@@ -27,10 +27,16 @@ public class Avatar implements Serializable {
     @Basic
     private int imageHash;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Lob
     @Basic
     private ArrayList<Byte> image;
+
+    //TODO: delete later
+    public Avatar() {
+        this.imageHash = -1;
+        this.image = new ArrayList<>();
+    }  
 
     public Long getId() {
         return this.id;
