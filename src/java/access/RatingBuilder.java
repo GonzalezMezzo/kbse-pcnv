@@ -53,7 +53,7 @@ public class RatingBuilder implements Serializable {
         res.setId(this.id);
         res.setRatedValue(this.ratedValue);
         res.setUser(this.user);
-        res.setPost(this.post);
+        //res.setPost(this.post);
         return res;
     }
 }

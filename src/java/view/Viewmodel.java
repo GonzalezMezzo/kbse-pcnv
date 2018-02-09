@@ -201,6 +201,7 @@ public class Viewmodel implements Serializable {
                 }
             }
         }*/
+        ratingCollector = new HashMap();
         inputTextNumber = 0;
         ctrl.refreshState();
     }
@@ -245,6 +246,7 @@ public class Viewmodel implements Serializable {
             }*/
             refreshState();
         }
+        refreshState();
         return BOARD;
     }
 

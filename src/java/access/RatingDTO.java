@@ -22,11 +22,13 @@ public class RatingDTO implements Serializable {
     private Long id;
     private int ratedValue;
     private SystemUserDTO user;
+    
+    
     private PostDTO post;
     
     public RatingDTO(){}
 
-    public RatingDTO(Long id, int ratedValue, SystemUserDTO user, PostDTO post) {
+    public RatingDTO(Long id, int ratedValue, SystemUserDTO user) {
         this.id = id;
         this.ratedValue = ratedValue;
         this.user = user;
@@ -40,11 +42,11 @@ public class RatingDTO implements Serializable {
     }
        
     public static RatingDTO toRatingDTO(Rating r) {
-         return new RatingDTO(r.getId(),r.getRatedValue(),SystemUserDTO.toSystemUserDTO(r.getUser()),PostDTO.toPostDTO(r.getPost()));
+         return new RatingDTO(r.getId(),r.getRatedValue(),SystemUserDTO.toSystemUserDTO(r.getUser()));
     }
     
     public Rating toRating() {
-        return RatingBuilder.create().ratedValue(this.ratedValue).user(user.toSystemUser()).post(post.toPost()).build();
+        return RatingBuilder.create().ratedValue(this.ratedValue).user(user.toSystemUser())/*.post(post.toPost())*/.build();
     }
 
     public SystemUserDTO getUser() {

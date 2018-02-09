@@ -27,8 +27,9 @@ public class Rating implements Serializable {
     @ManyToOne(targetEntity = SystemUser.class)
     private SystemUser user;
 
-    @ManyToOne(targetEntity = Post.class)
-    private Post post;
+    
+    //@ManyToOne(targetEntity = Post.class)
+    //private Post post;
 
     public Long getId() {
         return this.id;
@@ -53,7 +54,7 @@ public class Rating implements Serializable {
     public void setUser(SystemUser user) {
         this.user = user;
     }
-
+    /*
     public Post getPost() {
         return this.post;
     }
@@ -61,5 +62,5 @@ public class Rating implements Serializable {
     public void setPost(Post post) {
         this.post = post;
     }
-
+    */
 }

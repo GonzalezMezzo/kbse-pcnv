@@ -107,7 +107,7 @@ public class RESTBoundary {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/addRating")
     public JsonObject addRating(JsonObject jo) {
-        RatingDTO r = RatingDTO.toPOJO(jo.getJsonObject("comment"));
+        RatingDTO r = RatingDTO.toPOJO(jo.getJsonObject("rating"));
         PostDTO p = PostDTO.toPOJO(jo.getJsonObject("post"));
         SystemUserDTO u = SystemUserDTO.toPOJO(jo.getJsonObject("user"));
         mdlctrl.addRating(p, r, u);

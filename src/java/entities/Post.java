@@ -51,7 +51,7 @@ public class Post implements Serializable {
     @OneToMany(targetEntity = Comment.class, orphanRemoval = true)
     private List<Comment> comments;
 
-    @OneToMany(targetEntity = Rating.class, mappedBy = "post" , orphanRemoval = true)
+    @OneToMany(targetEntity = Rating.class, orphanRemoval = true)
     private List<Rating> ratings;
 
     public Long getId() {
@@ -128,12 +128,12 @@ public class Post implements Serializable {
 
     public void addRating(Rating rating) {
         getRatings().add(rating);
-        rating.setPost(this);
+        //rating.setPost(this);
     }
 
     public void removeRating(Rating rating) {
         getRatings().remove(rating);
-        rating.setPost(null);
+        //rating.setPost(null);
     }
 
     public void calcTotalRating() {
