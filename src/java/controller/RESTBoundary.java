@@ -78,6 +78,13 @@ public class RESTBoundary {
     public JsonObject deletePost(@PathParam("id") long id) {
         return Json.createObjectBuilder().add("success", mdlctrl.deletePost(id)).build();
     }
+    
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/deleteRating/{postId}/{ratingId}")
+    public JsonObject deletePost(@PathParam("postId") long postId, @PathParam("ratingId") long ratingId) {
+        return Json.createObjectBuilder().add("success", mdlctrl.deleteRating(postId, ratingId)).build();
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

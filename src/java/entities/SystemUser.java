@@ -58,7 +58,7 @@ public class SystemUser implements Serializable {
     @OneToMany(targetEntity = Comment.class, mappedBy = "author")
     private List<Comment> comments;
 
-    @OneToMany(targetEntity = Rating.class, mappedBy = "user")
+    @OneToMany(targetEntity = Rating.class, mappedBy = "user", orphanRemoval = true)
     private List<Rating> ratings;
 
     public Long getId() {

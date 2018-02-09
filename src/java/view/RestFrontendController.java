@@ -59,6 +59,18 @@ public class RestFrontendController implements Serializable {
             return false;
         }
     }
+    
+    public boolean deleteRating(long postId, long ratingId) {
+        this.wt = client.target(ADRESS + "/deleteRating/" + postId + "/" + ratingId);
+        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+        try {
+            JsonObject res = build.delete(JsonObject.class);
+            return res.getBoolean("success");
+        } catch (Exception e) {
+            System.out.println("deleteRating(rest) ->");
+            return false;
+        }
+    }
 
     public List<PostDTO> refreshState() {
         this.wt = client.target(ADRESS + "/refreshState");
@@ -240,6 +252,5 @@ public class RestFrontendController implements Serializable {
             return null;
         }
     }
-
    
 }

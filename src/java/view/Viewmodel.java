@@ -233,6 +233,16 @@ public class Viewmodel implements Serializable {
 
     public String submitRating() {
         if (validate() == true) {//method stub
+            //delete every previous rating for this user
+            for (PostDTO p: postList){
+                for(RatingDTO  r: p.getRatings()){
+                    if(currentUser.getUsername().equals(r.getUser().getUsername())){
+                        ctrl.deleteRating(p.getId(), r.getId());
+                    }
+                }
+            }
+            
+            //add individual ratings for this submit    
             for (Map.Entry<PostDTO, RatingDTO> entry : ratingCollector.entrySet()) {
                 ctrl.addRating(entry.getKey(), entry.getValue(), currentUser);
             }
@@ -244,7 +254,7 @@ public class Viewmodel implements Serializable {
                 }
                 ctrl.updateRatings(this.postList);
             }*/
-            refreshState();
+            
         }
         refreshState();
         return BOARD;

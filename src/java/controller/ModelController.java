@@ -19,6 +19,7 @@ import javax.ejb.EJBException;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.json.JsonValue;
 
 /**
  *
@@ -87,6 +88,19 @@ public class ModelController implements Serializable {
              * todo: error handling
              */
             System.out.println("deletePost -> exception");
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean deleteRating(long postId, long ratingId) {
+        try {
+            db.deleteRating(postId, ratingId);
+        } catch (EJBException e) {
+            /**
+             * todo: error handling
+             */
+            System.out.println("deleteRating -> exception");
             return false;
         }
         return true;
@@ -175,7 +189,5 @@ public class ModelController implements Serializable {
             return SystemUserDTO.toSystemUserDTO(db.getUser(username));
         }
     }
-
-    
 
 }
