@@ -74,8 +74,10 @@
                         <b:dataTableColumn value="#{post.creatorId.username}" label="OP"/>
                         <b:dataTableColumn value="#{post.totalRating}" label="Total Rating"/>
                         <b:dataTableColumn label="Your Rating" >
-                            <b:inputText value="#{viewmodel.ratingCollector[viewmodel.postList.indexOf(post)]}" rendered="#{not viewmodel.currentUser.username.equals(post.creatorId.username)}"/>
-                            <h:outputText value="#{viewmodel.ratingCollector[viewmodel.postList.indexOf(post)]}" rendered="#{viewmodel.currentUser.username.equals(post.creatorId.username)}" />
+                            <b:inputText value="#{viewmodel.inputTextNumber}" rendered="#{not viewmodel.currentUser.username.equals(post.creatorId.username)}">
+                                <f:ajax listener="#{viewmodel.addRating(post)}"/>
+                            </b:inputText>
+                                <h:outputText value="#{viewmodel.ratingCollector[viewmodel.postList.indexOf(post)]}" rendered="#{viewmodel.currentUser.username.equals(post.creatorId.username)}" />
                         </b:dataTableColumn>
 
                         <b:dataTableColumn label="Tools">

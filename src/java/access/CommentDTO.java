@@ -32,8 +32,7 @@ public class CommentDTO implements Serializable {
     private SystemUserDTO creatorId;
     private PostDTO ownerId;
 
-    public CommentDTO() {
-    }
+    public CommentDTO() {}
 
     public CommentDTO(String message, SystemUserDTO creatorId, PostDTO ownerId) {
         this.creatorId = creatorId;
@@ -85,8 +84,6 @@ public class CommentDTO implements Serializable {
 
     public static CommentDTO toPOJO(JsonObject js) {
         CommentDTO c = new CommentDTO();
-        Gson gson = new Gson();
-        //c = gson.fromJson(js.toString(), CommentDTO.class);
 
         if (js.getJsonNumber("id") != null) {
             c.setId(js.getJsonNumber("id").longValue());

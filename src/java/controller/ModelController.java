@@ -8,6 +8,7 @@ package controller;
 import access.AvatarDTO;
 import access.CommentDTO;
 import access.PostDTO;
+import access.RatingDTO;
 import access.SystemUserDTO;
 import db.Persistence;
 import java.io.Serializable;
@@ -61,6 +62,19 @@ public class ModelController implements Serializable {
              * todo: error handling
              */
             System.out.println("addComment -> exception");
+            return false;
+        }
+    }
+    
+    public boolean addRating(PostDTO p, RatingDTO r, SystemUserDTO u) {
+        try {
+            db.addRating(p, r, u);
+            return true;
+        } catch (EJBException e) {
+            /**
+             * todo: error handling
+             */
+            System.out.println("addRating -> exception");
             return false;
         }
     }
@@ -161,5 +175,7 @@ public class ModelController implements Serializable {
             return SystemUserDTO.toSystemUserDTO(db.getUser(username));
         }
     }
+
+    
 
 }

@@ -8,6 +8,7 @@ package controller;
 import access.AvatarDTO;
 import access.CommentDTO;
 import access.PostDTO;
+import access.RatingDTO;
 import access.SystemUserDTO;
 import com.google.gson.Gson;
 import java.util.List;
@@ -98,6 +99,18 @@ public class RESTBoundary {
         PostDTO p = PostDTO.toPOJO(jo.getJsonObject("post"));
         SystemUserDTO u = SystemUserDTO.toPOJO(jo.getJsonObject("user"));
         mdlctrl.addComment(c, p, u);
+        return Json.createObjectBuilder().add("success", true).build();
+    }
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/addRating")
+    public JsonObject addRating(JsonObject jo) {
+        RatingDTO r = RatingDTO.toPOJO(jo.getJsonObject("comment"));
+        PostDTO p = PostDTO.toPOJO(jo.getJsonObject("post"));
+        SystemUserDTO u = SystemUserDTO.toPOJO(jo.getJsonObject("user"));
+        mdlctrl.addRating(p, r, u);
         return Json.createObjectBuilder().add("success", true).build();
     }
 

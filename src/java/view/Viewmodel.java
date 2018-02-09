@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -42,6 +43,7 @@ public class Viewmodel implements Serializable {
 
     private List<PostDTO> postList;
     private List<SystemUserDTO> userList;
+    private Map<PostDTO, RatingDTO> ratingCollector;
     private String inputTextUser;
     private String inputTextFName;
     private String inputTextLName;
@@ -53,16 +55,16 @@ public class Viewmodel implements Serializable {
     private String inputCommentUser;
     private String inputCommentMessage;
 
-    private int[] ratingCollector;
-
+    //private int[] ratingCollector;
     private SystemUserDTO currentUser;
     private PostDTO currentPost;
-    
+
     Long postId;
     String username;
 
     @PostConstruct
     public void init() {
+        ratingCollector = new HashMap();
         postId = null;
         username = null;
         /*
@@ -84,7 +86,7 @@ public class Viewmodel implements Serializable {
         /**
          * CRITICAL CODE !!!!!!!
          */
-        ratingCollector = new int[postList.size()];
+        //ratingCollector = new int[postList.size()];
     }
 
     /* routing */
@@ -114,11 +116,11 @@ public class Viewmodel implements Serializable {
 
     public String changeUser() {
         refreshState();
-        SystemUserDTO user = new SystemUserDTO(this.inputTextUser,this.inputTextFName,this.inputTextLName, this.inputTextEMail);
+        SystemUserDTO user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail);
         ctrl.addSystemUser(user);
         refreshState();
         this.currentUser = user;
-        ratingCollector = new int[postList.size()];
+        //ratingCollector = new int[postList.size()];
         return USER_CONTROL;
     }
 
@@ -132,10 +134,10 @@ public class Viewmodel implements Serializable {
 
     public String submitLink() {
         refreshState();
-        
+
         PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
-        
-        ctrl.addPost(post,this.currentUser);
+
+        ctrl.addPost(post, this.currentUser);
         refreshState();
         return BOARD;
     }
@@ -150,11 +152,12 @@ public class Viewmodel implements Serializable {
     public String submitComment() {
         refreshState();
         CommentDTO comment = new CommentDTO(this.inputCommentMessage, this.currentUser, this.currentPost);
-        ctrl.addComment(comment,this.currentPost,this.currentUser);
+        ctrl.addComment(comment, this.currentPost, this.currentUser);
         refreshState();
         return POST;
     }
-    
+
+    /*
     public void fetchRatings() {
         int i = 0;
         this.ratingCollector = new int[postList.size()];
@@ -167,12 +170,12 @@ public class Viewmodel implements Serializable {
             i++;
         }
     }
-
+     */
     public void refreshState() {
         if (this.currentPost != null) {
             postId = this.currentPost.getId();
             this.currentPost = ctrl.getPost(postId);
-            
+
         }
         if (this.currentUser != null) {
             username = this.currentUser.getUsername();
@@ -181,7 +184,7 @@ public class Viewmodel implements Serializable {
         this.postList = ctrl.getPostList();
         this.userList = ctrl.getUserList();
 
-        ratingCollector = new int[postList.size()];   
+        //ratingCollector = new int[postList.size()];   
         /*
         if (postId != null) {
             for (PostDTO postDTO : postList) {
@@ -198,7 +201,6 @@ public class Viewmodel implements Serializable {
                 }
             }
         }*/
-        
         inputTextNumber = 0;
         ctrl.refreshState();
     }
@@ -228,15 +230,12 @@ public class Viewmodel implements Serializable {
         return true;
     }
 
-    public void submitRating() {
+    public String submitRating() {
         if (validate() == true) {//method stub
-            for (int i = 0; i < ratingCollector.length; i++) {
-                if(ratingCollector[i] != 0) {
-                    this.postList.get(i).getRatings().add(new RatingDTO(ratingCollector[i], this.currentUser, this.currentPost));
-                }
-                ctrl.updateRatings(this.postList);
+            for (Map.Entry<PostDTO, RatingDTO> entry : ratingCollector.entrySet()) {
+                ctrl.addRating(entry.getKey(), entry.getValue(), currentUser);
             }
-            
+
             /*
             for (int i = 0; i < ratingCollector.length; i++) {
                 if (ratingCollector[i] != 0) {
@@ -246,6 +245,18 @@ public class Viewmodel implements Serializable {
             }*/
             refreshState();
         }
+        return BOARD;
+    }
+
+    public boolean validate() {
+        int res = 0;
+        for (Map.Entry<PostDTO, RatingDTO> entry : ratingCollector.entrySet()) {
+                res += entry.getValue().getRatedValue();
+        }
+        if(res<=10 && res>=0){
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -253,8 +264,10 @@ public class Viewmodel implements Serializable {
      *
      * @param i
      */
-    public void addRating(int i) {
-
+    public void addRating(PostDTO post) {
+        System.out.println(post);
+        System.out.println(inputTextNumber);
+        ratingCollector.put(post, new RatingDTO(inputTextNumber, currentUser, post));
     }
 
     /*--------------------------------------------------------------------------
@@ -316,6 +329,7 @@ public class Viewmodel implements Serializable {
         this.postList = postList;
     }
 
+    /*
     public int[] getRatingCollector() {
         return ratingCollector;
     }
@@ -323,7 +337,7 @@ public class Viewmodel implements Serializable {
     public void setRatingCollector(int[] ratingCollector) {
         this.ratingCollector = ratingCollector;
     }
-
+     */
     public int getInputTextNumber() {
         return inputTextNumber;
     }
@@ -364,6 +378,8 @@ public class Viewmodel implements Serializable {
         this.currentUser = currentUser;
     }
 
+    
+    /*
     private boolean validate() {
         int n1 = 0;
         for (int i = 0; i < ratingCollector.length; i++) {
@@ -375,6 +391,13 @@ public class Viewmodel implements Serializable {
             }
         }
         return true;
+    }*/
+
+    public Map<PostDTO, RatingDTO> getRatingCollector() {
+        return ratingCollector;
     }
 
+    public void setRatingCollector(Map<PostDTO, RatingDTO> ratingCollector) {
+        this.ratingCollector = ratingCollector;
+    }
 }

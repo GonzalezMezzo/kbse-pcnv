@@ -8,6 +8,7 @@ package view;
 import access.AvatarDTO;
 import access.CommentDTO;
 import access.PostDTO;
+import access.RatingDTO;
 import access.SystemUserDTO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -110,6 +111,24 @@ public class RestFrontendController implements Serializable {
 
         } catch (Exception e) {
             System.out.println("addComment(rest) ->");
+        }
+        return false;
+    }
+    
+     public boolean addRating(PostDTO post, RatingDTO rating, SystemUserDTO user) {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add("post", post.toJsonObject()).add("rating", rating.toJsonObject()).add("user", user.toJsonObject());
+
+        this.wt = client.target(ADRESS + "/addRating");
+        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+        Entity entity = Entity.entity(builder.build(), MediaType.APPLICATION_JSON);
+
+        try {
+            JsonObject res = build.post(entity, JsonObject.class);
+            return res.getBoolean("success");
+
+        } catch (Exception e) {
+            System.out.println("addRating(rest) ->");
         }
         return false;
     }
@@ -221,4 +240,6 @@ public class RestFrontendController implements Serializable {
             return null;
         }
     }
+
+   
 }

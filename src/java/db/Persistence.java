@@ -8,10 +8,12 @@ package db;
 import access.AvatarDTO;
 import access.CommentDTO;
 import access.PostDTO;
+import access.RatingDTO;
 import access.SystemUserDTO;
 import entities.Avatar;
 import entities.Comment;
 import entities.Post;
+import entities.Rating;
 import entities.SystemUser;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +49,22 @@ public class Persistence {
         em.persist(post);
         em.merge(su);
         //em.merge(post);
+    }
+    
+    public void addRating(PostDTO post, RatingDTO r, SystemUserDTO u){
+        Rating rating = r.toRating();
+        
+        
+        SystemUser su = em.createNamedQuery("SystemUser.findByUsername", SystemUser.class).setParameter("username", u.getUsername()).getSingleResult();
+        Post p = em.createNamedQuery("Post.findByUrl", Post.class).setParameter("url", post.getUrl()).getSingleResult();
+        
+        su.addRating(rating);
+        p.addRating(rating);
+        p.calcTotalRating();
+        em.persist(rating);
+        em.merge(p);
+        em.merge(su);
+    
     }
 
     public void addComment(CommentDTO c, PostDTO post, SystemUserDTO currentUser) {
@@ -140,6 +158,7 @@ public class Persistence {
     public PostDTO getPost(Long id) {
         return PostDTO.toPostDTO(em.find(Post.class, id));
     }
-
+    
+    
     
 }

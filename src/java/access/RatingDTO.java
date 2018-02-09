@@ -7,6 +7,11 @@ package access;
 
 import entities.Rating;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 /**
  *
@@ -18,6 +23,8 @@ public class RatingDTO implements Serializable {
     private int ratedValue;
     private SystemUserDTO user;
     private PostDTO post;
+    
+    public RatingDTO(){}
 
     public RatingDTO(Long id, int ratedValue, SystemUserDTO user, PostDTO post) {
         this.id = id;
@@ -55,6 +62,46 @@ public class RatingDTO implements Serializable {
     public PostDTO getPost() {
         return post;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setRatedValue(int ratedValue) {
+        this.ratedValue = ratedValue;
+    }
+
+    public void setUser(SystemUserDTO user) {
+        this.user = user;
+    }
+
+    public void setPost(PostDTO post) {
+        this.post = post;
+    }
     
+    
+
+    public JsonObject toJsonObject() {
+        JsonObjectBuilder js = Json.createObjectBuilder();
+        if (this.id != null) {
+            js.add("id", this.id);
+        }
+        js.add("ratedValue", this.ratedValue)
+                .add("user", this.user.toJsonObject())
+                .add("post", this.post.toJsonObject());
+        return js.build();
+    }
+    
+    public static RatingDTO toPOJO(JsonObject js) {
+        RatingDTO r = new RatingDTO();
+        
+        if (js.getJsonNumber("id") != null) {
+            r.setId(js.getJsonNumber("id").longValue());
+        }
+        r.setRatedValue(js.getInt("ratedValue"));
+        r.setUser(SystemUserDTO.toPOJO(js.getJsonObject("user")));
+        r.setPost(PostDTO.toPOJO(js.getJsonObject("post")));
+        return r;
+    }
     
 }
