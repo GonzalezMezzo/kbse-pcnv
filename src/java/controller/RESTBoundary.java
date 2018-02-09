@@ -76,7 +76,9 @@ public class RESTBoundary {
     @Path("/addComment")
     public JsonObject addComment(JsonObject jo) {
         CommentDTO c = CommentDTO.toPOJO(jo);
-        mdlctrl.addComment(c);
+        PostDTO p = new PostDTO(); // TODO replace with suitable getter
+        SystemUserDTO u = new SystemUserDTO();
+        mdlctrl.addComment(c,p,u);
         return Json.createObjectBuilder().add("success", true).build();
     }
 }

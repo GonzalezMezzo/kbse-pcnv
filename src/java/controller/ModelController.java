@@ -51,7 +51,20 @@ public class ModelController implements Serializable {
         }
         return true;
     }
-
+    
+    public boolean addComment(CommentDTO comment, PostDTO p, SystemUserDTO currentUser ) {
+        try {
+            db.addComment(comment,p,currentUser);
+            return true;
+        } catch (EJBException e) {
+            /**
+             * todo: error handling
+             */
+            System.out.println("addComment -> exception");
+            return false;
+        }
+    }
+    
     public boolean deletePost(long id) {
         try {
             db.deletePost(id);
@@ -92,18 +105,7 @@ public class ModelController implements Serializable {
         }
     }
 
-    public boolean addComment(CommentDTO comment) {
-        try {
-            db.addComment(comment);
-            return true;
-        } catch (EJBException e) {
-            /**
-             * todo: error handling
-             */
-            System.out.println("addComment -> exception");
-            return false;
-        }
-    }
+    
 
     public boolean addSystemUser(SystemUserDTO user) {
         try {

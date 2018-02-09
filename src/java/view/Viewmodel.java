@@ -144,7 +144,7 @@ public class Viewmodel implements Serializable {
     public String submitComment() {
         refreshState();
         CommentDTO comment = new CommentDTO(this.inputCommentMessage, this.currentUser, this.currentPost);
-        ctrl.addComment(comment);
+        ctrl.addComment(comment,this.currentPost,this.currentUser);
         refreshState();
         return POST;
     }

@@ -10,6 +10,7 @@ import access.CommentDTO;
 import access.PostDTO;
 import access.SystemUserDTO;
 import entities.Avatar;
+import entities.Comment;
 import entities.Post;
 import entities.SystemUser;
 import java.util.ArrayList;
@@ -35,17 +36,35 @@ public class Persistence {
 
     public void addPost(PostDTO p, SystemUserDTO currentUser) {
         Post post = p.toPost();
-        
+
         //String url = post.getUrl();                 
         //Post addedPost = em.createNamedQuery("Post.findByUrl", Post.class).setParameter("url", url).getSingleResult();
         SystemUser su = em.createNamedQuery("SystemUser.findByUsername", SystemUser.class).setParameter("username", currentUser.getUsername()).getSingleResult();
-        
+
         su.getPosts().add(post);
         post.setAuthor(su);
-        
+
         em.persist(post);
         em.merge(su);
         //em.merge(post);
+    }
+
+    public void addComment(CommentDTO c, PostDTO post, SystemUserDTO currentUser) {
+        //Post p = em.find(Post.class, c.getOwnerId());
+        //p.getComments().add(c.toComment());
+        //em.merge(p);
+        Comment com = c.toComment();
+        
+        SystemUser su = em.createNamedQuery("SystemUser.findByUsername", SystemUser.class).setParameter("username", currentUser.getUsername()).getSingleResult();
+        Post p = em.createNamedQuery("Post.findByUrl", Post.class).setParameter("url", post.getUrl()).getSingleResult();
+        
+        su.addComment(com);
+        p.addComment(com);
+        com.setAuthor(su);
+        com.setPost(p);
+        em.persist(com);
+        em.merge(p);
+        em.merge(su);
     }
 
     public void addSystemUser(SystemUserDTO u) {
@@ -82,7 +101,7 @@ public class Persistence {
     public void updateSystemUser(SystemUserDTO u) {
         List<SystemUser> tmp = em.createNamedQuery("SystemUser.findAll", SystemUser.class).getResultList();
         for (SystemUser systemUser : tmp) {
-            if(systemUser.getUsername().equals(u.getUsername())) {
+            if (systemUser.getUsername().equals(u.getUsername())) {
                 systemUser.setUsername(u.getUsername());
                 systemUser.setFname(u.getFname());
                 systemUser.setLname(u.getLname());
@@ -95,12 +114,6 @@ public class Persistence {
         //SystemUser su = em.find(SystemUser.class, userId);
         //su = u.toSystemUser();
         //em.merge(u);
-    }
-
-    public void addComment(CommentDTO c) {
-        Post p = em.find(Post.class, c.getOwnerId());
-        p.getComments().add(c.toComment());
-        em.merge(p);
     }
 
     public void addAvatar(AvatarDTO avatarDTO) {

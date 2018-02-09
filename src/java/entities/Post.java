@@ -45,7 +45,7 @@ public class Post implements Serializable {
     @Basic
     private int totalRating;
 
-    @ManyToOne(targetEntity = SystemUser.class, cascade = CascadeType.MERGE)
+    @ManyToOne(targetEntity = SystemUser.class)
     private SystemUser author;
 
     @OneToMany(targetEntity = Comment.class, mappedBy = "post")
