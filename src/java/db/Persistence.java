@@ -33,14 +33,19 @@ public class Persistence {
         em.remove(tmp);
     }
 
-    public void addPost(PostDTO p) {
-        Post tmp = p.toPost();
-        String url = tmp.getUrl();
-        em.persist(tmp);
-          
-        SystemUser su = em.find(SystemUser.class, url);
-        su.getPosts().add(tmp);
+    public void addPost(PostDTO p, SystemUserDTO currentUser) {
+        Post post = p.toPost();
+        
+        //String url = post.getUrl();                 
+        //Post addedPost = em.createNamedQuery("Post.findByUrl", Post.class).setParameter("url", url).getSingleResult();
+        SystemUser su = em.createNamedQuery("SystemUser.findByUsername", SystemUser.class).setParameter("username", currentUser.getUsername()).getSingleResult();
+        
+        su.getPosts().add(post);
+        post.setAuthor(su);
+        
+        em.persist(post);
         em.merge(su);
+        //em.merge(post);
     }
 
     public void addSystemUser(SystemUserDTO u) {

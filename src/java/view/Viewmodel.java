@@ -129,7 +129,7 @@ public class Viewmodel implements Serializable {
         
         PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
         
-        ctrl.addPost(post);
+        ctrl.addPost(post,this.currentUser);
         refreshState();
         return BOARD;
     }

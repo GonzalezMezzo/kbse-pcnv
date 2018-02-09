@@ -39,9 +39,9 @@ public class ModelController implements Serializable {
         this.userList = db.getAllUsers();
     }
 
-    public boolean addPost(PostDTO p) {
+    public boolean addPost(PostDTO p, SystemUserDTO u) {
         try {
-            db.addPost(p);
+            db.addPost(p,u);
         } catch (EJBException | NullPointerException e) {
             /**
              * todo: error handling

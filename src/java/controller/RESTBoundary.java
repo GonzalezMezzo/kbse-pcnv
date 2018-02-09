@@ -7,6 +7,7 @@ package controller;
 
 import access.CommentDTO;
 import access.PostDTO;
+import access.SystemUserDTO;
 import com.google.gson.Gson;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -47,7 +48,8 @@ public class RESTBoundary {
     @Path("/addPost")
     public JsonObject addPost(JsonObject jo) {
         PostDTO p = PostDTO.toPOJO(jo);
-        return Json.createObjectBuilder().add("success", mdlctrl.addPost(p)).build();
+        SystemUserDTO u = new SystemUserDTO(); // TODO user mit senden, added da sonst compile fehler 
+        return Json.createObjectBuilder().add("success", mdlctrl.addPost(p,u)).build();
     }
 
     @DELETE
