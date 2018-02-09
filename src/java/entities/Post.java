@@ -48,10 +48,10 @@ public class Post implements Serializable {
     @ManyToOne(targetEntity = SystemUser.class)
     private SystemUser author;
 
-    @OneToMany(targetEntity = Comment.class, mappedBy = "post")
+    @OneToMany(targetEntity = Comment.class, orphanRemoval = true)
     private List<Comment> comments;
 
-    @OneToMany(targetEntity = Rating.class, mappedBy = "post")
+    @OneToMany(targetEntity = Rating.class, mappedBy = "post" , orphanRemoval = true)
     private List<Rating> ratings;
 
     public Long getId() {
@@ -107,12 +107,12 @@ public class Post implements Serializable {
 
     public void addComment(Comment comment) {
         getComments().add(comment);
-        comment.setPost(this);
+        //comment.setPost(this);
     }
 
     public void removeComment(Comment comment) {
         getComments().remove(comment);
-        comment.setPost(null);
+        //comment.setPost(null);
     }
 
     public List<Rating> getRatings() {

@@ -111,8 +111,8 @@ public class Viewmodel implements Serializable {
         refreshState();
         SystemUserDTO user = new SystemUserDTO(this.inputTextUser,this.inputTextFName,this.inputTextLName, this.inputTextEMail);
         ctrl.addSystemUser(user);
-        this.currentUser = user;
         refreshState();
+        this.currentUser = user;
         return USER_CONTROL;
     }
 
@@ -151,12 +151,12 @@ public class Viewmodel implements Serializable {
 
     public void refreshState() {
         Long postId = null;
-        Long userId = null;
+        String username = null;
         if (this.currentPost != null) {
             postId = this.currentPost.getId();
         }
         if (this.currentUser != null) {
-            userId = this.currentUser.getId();
+            username = this.currentUser.getUsername();
         }
         ctrl.refreshState();
         this.postList = ctrl.getPostList();
@@ -165,6 +165,10 @@ public class Viewmodel implements Serializable {
 
         ratingCollector = new int[postList.size()];
 
+        this.currentPost = ctrl.getPost(postId);
+        this.currentUser = ctrl.getSystemUser(username);
+        
+        /*
         if (postId != null) {
             for (PostDTO postDTO : postList) {
                 if (Objects.equals(postDTO.getId(), postId)) {
@@ -173,13 +177,13 @@ public class Viewmodel implements Serializable {
             }
         }
 
-        if(userId != null) {
+        if(username != null) {
             for (SystemUserDTO systemUserDTO : userList) {
-                if(Objects.equals(systemUserDTO.getId(), userId)) {
+                if(Objects.equals(systemUserDTO.getId(), username)) {
                     this.currentUser = systemUserDTO;
                 }
             }
-        }
+        }*/
         
         inputTextNumber = 0;
         ctrl.refreshState();

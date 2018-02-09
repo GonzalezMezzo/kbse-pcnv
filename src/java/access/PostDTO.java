@@ -30,9 +30,12 @@ public class PostDTO implements Serializable {
     private String url;
     private String description;
     private SystemUserDTO creatorId;
+    //private Long creatorId;
     private int totalRating;
     private List<CommentDTO> comments;
     private List<RatingDTO> ratings;
+    //private List<Long> comments;
+    //private List<Long> ratings;
 
     public PostDTO() {
     }
@@ -60,7 +63,7 @@ public class PostDTO implements Serializable {
         if (p == null) {
             return null;
         }
-        List<CommentDTO> comments = new ArrayList<CommentDTO>();
+        List<CommentDTO> comments = new ArrayList<>();
         for (Comment c : p.getComments()) {
             comments.add(CommentDTO.toCommentDTO(c));
         }
@@ -90,7 +93,7 @@ public class PostDTO implements Serializable {
         }
         js.add("url", this.url)
                 .add("description", this.description)
-                .add("creatorId", this.creatorId.toJsonObject())
+                .add("url", this.url)
                 .add("totalRating", this.totalRating)
                 .add("ratings", mapString)
                 .add("comments", listString);
@@ -106,11 +109,11 @@ public class PostDTO implements Serializable {
         }
         p.setUrl(js.getString("url"));
         p.setDescription(js.getString("description"));
-        p.setCreatorId(SystemUserDTO.toPOJO(js.getJsonObject("creatorId")));
+        p.setCreatorId(gson.fromJson(js.getString("creatorId"), SystemUserDTO.class));
         p.setTotalRating(js.getInt("totalRating"));
-        p.setComments(gson.fromJson(js.getString("comments"), new TypeToken<List<CommentDTO>>() {
+        p.setComments(gson.fromJson(js.getString("comments"), new TypeToken<List<Long>>() {
         }.getType()));
-        p.setRatings(gson.fromJson(js.getString("ratings"), new TypeToken<Map<String, Integer>>() {
+        p.setRatings(gson.fromJson(js.getString("ratings"), new TypeToken<List<Long>>() {
         }.getType()));
         return p;
     }

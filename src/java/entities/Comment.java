@@ -10,11 +10,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  * @author nolde
  */
 @Entity
+@NamedQueries({
+    @NamedQuery(name = "Comment.findAll", query= "SELECT s FROM Post s"),
+    @NamedQuery(name = "Comment.findByUrlAndUsername", query= "SELECT s FROM Post s WHERE s.url= :url AND s.author = :username")
+})
 public class Comment implements Serializable {
 
     @Id
@@ -30,8 +36,8 @@ public class Comment implements Serializable {
     @ManyToOne(targetEntity = SystemUser.class)
     private SystemUser author;
 
-    @ManyToOne(targetEntity = Post.class)
-    private Post post;
+    //@ManyToOne(targetEntity = Post.class)
+    //private Post post;
 
     public Long getId() {
         return this.id;
@@ -65,12 +71,12 @@ public class Comment implements Serializable {
         this.author = author;
     }
 
-    public Post getPost() {
+    /*public Post getPost() {
         return this.post;
     }
 
     public void setPost(Post post) {
         this.post = post;
     }
-
+    */
 }

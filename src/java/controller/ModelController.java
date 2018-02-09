@@ -41,7 +41,7 @@ public class ModelController implements Serializable {
 
     public boolean addPost(PostDTO p, SystemUserDTO u) {
         try {
-            db.addPost(p,u);
+            db.addPost(p, u);
         } catch (EJBException | NullPointerException e) {
             /**
              * todo: error handling
@@ -51,10 +51,10 @@ public class ModelController implements Serializable {
         }
         return true;
     }
-    
-    public boolean addComment(CommentDTO comment, PostDTO p, SystemUserDTO currentUser ) {
+
+    public boolean addComment(CommentDTO comment, PostDTO p, SystemUserDTO currentUser) {
         try {
-            db.addComment(comment,p,currentUser);
+            db.addComment(comment, p, currentUser);
             return true;
         } catch (EJBException e) {
             /**
@@ -64,7 +64,7 @@ public class ModelController implements Serializable {
             return false;
         }
     }
-    
+
     public boolean deletePost(long id) {
         try {
             db.deletePost(id);
@@ -93,7 +93,7 @@ public class ModelController implements Serializable {
             System.out.println("refreshRatings -> exception");
         }
     }
-    
+
     public boolean updateSystemUser(SystemUserDTO su) {
         try {
             db.updateSystemUser(su);
@@ -104,8 +104,6 @@ public class ModelController implements Serializable {
             return false;
         }
     }
-
-    
 
     public boolean addSystemUser(SystemUserDTO user) {
         try {
@@ -126,6 +124,14 @@ public class ModelController implements Serializable {
         return postList;
     }
 
+    public PostDTO getPost(Long id) {
+        if (id == null) {
+            return null;
+        } else {
+            return db.getPost(id);
+        }
+    }
+
     public List<SystemUserDTO> getUserList() {
         return userList;
     }
@@ -139,5 +145,21 @@ public class ModelController implements Serializable {
             return false;
         }
     }
-       
+
+    public SystemUserDTO getSystemUser(Long userId) {
+        if(userId == null) {
+            return null;
+        } else {
+            return SystemUserDTO.toSystemUserDTO(db.getUser(userId));
+        }
+    }
+
+    public SystemUserDTO getSystemUser(String username) {
+        if(username == null) {
+            return null;
+        } else {
+            return SystemUserDTO.toSystemUserDTO(db.getUser(username));
+        }
+    }
+
 }

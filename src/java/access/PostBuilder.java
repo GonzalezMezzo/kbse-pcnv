@@ -5,13 +5,13 @@
  */
 package access;
 
+import controller.ModelController;
 import entities.Comment;
 import entities.Post;
 import entities.Rating;
 import entities.SystemUser;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  *
@@ -26,6 +26,7 @@ public class PostBuilder implements Serializable {
     private SystemUser creatorId;
     private int totalRating;
     private ArrayList<Rating> ratings;
+    private ModelController ctrl;
 
     private PostBuilder() {
     }

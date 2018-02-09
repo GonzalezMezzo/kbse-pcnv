@@ -42,6 +42,13 @@ public class CommentDTO implements Serializable {
         this.ownerId = ownerId;
     }
 
+    public CommentDTO(Long id, String message, SystemUserDTO creatorId, String timeStamp) {
+        this.id = id;
+        this.message = message;
+        this.timeStamp = timeStamp;
+        this.creatorId = creatorId;
+    }
+    
     public CommentDTO(Long id, String message, SystemUserDTO creatorId, String timestamp, PostDTO ownerId) {
         this.id = id;
         this.creatorId = creatorId;
@@ -54,7 +61,7 @@ public class CommentDTO implements Serializable {
         if (c == null) {
             return null;
         }
-        return new CommentDTO(c.getId(), c.getMessage(), SystemUserDTO.toSystemUserDTO(c.getAuthor()), c.getTimestamp(), PostDTO.toPostDTO(c.getPost()));
+        return new CommentDTO(c.getId(), c.getMessage(), SystemUserDTO.toSystemUserDTO(c.getAuthor()), c.getTimestamp()/*, PostDTO.toPostDTO(c.getPost())*/);
     }
 
     public Comment toComment() {

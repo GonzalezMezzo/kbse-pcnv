@@ -33,7 +33,7 @@ public class CommentBuilder {
         res.setMessage(this.message);
         res.setTimestamp(this.timeStamp);
         res.setAuthor(this.creatorId);
-        res.setPost(this.ownerId);
+        //res.setPost(this.ownerId);
         return res;
     }
 

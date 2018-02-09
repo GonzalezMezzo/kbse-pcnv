@@ -61,7 +61,7 @@ public class Persistence {
         su.addComment(com);
         p.addComment(com);
         com.setAuthor(su);
-        com.setPost(p);
+        //com.setPost(p);
         em.persist(com);
         em.merge(p);
         em.merge(su);
@@ -120,5 +120,26 @@ public class Persistence {
         Avatar tmp = avatarDTO.toAvatar();
         em.persist(tmp);
     }
+    
+    public Post getPost(String url) {
+        return em.createNamedQuery("Post.findByUrl", Post.class).setParameter("url", url).getSingleResult();
+    }
+    
+    public SystemUser getUser(String username) {
+        return em.createNamedQuery("SystemUser.findByUsername", SystemUser.class).setParameter("username", username).getSingleResult();
+    }
+    
+    public SystemUser getUser(Long userId) {
+        return em.find(SystemUser.class, userId);
+    }
 
+    public List<Comment> getCommentList(String urlPost, String username) {
+        return em.createNamedQuery("Comment.findByUrlAndUsername", Comment.class).setParameter("url", urlPost).setParameter("username", username).getResultList();
+    }
+
+    public PostDTO getPost(Long id) {
+        return PostDTO.toPostDTO(em.find(Post.class, id));
+    }
+
+    
 }
