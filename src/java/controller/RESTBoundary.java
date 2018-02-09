@@ -47,9 +47,18 @@ public class RESTBoundary {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/addPost")
     public JsonObject addPost(JsonObject jo) {
-        PostDTO p = PostDTO.toPOJO(jo);
-        SystemUserDTO u = new SystemUserDTO(); // TODO user mit senden, added da sonst compile fehler 
-        return Json.createObjectBuilder().add("success", mdlctrl.addPost(p,u)).build();
+        PostDTO p = PostDTO.toPOJO(jo.getJsonObject("post"));
+        SystemUserDTO u = SystemUserDTO.toPOJO(jo.getJsonObject("user"));
+        return Json.createObjectBuilder().add("success", mdlctrl.addPost(p, u)).build();
+    }
+    
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/addSystemUser")
+    public JsonObject addSystemUser(JsonObject jo){
+        SystemUserDTO user = SystemUserDTO.toPOJO(jo);
+        return Json.createObjectBuilder().add("success", mdlctrl.addSystemUser(user)).build();
     }
 
     @DELETE
@@ -75,10 +84,49 @@ public class RESTBoundary {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/addComment")
     public JsonObject addComment(JsonObject jo) {
-        CommentDTO c = CommentDTO.toPOJO(jo);
-        PostDTO p = new PostDTO(); // TODO replace with suitable getter
-        SystemUserDTO u = new SystemUserDTO();
-        mdlctrl.addComment(c,p,u);
+        CommentDTO c = CommentDTO.toPOJO(jo.getJsonObject("comment"));
+        PostDTO p = PostDTO.toPOJO(jo.getJsonObject("post"));
+        SystemUserDTO u = SystemUserDTO.toPOJO(jo.getJsonObject("user"));
+        mdlctrl.addComment(c, p, u);
         return Json.createObjectBuilder().add("success", true).build();
     }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getPostList")
+    public JsonObject getPostList() {
+        mdlctrl.refreshState();
+        List<PostDTO> list = mdlctrl.getPostList();
+        Gson gson = new Gson();
+        return Json.createObjectBuilder().add("list", gson.toJson(list)).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getUserList")
+    public JsonObject getUserList() {
+        mdlctrl.refreshState();
+        List<SystemUserDTO> list = mdlctrl.getUserList();
+        Gson gson = new Gson();
+        return Json.createObjectBuilder().add("list", gson.toJson(list)).build();
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getSystemUser/{username}")
+    public JsonObject getSystemUser(@PathParam("username")String username){
+        SystemUserDTO user = mdlctrl.getSystemUser(username);
+        return Json.createObjectBuilder().add("user", user.toJsonObject()).build();
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getPost/{post}")
+    public JsonObject getPost(@PathParam("post")long postId){
+        PostDTO post = mdlctrl.getPost(postId);
+        return post.toJsonObject();
+        //return Json.createObjectBuilder().add("post", post.toJsonObject()).build();
+    }
+    
+    
 }

@@ -13,6 +13,7 @@ import entities.Rating;
 import entities.SystemUser;
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +95,7 @@ public class PostDTO implements Serializable {
         js.add("url", this.url)
                 .add("description", this.description)
                 .add("url", this.url)
+                .add("creatorId", gson.toJson(this.creatorId, SystemUserDTO.class))
                 .add("totalRating", this.totalRating)
                 .add("ratings", mapString)
                 .add("comments", listString);
@@ -111,9 +113,9 @@ public class PostDTO implements Serializable {
         p.setDescription(js.getString("description"));
         p.setCreatorId(gson.fromJson(js.getString("creatorId"), SystemUserDTO.class));
         p.setTotalRating(js.getInt("totalRating"));
-        p.setComments(gson.fromJson(js.getString("comments"), new TypeToken<List<Long>>() {
+        p.setComments(gson.fromJson(js.getString("comments"), new TypeToken<List<CommentDTO>>() {
         }.getType()));
-        p.setRatings(gson.fromJson(js.getString("ratings"), new TypeToken<List<Long>>() {
+        p.setRatings(gson.fromJson(js.getString("ratings"), new TypeToken<List<RatingDTO>>() {
         }.getType()));
         return p;
     }

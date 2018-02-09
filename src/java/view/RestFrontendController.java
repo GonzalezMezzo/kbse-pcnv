@@ -5,8 +5,10 @@
  */
 package view;
 
+import access.AvatarDTO;
 import access.CommentDTO;
 import access.PostDTO;
+import access.SystemUserDTO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.Serializable;
@@ -32,96 +34,181 @@ import javax.ws.rs.core.MediaType;
  */
 @Dependent
 public class RestFrontendController implements Serializable {
+
     private final static String ADRESS = "http://localhost:8080/kbse-pcnv/r";
-    
+
     private Client client;
     private WebTarget wt;
-    
+
     @PostConstruct
-    public void init(){
+    public void init() {
         this.client = ClientBuilder.newClient();
         this.wt = client.target(ADRESS);
     }
-    
-    public Boolean addPost(PostDTO p){
-        this.wt = client.target(ADRESS+"/addPost");
-        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
-        Entity entity = Entity.entity(p.toJsonObject(), MediaType.APPLICATION_JSON);
-        
-        try{
-            JsonObject res = build.post(entity, JsonObject.class);
-            return res.getBoolean("success");
-            
-        }catch(Exception e){
-            System.out.println("addPost(rest) ->");
-        }
-        return false;
-    }
 
     boolean deletePost(long id) {
-        this.wt = client.target(ADRESS+"/deletePost/"+id);
+        this.wt = client.target(ADRESS + "/deletePost/" + id);
 
         Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
-        try{         
+        try {
             JsonObject res = build.delete(JsonObject.class);
             return res.getBoolean("success");
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("deletePost(rest) ->");
             return false;
         }
     }
-    List<PostDTO> refreshState() {
-        this.wt = client.target(ADRESS+"/refreshState");
-       Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+
+    public List<PostDTO> refreshState() {
+        this.wt = client.target(ADRESS + "/refreshState");
+        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
         Gson gson = new Gson();
-        
-        try{
+
+        try {
             JsonObject res = build.get(JsonObject.class);
-            Type listType = new TypeToken<ArrayList<PostDTO>>(){}.getType();
-            return (List<PostDTO>)gson.fromJson(res.getString("list"), listType);
-                
-        }catch(Exception e){
+            Type listType = new TypeToken<ArrayList<PostDTO>>() {
+            }.getType();
+            return (List<PostDTO>) gson.fromJson(res.getString("list"), listType);
+
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
     void updateRatings(List<PostDTO> postList) {
-        this.wt = client.target(ADRESS+"/updateRatings");
-        
+        this.wt = client.target(ADRESS + "/updateRatings");
+
     }
-    
+
     boolean addComment(CommentDTO comment) {
-        this.wt = client.target(ADRESS+"/addComment");
+        this.wt = client.target(ADRESS + "/addComment");
         Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
         Entity entity = Entity.entity(comment.toJsonObject(), MediaType.APPLICATION_JSON);
-        try{           
+        try {
             JsonObject res = build.post(entity, JsonObject.class);
             return res.getBoolean("success");
-            
-        }catch(Exception e){
+
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("addComment(rest) ->");
         }
         return false;
     }
     
-    /*
-    boolean addComment(Long currentPostId, CommentDTO comment) {
-        this.wt = client.target(ADRESS+"/addComment");
+    public boolean addComment(CommentDTO comment, PostDTO currentPost, SystemUserDTO currentUser) {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add("comment", comment.toJsonObject()).add("post", currentPost.toJsonObject()).add("user", currentUser.toJsonObject());
+        
+        this.wt = client.target(ADRESS + "/addComment");
         Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
-        JsonObjectBuilder js = Json.createObjectBuilder();
-        js.add("postid", currentPostId).add("comment", comment.toJsonObject());
-        Entity entity = Entity.entity(js.build(), MediaType.APPLICATION_JSON);
-        try{           
-            
+        Entity entity = Entity.entity(builder.build(), MediaType.APPLICATION_JSON);
+
+        try {
             JsonObject res = build.post(entity, JsonObject.class);
             return res.getBoolean("success");
-            
-        }catch(Exception e){
-            e.printStackTrace();
+
+        } catch (Exception e) {
             System.out.println("addComment(rest) ->");
         }
         return false;
-    }*/
+    }
+
+    void addAvatar(AvatarDTO avatarDTO) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public boolean addSystemUser(SystemUserDTO user) {
+        this.wt = client.target(ADRESS + "/addSystemUser");
+        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+        Entity entity = Entity.entity(user.toJsonObject(), MediaType.APPLICATION_JSON);
+
+        try {
+            JsonObject res = build.post(entity, JsonObject.class);
+            return res.getBoolean("success");
+
+        } catch (Exception e) {
+            System.out.println("addSystemUer(rest) ->");
+        }
+        return false;
+    }
+    
+    public boolean addPost(PostDTO post, SystemUserDTO currentUser) {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add("post", post.toJsonObject()).add("user", currentUser.toJsonObject());
+        
+        this.wt = client.target(ADRESS + "/addPost");
+        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+        Entity entity = Entity.entity(builder.build(), MediaType.APPLICATION_JSON);
+
+        try {
+            JsonObject res = build.post(entity, JsonObject.class);
+            return res.getBoolean("success");
+
+        } catch (Exception e) {
+            System.out.println("addPost(rest) ->");
+        }
+        return false;
+    }
+
+    List<PostDTO> getPostList() {
+        this.wt = client.target(ADRESS + "/getPostList");
+        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+        Gson gson = new Gson();
+
+        try {
+            JsonObject res = build.get(JsonObject.class);
+            Type listType = new TypeToken<ArrayList<PostDTO>>() {
+            }.getType();
+            return (List<PostDTO>) gson.fromJson(res.getString("list"), listType);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    List<SystemUserDTO> getUserList() {
+       this.wt = client.target(ADRESS + "/getUserList");
+       Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+       Gson gson = new Gson();
+       
+       try {
+            JsonObject res = build.get(JsonObject.class);
+            Type listType = new TypeToken<ArrayList<PostDTO>>() {
+            }.getType();
+            return (List<SystemUserDTO>) gson.fromJson(res.getString("list"), listType);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    PostDTO getPost(long postId) {
+        this.wt = client.target(ADRESS + "/getPost/"+ postId);
+       Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+       
+       try{
+           JsonObject res = build.get(JsonObject.class);
+           return PostDTO.toPOJO(res);
+           //return PostDTO.toPOJO(res.getJsonObject("post"));
+       } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    SystemUserDTO getSystemUser(String username) {
+        this.wt = client.target(ADRESS + "/getSystemUser/"+username);
+       Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+       
+       try{
+           JsonObject res = build.get(JsonObject.class);
+           return SystemUserDTO.toPOJO(res.getJsonObject("user"));
+       } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

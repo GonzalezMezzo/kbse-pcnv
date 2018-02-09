@@ -30,8 +30,8 @@ import javax.inject.Named;
 public class Viewmodel implements Serializable {
 
     @Inject
-    //RestFrontendController ctrl;
-    ModelController ctrl;
+    RestFrontendController ctrl;
+    //ModelController ctrl;
 
     private static final String INDEX = "/index.xhtml?faces-redirect=true";
     private static final String RATING = "/rating.xhtml?faces-redirect=true";
@@ -57,9 +57,14 @@ public class Viewmodel implements Serializable {
 
     private SystemUserDTO currentUser;
     private PostDTO currentPost;
+    
+    Long postId;
+    String username;
 
     @PostConstruct
     public void init() {
+        postId = null;
+        username = null;
         /*
         this.inputTextUser = "User";
         this.inputTextDescription = "Dies das, ein bisschen länger";
@@ -69,7 +74,7 @@ public class Viewmodel implements Serializable {
         this.inputTexTURL = "www.google.de";
         this.inputTextNumber = 0;
          */
-        ctrl.addAvatar(new AvatarDTO());
+        //ctrl.addAvatar(new AvatarDTO());
 
         refreshState();
         /**
@@ -150,23 +155,20 @@ public class Viewmodel implements Serializable {
     }
 
     public void refreshState() {
-        Long postId = null;
-        String username = null;
         if (this.currentPost != null) {
             postId = this.currentPost.getId();
+            this.currentPost = ctrl.getPost(postId);
         }
         if (this.currentUser != null) {
             username = this.currentUser.getUsername();
+            this.currentUser = ctrl.getSystemUser(username);
         }
-        ctrl.refreshState();
         this.postList = ctrl.getPostList();
-        ctrl.refreshState();
         this.userList = ctrl.getUserList();
 
         ratingCollector = new int[postList.size()];
 
-        this.currentPost = ctrl.getPost(postId);
-        this.currentUser = ctrl.getSystemUser(username);
+
         
         /*
         if (postId != null) {

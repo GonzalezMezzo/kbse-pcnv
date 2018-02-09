@@ -96,7 +96,8 @@ public class SystemUserDTO implements Serializable {
         u.setFname(js.getString("firstname"));
         u.setLname(js.getString("lastname"));
         u.setEmail(js.getString("email"));
-        u.setAvatar(gson.fromJson("avatar", AvatarDTO.class));
+        AvatarDTO t = gson.fromJson(js.getString("avatar"), AvatarDTO.class);
+        u.setAvatar(gson.fromJson(js.getString("avatar"), AvatarDTO.class));
         return u;
     }
 
