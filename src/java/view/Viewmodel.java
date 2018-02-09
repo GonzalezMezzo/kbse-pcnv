@@ -74,7 +74,7 @@ public class Viewmodel implements Serializable {
         this.inputTexTURL = "www.google.de";
         this.inputTextNumber = 0;
          */
-        //ctrl.addAvatar(new AvatarDTO());
+        ctrl.addAvatar(new AvatarDTO());
 
         refreshState();
         /**
@@ -118,6 +118,7 @@ public class Viewmodel implements Serializable {
         ctrl.addSystemUser(user);
         refreshState();
         this.currentUser = user;
+        ratingCollector = new int[postList.size()];
         return USER_CONTROL;
     }
 
@@ -153,11 +154,25 @@ public class Viewmodel implements Serializable {
         refreshState();
         return POST;
     }
+    
+    public void fetchRatings() {
+        int i = 0;
+        this.ratingCollector = new int[postList.size()];
+        for (PostDTO postDTO : postList) {
+            for(RatingDTO rating: postDTO.getRatings()) {
+                if(rating.getUser().getUsername().equals(currentUser.getUsername())) {
+                    this.ratingCollector[i] = rating.getRatedValue();
+                }
+            }
+            i++;
+        }
+    }
 
     public void refreshState() {
         if (this.currentPost != null) {
             postId = this.currentPost.getId();
             this.currentPost = ctrl.getPost(postId);
+            
         }
         if (this.currentUser != null) {
             username = this.currentUser.getUsername();
@@ -166,10 +181,7 @@ public class Viewmodel implements Serializable {
         this.postList = ctrl.getPostList();
         this.userList = ctrl.getUserList();
 
-        ratingCollector = new int[postList.size()];
-
-
-        
+        ratingCollector = new int[postList.size()];   
         /*
         if (postId != null) {
             for (PostDTO postDTO : postList) {
@@ -242,7 +254,7 @@ public class Viewmodel implements Serializable {
      * @param i
      */
     public void addRating(int i) {
-        //ratingCollector[i] = inputTextNumber;
+
     }
 
     /*--------------------------------------------------------------------------
@@ -342,6 +354,14 @@ public class Viewmodel implements Serializable {
 
     public void setInputCommentMessage(String inputCommentMessage) {
         this.inputCommentMessage = inputCommentMessage;
+    }
+
+    public SystemUserDTO getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(SystemUserDTO currentUser) {
+        this.currentUser = currentUser;
     }
 
     private boolean validate() {

@@ -5,6 +5,7 @@
  */
 package controller;
 
+import access.AvatarDTO;
 import access.CommentDTO;
 import access.PostDTO;
 import access.SystemUserDTO;
@@ -50,6 +51,15 @@ public class RESTBoundary {
         PostDTO p = PostDTO.toPOJO(jo.getJsonObject("post"));
         SystemUserDTO u = SystemUserDTO.toPOJO(jo.getJsonObject("user"));
         return Json.createObjectBuilder().add("success", mdlctrl.addPost(p, u)).build();
+    }
+    
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/addAvatar")
+    public JsonObject addAvatar(JsonObject jo){
+        AvatarDTO avatar = AvatarDTO.toPOJO(jo);
+        return Json.createObjectBuilder().add("success", mdlctrl.addAvatar(avatar)).build();
     }
     
     @POST

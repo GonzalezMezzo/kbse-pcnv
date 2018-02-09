@@ -39,4 +39,22 @@ public class RatingDTO implements Serializable {
     public Rating toRating() {
         return RatingBuilder.create().ratedValue(this.ratedValue).user(user.toSystemUser()).post(post.toPost()).build();
     }
+
+    public SystemUserDTO getUser() {
+        return user;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public int getRatedValue() {
+        return ratedValue;
+    }
+
+    public PostDTO getPost() {
+        return post;
+    }
+    
+    
 }

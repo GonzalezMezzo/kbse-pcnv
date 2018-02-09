@@ -95,11 +95,11 @@ public class RestFrontendController implements Serializable {
         }
         return false;
     }
-    
+
     public boolean addComment(CommentDTO comment, PostDTO currentPost, SystemUserDTO currentUser) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add("comment", comment.toJsonObject()).add("post", currentPost.toJsonObject()).add("user", currentUser.toJsonObject());
-        
+
         this.wt = client.target(ADRESS + "/addComment");
         Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
         Entity entity = Entity.entity(builder.build(), MediaType.APPLICATION_JSON);
@@ -114,8 +114,19 @@ public class RestFrontendController implements Serializable {
         return false;
     }
 
-    void addAvatar(AvatarDTO avatarDTO) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean addAvatar(AvatarDTO avatarDTO) {
+        this.wt = client.target(ADRESS + "/addAvatar");
+        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+        Entity entity = Entity.entity(avatarDTO.toJsonObejct(), MediaType.APPLICATION_JSON);
+
+        try {
+            JsonObject res = build.post(entity, JsonObject.class);
+            return res.getBoolean("success");
+
+        } catch (Exception e) {
+            System.out.println("addAvatar (rest) ->");
+        }
+        return false;
     }
 
     public boolean addSystemUser(SystemUserDTO user) {
@@ -132,11 +143,11 @@ public class RestFrontendController implements Serializable {
         }
         return false;
     }
-    
+
     public boolean addPost(PostDTO post, SystemUserDTO currentUser) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add("post", post.toJsonObject()).add("user", currentUser.toJsonObject());
-        
+
         this.wt = client.target(ADRESS + "/addPost");
         Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
         Entity entity = Entity.entity(builder.build(), MediaType.APPLICATION_JSON);
@@ -169,11 +180,11 @@ public class RestFrontendController implements Serializable {
     }
 
     List<SystemUserDTO> getUserList() {
-       this.wt = client.target(ADRESS + "/getUserList");
-       Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
-       Gson gson = new Gson();
-       
-       try {
+        this.wt = client.target(ADRESS + "/getUserList");
+        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+        Gson gson = new Gson();
+
+        try {
             JsonObject res = build.get(JsonObject.class);
             Type listType = new TypeToken<ArrayList<PostDTO>>() {
             }.getType();
@@ -186,27 +197,26 @@ public class RestFrontendController implements Serializable {
     }
 
     PostDTO getPost(long postId) {
-        this.wt = client.target(ADRESS + "/getPost/"+ postId);
-       Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
-       
-       try{
-           JsonObject res = build.get(JsonObject.class);
-           return PostDTO.toPOJO(res);
-           //return PostDTO.toPOJO(res.getJsonObject("post"));
-       } catch (Exception e) {
+        this.wt = client.target(ADRESS + "/getPost/" + postId);
+        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+
+        try {
+            JsonObject res = build.get(JsonObject.class);
+            return PostDTO.toPOJO(res);
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
     SystemUserDTO getSystemUser(String username) {
-        this.wt = client.target(ADRESS + "/getSystemUser/"+username);
-       Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
-       
-       try{
-           JsonObject res = build.get(JsonObject.class);
-           return SystemUserDTO.toPOJO(res.getJsonObject("user"));
-       } catch (Exception e) {
+        this.wt = client.target(ADRESS + "/getSystemUser/" + username);
+        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
+
+        try {
+            JsonObject res = build.get(JsonObject.class);
+            return SystemUserDTO.toPOJO(res.getJsonObject("user"));
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

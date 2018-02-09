@@ -6,6 +6,7 @@
 package access;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import entities.Avatar;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import javax.json.JsonObjectBuilder;
  * @author nolde
  */
 public class AvatarDTO implements Serializable {
+
     private Long id;
     private int imageHash;
     private List<Byte> image;
@@ -62,4 +64,41 @@ public class AvatarDTO implements Serializable {
         js.add("imageHash", this.imageHash).add("image", byteList);
         return js.build();
     }
+    
+    public static AvatarDTO toPOJO(JsonObject js){
+        AvatarDTO a = new AvatarDTO();
+        Gson gson = new Gson();
+        
+        a.setId(js.getJsonNumber("id").longValue());
+        a.setImageHash(js.getInt("imageHash"));
+        a.setImage(gson.fromJson(js.getString("image"),new TypeToken<List<Byte>>() {
+        }.getType()));
+        return a;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getImageHash() {
+        return imageHash;
+    }
+
+    public void setImageHash(int imageHash) {
+        this.imageHash = imageHash;
+    }
+
+    public List<Byte> getImage() {
+        return image;
+    }
+
+    public void setImage(List<Byte> image) {
+        this.image = image;
+    }
+    
+    
 }
