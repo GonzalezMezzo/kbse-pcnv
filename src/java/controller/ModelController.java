@@ -143,7 +143,7 @@ public class ModelController implements Serializable {
              * todo: error handling
              */
             System.out.println("addUser -> exception");
-            System.out.println(e.getCause().toString());
+            //System.out.println(e.getCause().toString());
             System.out.println("addUser -> try edit instead...");
             return updateSystemUser(user);
         }

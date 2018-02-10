@@ -55,7 +55,7 @@ public class Viewmodel implements Serializable {
     private static final String USER_CONTROL = "/user_control.xhtml?faces-redirect=true";
     private static final String ABOUT = "/about.xhtml?faces-redirect=true";
     private static final String POST = "/post.xhtml?faces-redirect=true";
-    
+
     private static final boolean SAVE_IMAGES_TO_DISK = false;
 
     private List<PostDTO> postList;
@@ -78,7 +78,7 @@ public class Viewmodel implements Serializable {
 
     private Part uploadedAvatar;
     private byte[] parsedAvatar;
-    
+
     Long postId;
     String username;
 
@@ -282,19 +282,20 @@ public class Viewmodel implements Serializable {
     public void validateFile(FacesContext ctx, UIComponent comp, Object value) throws ValidatorException {
         List<FacesMessage> msgs = new ArrayList<>();
         Part file = (Part) value;
-        if (file.getSize() > 1048576) {
-            msgs.add(new FacesMessage("file too big"));
+        if (file != null) {
+            if (file.getSize() > 1048576) {
+                msgs.add(new FacesMessage("file too big"));
+            }
+            if (!file.getContentType().endsWith("jpeg")) {
+                msgs.add(new FacesMessage("Select JPEG file"));
+            }
+            if (!"image/jpeg".equals(file.getContentType())) {
+                msgs.add(new FacesMessage("not a jpeg file"));
+            }
+            if (!msgs.isEmpty()) {
+                throw new ValidatorException(msgs);
+            }
         }
-        if (!file.getContentType().endsWith("jpeg")) {
-            msgs.add(new FacesMessage("Select JPEG file"));
-        }
-        if (!"image/jpeg".equals(file.getContentType())) {
-            msgs.add(new FacesMessage("not a jpeg file"));
-        }
-        if (!msgs.isEmpty()) {
-            throw new ValidatorException(msgs);
-        }
-
     }
 
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
@@ -455,6 +456,5 @@ public class Viewmodel implements Serializable {
     public void setUploadedAvatar(Part uploadedAvatar) {
         this.uploadedAvatar = uploadedAvatar;
     }
-    
-    
+
 }
