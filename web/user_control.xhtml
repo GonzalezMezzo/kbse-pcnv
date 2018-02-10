@@ -27,7 +27,11 @@
                 </b:navbarLinks>
             </h:form>
         </b:navBar>
-
+        
+        <b:growl id="growlMsg" globalOnly="true" placementFrom="bottom"
+         show-detail="true" show-summary="false" allowDismiss="true"
+         delay="10000" escape="true" />
+        
         <b:container>
             <b:panel title="User" icon="user" icon-align="left" showCollapseLink="false">
                 <b:form enctype="multipart/form-data">
@@ -53,7 +57,7 @@
                                     <h:outputText value="E-Mail:"/>
                                 </b:column>
                                 <b:column >
-                                    <b:inputText placeholder="sample@sample.com" id="email" value="#{viewmodel.inputTextEMail}">
+                                    <b:inputText placeholder="sample@sample.com" id="email" mask="email" value="#{viewmodel.inputTextEMail}">
                                         <f:facet name="prepend">
                                             <h:outputText value="@" />
                                         </f:facet>
