@@ -11,16 +11,31 @@ import access.SystemUserDTO;
 import access.AvatarDTO;
 import access.RatingDTO;
 import controller.ModelController;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.Part;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -31,8 +46,8 @@ import javax.inject.Named;
 public class Viewmodel implements Serializable {
 
     @Inject
-    RestFrontendController ctrl;
-    //ModelController ctrl;
+    //RestFrontendController ctrl;
+    ModelController ctrl;
 
     private static final String INDEX = "/index.xhtml?faces-redirect=true";
     private static final String RATING = "/rating.xhtml?faces-redirect=true";
@@ -40,6 +55,8 @@ public class Viewmodel implements Serializable {
     private static final String USER_CONTROL = "/user_control.xhtml?faces-redirect=true";
     private static final String ABOUT = "/about.xhtml?faces-redirect=true";
     private static final String POST = "/post.xhtml?faces-redirect=true";
+    
+    private static final boolean SAVE_IMAGES_TO_DISK = false;
 
     private List<PostDTO> postList;
     private List<SystemUserDTO> userList;
@@ -59,6 +76,9 @@ public class Viewmodel implements Serializable {
     private SystemUserDTO currentUser;
     private PostDTO currentPost;
 
+    private Part uploadedAvatar;
+    private byte[] parsedAvatar;
+    
     Long postId;
     String username;
 
@@ -194,9 +214,9 @@ public class Viewmodel implements Serializable {
 
     public String submitRating() {
         if (validate() == true) {//method stub
-            
+
             //delete every previous rating for this user
-            ctrl.deleteRating(currentUser.getUsername()); 
+            ctrl.deleteRating(currentUser.getUsername());
             //add individual ratings for this submit    
             for (Map.Entry<PostDTO, RatingDTO> entry : ratingCollector.entrySet()) {
                 ctrl.addRating(entry.getKey(), entry.getValue(), currentUser);
@@ -209,9 +229,9 @@ public class Viewmodel implements Serializable {
     public boolean validate() {
         int res = 0;
         for (Map.Entry<PostDTO, RatingDTO> entry : ratingCollector.entrySet()) {
-                res += entry.getValue().getRatedValue();
+            res += entry.getValue().getRatedValue();
         }
-        if(res<=10 && res>=0){
+        if (res <= 10 && res >= 0) {
             return true;
         }
         return false;
@@ -226,6 +246,90 @@ public class Viewmodel implements Serializable {
         System.out.println(post);
         System.out.println(inputTextNumber);
         ratingCollector.put(post, new RatingDTO(inputTextNumber, currentUser, post));
+    }
+
+    public String upload() {
+        Part uploadedFile = this.uploadedAvatar;
+        final Path destination = Paths.get(System.getProperty("user.dir") + "\\tempImage.jpeg");
+        List<Byte> byteList;
+        int hash = 0;
+        AvatarDTO avatar = null;
+        InputStream bytes = null;
+        if (null != uploadedFile) {
+            try {
+                if (SAVE_IMAGES_TO_DISK) {
+                    bytes = uploadedFile.getInputStream();
+                    Files.copy(bytes, destination, REPLACE_EXISTING);
+                }
+                bytes = uploadedFile.getInputStream();
+                this.parsedAvatar = IOUtils.toByteArray(bytes);
+                //this.parsedAvatar = toByteArray(bytes);
+                //byteList = Arrays.asList(this.parsedAvatar);
+                //hash = calculateImageHash(this.parsedAvatar);
+
+                avatar = new AvatarDTO(hash, this.parsedAvatar);
+
+                ctrl.addAvatar(avatar);
+            } catch (IOException ex) {
+                Logger.getLogger(Viewmodel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return USER_CONTROL;
+    }
+
+    //1048576 = 1mb
+    public void validateFile(FacesContext ctx, UIComponent comp, Object value) throws ValidatorException {
+        List<FacesMessage> msgs = new ArrayList<>();
+        Part file = (Part) value;
+        if (file.getSize() > 1048576) {
+            msgs.add(new FacesMessage("file too big"));
+        }
+        if (!file.getContentType().endsWith("jpeg")) {
+            msgs.add(new FacesMessage("Select JPEG file"));
+        }
+        if (!"image/jpeg".equals(file.getContentType())) {
+            msgs.add(new FacesMessage("not a jpeg file"));
+        }
+        if (!msgs.isEmpty()) {
+            throw new ValidatorException(msgs);
+        }
+
+    }
+
+    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+        Part file = (Part) value;
+        FacesMessage message = null;
+        try {
+            if (file == null || file.getSize() <= 0 || file.getContentType().isEmpty()) {
+                message = new FacesMessage("Select a valid file");
+            } else if (!file.getContentType().endsWith("jpeg")) {
+                message = new FacesMessage("Select JPEG file");
+            } else if (file.getSize() > 2000000) {
+                message = new FacesMessage("File size too big. File size allowed is less than or equal to 2 MB.");
+            }
+
+            if (message != null && !message.getDetail().isEmpty()) {
+                message.setSeverity(FacesMessage.SEVERITY_ERROR);
+                throw new ValidatorException(message);
+            }
+
+        } catch (ValidatorException ex) {
+            throw new ValidatorException(new FacesMessage(ex.getMessage()));
+        }
+
+    }
+
+    private Byte[] convertByteList(byte[] b) {
+        Byte[] res = new Byte[b.length];
+        for (int i = 0; i < b.length; i++) {
+            res[i] = b[i];
+        }
+        return res;
+    }
+
+    private int calculateImageHash(Byte[] image) {
+        return Arrays.hashCode(image);
     }
 
     /*--------------------------------------------------------------------------
@@ -343,4 +447,14 @@ public class Viewmodel implements Serializable {
     public void setRatingCollector(Map<PostDTO, RatingDTO> ratingCollector) {
         this.ratingCollector = ratingCollector;
     }
+
+    public Part getUploadedAvatar() {
+        return uploadedAvatar;
+    }
+
+    public void setUploadedAvatar(Part uploadedAvatar) {
+        this.uploadedAvatar = uploadedAvatar;
+    }
+    
+    
 }

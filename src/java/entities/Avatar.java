@@ -30,12 +30,12 @@ public class Avatar implements Serializable {
     @Column(nullable = true)
     @Lob
     @Basic
-    private ArrayList<Byte> image;
+    private byte[] image;
 
     //TODO: delete later
     public Avatar() {
         this.imageHash = -1;
-        this.image = new ArrayList<>();
+        this.image = new byte[1];
     }  
 
     public Long getId() {
@@ -54,11 +54,11 @@ public class Avatar implements Serializable {
         this.imageHash = imageHash;
     }
 
-    public ArrayList<Byte> getImage() {
+    public byte[] getImage() {
         return this.image;
     }
 
-    public void setImage(ArrayList<Byte> image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class AvatarBuilder {
     private long id;
     private int imageHash;
-    private ArrayList<Byte> image;
+    private byte[] image;
 
     private AvatarBuilder() {}
     
@@ -33,7 +33,7 @@ public class AvatarBuilder {
         return this;
     }
     
-    public AvatarBuilder image(ArrayList<Byte> image) {
+    public AvatarBuilder image(byte[] image) {
         this.image = image;
         return this;
     }

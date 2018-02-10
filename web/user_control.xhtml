@@ -99,7 +99,10 @@
                                 <img data-src="holder.js/100%x180/sky" alt="Generic placeholder thumbnail"/>
                                 <f:facet name="caption" transient="false">
                                     <p>Upload Image-File</p>
-                                    <h:inputFile/>
+                                    <h:inputFile id="file" value="#{viewmodel.uploadedAvatar}" validator="#{viewmodel.validateFile}"/>
+                                    <b:commandButton value="Upload" action="#{viewmodel.upload}">
+                                        <f:ajax execute="file" render="@all"/>
+                                    </b:commandButton>
                                 </f:facet>
                             </b:thumbnail>
                         </b:column>
