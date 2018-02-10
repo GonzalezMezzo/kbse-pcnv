@@ -93,9 +93,9 @@ public class ModelController implements Serializable {
         return true;
     }
     
-    public boolean deleteRating(long postId, long ratingId) {
-        try {
-            db.deleteRating(postId, ratingId);
+    public boolean deleteRating(String userName) {
+    try {
+            db.deleteRatings(userName);
         } catch (EJBException e) {
             /**
              * todo: error handling
@@ -105,7 +105,8 @@ public class ModelController implements Serializable {
         }
         return true;
     }
-
+        
+        
     public void refreshState() {
         this.postList = db.getAllPosts();
         this.userList = db.getAllUsers();
@@ -189,5 +190,7 @@ public class ModelController implements Serializable {
             return SystemUserDTO.toSystemUserDTO(db.getUser(username));
         }
     }
+
+    
 
 }

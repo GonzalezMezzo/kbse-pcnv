@@ -60,8 +60,8 @@ public class RestFrontendController implements Serializable {
         }
     }
     
-    public boolean deleteRating(long postId, long ratingId) {
-        this.wt = client.target(ADRESS + "/deleteRating/" + postId + "/" + ratingId);
+    public boolean deleteRating(String userName) {
+        this.wt = client.target(ADRESS + "/deleteRating/" + userName);
         Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
         try {
             JsonObject res = build.delete(JsonObject.class);
@@ -71,7 +71,7 @@ public class RestFrontendController implements Serializable {
             return false;
         }
     }
-
+   
     public List<PostDTO> refreshState() {
         this.wt = client.target(ADRESS + "/refreshState");
         Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
@@ -252,5 +252,5 @@ public class RestFrontendController implements Serializable {
             return null;
         }
     }
-   
+
 }

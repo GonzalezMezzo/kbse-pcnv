@@ -67,20 +67,20 @@ public class Persistence {
     
     }
     
-    public void deleteRating(long postId, long ratingId) {
-         Post tmp = em.find(Post.class, postId);
-         tmp.removeRating(em.find(Rating.class, ratingId));
-         tmp.calcTotalRating();
-         em.merge(tmp);
-    }
-    
-    private void removeUsersRatings(SystemUserDTO u) {
-        SystemUser su = em.createNamedQuery("SystemUser.findByUsername", SystemUser.class).setParameter("username", u.getUsername()).getSingleResult();
-        for(Rating r: su.getRatings()){
-            su.removeRating(r);
-        }
+    public void deleteRatings(String userName) {
+        SystemUser su = em.createNamedQuery("SystemUser.findByUsername", SystemUser.class).setParameter("username", userName).getSingleResult();
+        List<PostDTO> postList = getAllPosts();
+        for (PostDTO p: postList){
+                for(RatingDTO  r: p.getRatings()){
+                    if(su.getUsername().equals(r.getUser().getUsername())){
+                        Post tmp = em.find(Post.class, p.getId());
+                        tmp.removeRating(em.find(Rating.class, r.getId()));
+                        tmp.calcTotalRating();
+                        em.merge(tmp);
+                    }
+                }
+            }
         em.merge(su);
-        
     }
 
     public void addComment(CommentDTO c, PostDTO post, SystemUserDTO currentUser) {
@@ -174,4 +174,5 @@ public class Persistence {
     public PostDTO getPost(Long id) {
         return PostDTO.toPostDTO(em.find(Post.class, id));
     }    
+
 }

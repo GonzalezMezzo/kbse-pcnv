@@ -79,14 +79,6 @@ public class Viewmodel implements Serializable {
         ctrl.addAvatar(new AvatarDTO());
 
         refreshState();
-        /**
-         * CRITICAL CODE !!!!!!!
-         */
-        //currentPost = postList.get(0);
-        /**
-         * CRITICAL CODE !!!!!!!
-         */
-        //ratingCollector = new int[postList.size()];
     }
 
     /* routing */
@@ -157,20 +149,6 @@ public class Viewmodel implements Serializable {
         return POST;
     }
 
-    /*
-    public void fetchRatings() {
-        int i = 0;
-        this.ratingCollector = new int[postList.size()];
-        for (PostDTO postDTO : postList) {
-            for(RatingDTO rating: postDTO.getRatings()) {
-                if(rating.getUser().getUsername().equals(currentUser.getUsername())) {
-                    this.ratingCollector[i] = rating.getRatedValue();
-                }
-            }
-            i++;
-        }
-    }
-     */
     public void refreshState() {
         if (this.currentPost != null) {
             postId = this.currentPost.getId();
@@ -184,23 +162,6 @@ public class Viewmodel implements Serializable {
         this.postList = ctrl.getPostList();
         this.userList = ctrl.getUserList();
 
-        //ratingCollector = new int[postList.size()];   
-        /*
-        if (postId != null) {
-            for (PostDTO postDTO : postList) {
-                if (Objects.equals(postDTO.getId(), postId)) {
-                    this.currentPost = postDTO;
-                }
-            }
-        }
-
-        if(username != null) {
-            for (SystemUserDTO systemUserDTO : userList) {
-                if(Objects.equals(systemUserDTO.getId(), username)) {
-                    this.currentUser = systemUserDTO;
-                }
-            }
-        }*/
         ratingCollector = new HashMap();
         inputTextNumber = 0;
         ctrl.refreshState();
@@ -233,28 +194,13 @@ public class Viewmodel implements Serializable {
 
     public String submitRating() {
         if (validate() == true) {//method stub
-            //delete every previous rating for this user
-            for (PostDTO p: postList){
-                for(RatingDTO  r: p.getRatings()){
-                    if(currentUser.getUsername().equals(r.getUser().getUsername())){
-                        ctrl.deleteRating(p.getId(), r.getId());
-                    }
-                }
-            }
             
+            //delete every previous rating for this user
+            ctrl.deleteRating(currentUser.getUsername()); 
             //add individual ratings for this submit    
             for (Map.Entry<PostDTO, RatingDTO> entry : ratingCollector.entrySet()) {
                 ctrl.addRating(entry.getKey(), entry.getValue(), currentUser);
             }
-
-            /*
-            for (int i = 0; i < ratingCollector.length; i++) {
-                if (ratingCollector[i] != 0) {
-                    this.postList.get(i).getRatings().put(inputTextUser, new Integer(ratingCollector[i]));
-                }
-                ctrl.updateRatings(this.postList);
-            }*/
-            
         }
         refreshState();
         return BOARD;
@@ -389,21 +335,6 @@ public class Viewmodel implements Serializable {
     public void setCurrentUser(SystemUserDTO currentUser) {
         this.currentUser = currentUser;
     }
-
-    
-    /*
-    private boolean validate() {
-        int n1 = 0;
-        for (int i = 0; i < ratingCollector.length; i++) {
-            n1 += ratingCollector[i];
-
-            System.out.println("test" + n1);
-            if (ratingCollector[i] < 0 || ratingCollector[i] > 10 || n1 > 10) {
-                return false;
-            }
-        }
-        return true;
-    }*/
 
     public Map<PostDTO, RatingDTO> getRatingCollector() {
         return ratingCollector;
