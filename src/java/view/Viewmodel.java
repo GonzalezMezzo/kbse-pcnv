@@ -127,6 +127,12 @@ public class Viewmodel implements Serializable {
     }
 
     public String changeUser() {
+        if(this.inputTextUser == null || "".equals(this.inputTextUser)){
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Username wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage(null, success); 
+            return null;
+        }else{
+            
         refreshState();
         SystemUserDTO user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail);
         ctrl.addSystemUser(user);
@@ -134,6 +140,7 @@ public class Viewmodel implements Serializable {
         this.currentUser = user;
         //ratingCollector = new int[postList.size()];
         return USER_CONTROL;
+        }
     }
 
     public String rating() {
@@ -145,13 +152,24 @@ public class Viewmodel implements Serializable {
     }
 
     public String submitLink() {
+       if(this.inputTextUser == null || "".equals(this.inputTextUser)){
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Username wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage(null, success); 
+        }if(this.inputTexTURL == null || "".equals(this.inputTexTURL)){
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "URL wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage(null, success); 
+        }if(this.inputTextDescription == null || "".equals(this.inputTextDescription)){
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Beschreibung wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage(null, success); 
+        }
+        else{
         refreshState();
-
         PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
-
         ctrl.addPost(post, this.currentUser);
         refreshState();
         return BOARD;
+        }
+        return null;
     }
 
     public String delete(PostDTO p) {
