@@ -94,21 +94,6 @@ public class RestFrontendController implements Serializable {
 
     }
 
-    boolean addComment(CommentDTO comment) {
-        this.wt = client.target(ADRESS + "/addComment");
-        Invocation.Builder build = this.wt.request(MediaType.APPLICATION_JSON);
-        Entity entity = Entity.entity(comment.toJsonObject(), MediaType.APPLICATION_JSON);
-        try {
-            JsonObject res = build.post(entity, JsonObject.class);
-            return res.getBoolean("success");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("addComment(rest) ->");
-        }
-        return false;
-    }
-
     public boolean addComment(CommentDTO comment, PostDTO currentPost, SystemUserDTO currentUser) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add("comment", comment.toJsonObject()).add("post", currentPost.toJsonObject()).add("user", currentUser.toJsonObject());
