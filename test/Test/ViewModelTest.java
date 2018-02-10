@@ -36,9 +36,9 @@ import view.Viewmodel;
 public class ViewModelTest {
     @Inject
     Viewmodel view;
-   /* @Inject
+    @Inject
     private EntityManager em;
-    */
+    
     @Deployment
     public static WebArchive createDeployment(){
         return ShrinkWrap.createFromZipFile(WebArchive.class, new File("dist/kbse-pcnv.war"));
@@ -47,10 +47,7 @@ public class ViewModelTest {
     
     @Before
     public void setUp(){
-        view.setInputTextUser("TestUser");
-        view.setInputTextEMail("TestEmail");
-        view.setInputTextFName("TestVorname");
-        view.setInputTextLName("TestNachname");
+
     }
     
     @After
@@ -59,11 +56,15 @@ public class ViewModelTest {
     }
    @Test
     public void TestsubmitLink() throws Exception{
+        view.setInputTextUser("TestUser");
+        view.setInputTextEMail("TestEmail");
+        view.setInputTextFName("TestVorname");
+        view.setInputTextLName("TestNachname");
+        view.changeUser();
         view.setInputTexTURL("TestURL");
         view.setInputTextDescription("TestDescription");
-        view.changeUser();
         view.submitLink();
-      /*  List<PostDTO> list = view.getPostList();
+        List<PostDTO> list = view.getPostList();
         PostDTO p1 = null;
         for(PostDTO p : list){
             if(p.getUrl().equals("TestURL") && p.getDescription().equals("TestDescription"))
@@ -76,35 +77,41 @@ public class ViewModelTest {
             assertEquals(p1.toPost().getAuthor().getUsername(),p2.getAuthor().getUsername(),"TestUser");
             assertEquals(p1.toPost().getDescription(),p2.getDescription(),"TestDescription");
             assertEquals(p1.toPost().getUrl(),p2.getUrl(),"TestURL");       
-        }*/
+        }
     }
-   /*
+   
     @Test
-    public void TestsubmitComment() throws Exception{   
-        view.setInputTexTURL("commenttesturl");
-        view.setInputTextDescription("commenttestdescription");
-        view.setInputTextUser("CommentSubmitter");
+    public void TestsubmitComment() throws Exception{  
+        view.setInputTextUser("TestUser2");
+        view.setInputTextEMail("TestEmail2");
+        view.setInputTextFName("TestVorname2");
+        view.setInputTextLName("TestNachname2");
+        view.changeUser();
+        view.setInputTexTURL("TestURL2");
+        view.setInputTextDescription("TestDescription2");
         view.submitLink();
         List<PostDTO> list = view.getPostList();
         PostDTO p1 = null;
         for(PostDTO p : list){
-            if(p.getUrl().equals("commenttesturl") && p.getDescription().equals("commenttestdescription"))
+            if(p.getUrl().equals("TestURL2") && p.getDescription().equals("TestDescription2"))
                 p1 = p;
         }
         if(p1==null){
             throw new Exception("Post nicht in Postlist");
         } else {
+            view.setInputTextUser("CommentSubmitter");
+            view.changeUser();
             view.selectPost(p1);
             view.setInputCommentMessage("submitCommentTest");
             view.submitComment();
             list = view.getPostList();
             for(PostDTO p : list){
-                if(p.getUrl().equals("commenttesturl") && p.getDescription().equals("commenttestdescription"))
+                if(p.getUrl().equals("TestURL2") && p.getDescription().equals("TestDescription2"))
                     p1 = p;
             } 
             CommentDTO c = p1.getComments().get(0);
-            assertEquals(c.getCreatorId().getUsername(),"CommentSubmitter");
-            assertEquals(c.getMessage(),"submitCommentTest");       
+            assertEquals("CommentSubmitter",c.getCreatorId().getUsername());
+            assertEquals("submitCommentTest",c.getMessage());       
         }
     }
     @Test
@@ -128,7 +135,7 @@ public class ViewModelTest {
         Post p = em.find(Post.class, p1.getId());
         assertEquals(null,p);
         }
-    }
+    }/*
     @Test(expected = LinkNotFoundException.class)
     public void testCase1(){
         view.setInputTexTURL("test1URL");
@@ -141,7 +148,7 @@ public class ViewModelTest {
         view.changeUser();
         view.delete(post);
         view.selectPost(post);     
-    }
+    }/*
     @Test(expected = LinkNotFoundException.class)
     public void testCase2() throws Exception{
         view.setInputTexTURL("test2URL");
@@ -187,5 +194,5 @@ public class ViewModelTest {
         view.changeUser();
         view.submitLink();
     }
-}*/
+*/
 }

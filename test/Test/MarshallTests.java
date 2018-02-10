@@ -5,6 +5,22 @@
  */
 package Test;
 
+import access.AvatarDTO;
+import access.CommentDTO;
+import access.PostDTO;
+import access.RatingDTO;
+import access.SystemUserDTO;
+import entities.Post;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import javax.json.Json;
+import javax.json.JsonObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -36,10 +52,64 @@ public class MarshallTests {
     @After
     public void tearDown() {
     }
-
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
+    @Test
+    public void PostDTOtoJSONandBack() {
+       SystemUserDTO user = new SystemUserDTO("Username", "Nachname", "Vorname", "Email");
+       PostDTO post = new PostDTO("URL", "Beschreibung", user, 0, new ArrayList<>());  
+       JsonObject o = post.toJsonObject();
+       PostDTO jsonPost = PostDTO.toPOJO(o);
+       assertEquals(post.getCreatorId().getUsername(),jsonPost.getCreatorId().getUsername());
+       assertEquals(post.getDescription(),jsonPost.getDescription());
+       assertEquals(post.getUrl(),jsonPost.getUrl());
+       assertEquals(post.getComments(),jsonPost.getComments());
+       assertEquals(post.getRatings(),jsonPost.getRatings());
+       assertEquals(post.getTotalRating(),jsonPost.getTotalRating());    
+    }
+    @Test
+    public void CommentDTOtoJSONandBack(){
+        SystemUserDTO user = new SystemUserDTO("Username", "Nachname", "Vorname", "Email");
+        PostDTO post = new PostDTO("URL", "Beschreibung", user, 0, new ArrayList<>());  
+        CommentDTO comment = new CommentDTO("message", user,post);
+        JsonObject o = comment.toJsonObject();
+        CommentDTO jsonComment = CommentDTO.toPOJO(o);
+        assertEquals(comment.getMessage(),jsonComment.getMessage());
+        assertEquals(comment.getCreatorId().getUsername(),jsonComment.getCreatorId().getUsername());
+        //assertEquals(comment,jsonComment);
+    }
+    @Test
+    public void SystemUserDTOtoJSONandBack(){
+        //Avatar Fehlt
+        SystemUserDTO user = new SystemUserDTO("Username", "Nachname", "Vorname", "Email");
+        JsonObject o = user.toJsonObject();
+        SystemUserDTO jsonUser = SystemUserDTO.toPOJO(o);
+        assertEquals(user.getEmail(),jsonUser.getEmail());
+        assertEquals(user.getFname(),jsonUser.getFname());
+        assertEquals(user.getLname(),jsonUser.getLname());
+        assertEquals(user.getUsername(),jsonUser.getUsername());
+    }
+    @Test
+    public void AvatarDTOtoJsonandBack() throws IOException{
+        List<Byte> param = new ArrayList<>();
+        byte[] test = "avatartest".getBytes();
+        for(byte b : test){
+            param.add(new Byte(b));
+        }
+        int hash = param.hashCode();
+        AvatarDTO avatar = new AvatarDTO(hash,param);
+        JsonObject o = avatar.toJsonObejct();
+        AvatarDTO jsonAvatar = AvatarDTO.toPOJO(o);
+        assertEquals(avatar.getImageHash(),jsonAvatar.getImageHash());
+        assertEquals(avatar.getImage().hashCode(),jsonAvatar.getImage().hashCode());      
+    }
+    @Test
+    public void RatingDTOtoJSONandBack(){
+        SystemUserDTO user = new SystemUserDTO("Username", "Nachname", "Vorname", "Email");
+        PostDTO post = new PostDTO("URL", "Beschreibung", user, 0, new ArrayList<>());
+        RatingDTO rating = new RatingDTO(5,user,post);
+        JsonObject o = rating.toJsonObject();
+        RatingDTO jsonRating = RatingDTO.toPOJO(o);
+        assertEquals(rating.getPost().getDescription(),jsonRating.getPost().getDescription());
+        assertEquals(rating.getRatedValue(),jsonRating.getRatedValue());
+        assertEquals(rating.getUser().getUsername(),jsonRating.getUser().getUsername());     
+    }
 }
