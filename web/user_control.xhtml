@@ -57,7 +57,7 @@
                                     <h:outputText value="E-Mail:"/>
                                 </b:column>
                                 <b:column >
-                                    <b:inputText placeholder="sample@sample.com" id="email" mask="email" value="#{viewmodel.inputTextEMail}">
+                                    <b:inputText placeholder="sample@sample.com" id="email" value="#{viewmodel.inputTextEMail}">
                                         <f:facet name="prepend">
                                             <h:outputText value="@" />
                                         </f:facet>
@@ -104,16 +104,15 @@
                                 <f:facet name="caption" transient="false">
                                     <p>Upload Image-File</p>
                                     <h:inputFile id="file" value="#{viewmodel.uploadedAvatar}" validator="#{viewmodel.validateFile}"/>
-                                    <b:commandButton value="Upload" action="#{viewmodel.upload}">
-                                        <f:ajax execute="file" render="@all"/>
-                                    </b:commandButton>
                                 </f:facet>
                             </b:thumbnail>
                         </b:column>
                     </b:row>
                     <b:row>
                         <b:column>
-                            <b:commandButton value="Submit Changes" action="#{viewmodel.changeUser()}" large-screen="full-width"/>
+                            <b:commandButton value="Submit Changes" action="#{viewmodel.changeUser()}" large-screen="full-width">
+                                <f:ajax execute="file,username,email,fname,lname" render="@form"/>
+                            </b:commandButton>
                         </b:column>
                     </b:row>                    
                 </b:form>

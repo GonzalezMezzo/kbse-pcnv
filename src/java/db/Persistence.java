@@ -175,4 +175,8 @@ public class Persistence {
         return PostDTO.toPostDTO(em.find(Post.class, id));
     }    
 
+    public AvatarDTO getAvatar(int uploadedAvatarHash) {
+        return AvatarDTO.toAvatarDTO(em.createNamedQuery("Avatar.findByHash", Avatar.class).setParameter("hash", uploadedAvatarHash).getSingleResult());
+    }
+
 }

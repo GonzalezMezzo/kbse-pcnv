@@ -12,11 +12,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  * @author nolde
  */
 @Entity
+@NamedQueries({
+    @NamedQuery(name = "Avatar.findAll", query= "SELECT s FROM Avatar s"),
+    @NamedQuery(name = "Avatar.findByHash", query= "SELECT s FROM Avatar s WHERE s.imageHash = :hash")
+})
 public class Avatar implements Serializable {
 
     @Id

@@ -32,7 +32,7 @@ public class AvatarDTO implements Serializable {
     }
 
     public AvatarDTO(int imageHash, byte[] image) {
-        this.id = 0L;
+        //this.id = 0L;
         this.imageHash = imageHash;
         this.image = image;
     }
@@ -51,7 +51,11 @@ public class AvatarDTO implements Serializable {
     }
 
     public Avatar toAvatar() {
-        return AvatarBuilder.create().id(this.id).imageHash(this.imageHash).image(this.image).build();
+        if (this.id == null) {
+            return AvatarBuilder.create().imageHash(this.imageHash).image(this.image).build();
+        } else {
+            return AvatarBuilder.create().id(this.id).imageHash(this.imageHash).image(this.image).build();
+        }
     }
 
     public JsonObject toJsonObejct() {

@@ -191,6 +191,10 @@ public class ModelController implements Serializable {
         }
     }
 
+    public AvatarDTO getAvatar(int uploadedAvatarHash) {
+        return db.getAvatar(uploadedAvatarHash);
+    }
+
     
 
 }

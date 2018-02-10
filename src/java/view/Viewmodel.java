@@ -77,6 +77,7 @@ public class Viewmodel implements Serializable {
     private PostDTO currentPost;
 
     private Part uploadedAvatar;
+    private int uploadedAvatarHash;
     private byte[] parsedAvatar;
 
     Long postId;
@@ -127,8 +128,14 @@ public class Viewmodel implements Serializable {
     }
 
     public String changeUser() {
+        SystemUserDTO user;
         refreshState();
-        SystemUserDTO user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail);
+        upload();
+        if (this.uploadedAvatar != null) {
+            user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, ctrl.getAvatar(this.uploadedAvatarHash));
+        } else {
+            user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail);
+        }
         ctrl.addSystemUser(user);
         refreshState();
         this.currentUser = user;
@@ -265,9 +272,9 @@ public class Viewmodel implements Serializable {
                 this.parsedAvatar = IOUtils.toByteArray(bytes);
                 //this.parsedAvatar = toByteArray(bytes);
                 //byteList = Arrays.asList(this.parsedAvatar);
-                //hash = calculateImageHash(this.parsedAvatar);
+                this.uploadedAvatarHash = calculateImageHash(this.parsedAvatar);
 
-                avatar = new AvatarDTO(hash, this.parsedAvatar);
+                avatar = new AvatarDTO(this.uploadedAvatarHash, this.parsedAvatar);
 
                 ctrl.addAvatar(avatar);
             } catch (IOException ex) {
@@ -329,7 +336,7 @@ public class Viewmodel implements Serializable {
         return res;
     }
 
-    private int calculateImageHash(Byte[] image) {
+    private int calculateImageHash(byte[] image) {
         return Arrays.hashCode(image);
     }
 
