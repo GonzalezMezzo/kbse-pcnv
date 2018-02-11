@@ -136,7 +136,6 @@ public class Viewmodel implements Serializable {
         return RATING;
     }
 
-<<<<<<< HEAD
     public String postLink() {
         return INDEX;
     }
@@ -146,49 +145,9 @@ public class Viewmodel implements Serializable {
         }catch(MissingCredentialsException ex){
             return null;
         }        
-        refreshState();
-        SystemUserDTO user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail);
-        ctrl.addSystemUser(user);
-        refreshState();
-        this.currentUser = user;
-        //ratingCollector = new int[postList.size()];
-        return USER_CONTROL;
-        
-    }
-    public void checkInputUser() throws MissingCredentialsException{
-        if(this.inputTextUser == null || "".equals(this.inputTextUser)){
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Username wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage(null, success);
-            throw new MissingCredentialsException("kein Nutzername");
-=======
-    public boolean showDefaultPic(AvatarDTO avatar) {
-        boolean res = true;
-        if (avatar != null) {
-            if (avatar.getImageHash() != -1) {
-                res = false;
-            } else {
-                res = true;
-            }
-        } else {
-            res = true;
-        }
-        return res;
-    }
-
-    public String changeUser() {
-
-        SystemUserDTO user = null;
+           SystemUserDTO user = null;
         SystemUserDTO systemUser = null;
-
-        if (this.inputTextUser == null || "".equals(this.inputTextUser)) {
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Username wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage(null, success);
-            return null;
-        } else {
-
-            refreshState();
-
-            systemUser = ctrl.getSystemUser(this.inputTextUser);
+                    systemUser = ctrl.getSystemUser(this.inputTextUser);
 
             if (!upload() && (this.uploadedAvatar == null)) {
                 if (systemUser == null) {
@@ -208,15 +167,36 @@ public class Viewmodel implements Serializable {
                 }
 
             }
+               refreshState();
             this.currentUser = user;
             this.username = user.getUsername();
             refreshState();
 
             //ratingCollector = new int[postList.size()];
             return USER_CONTROL;
->>>>>>> caa125315d473a88841432ed52579bc51f69d0be
+        
+    }
+    public void checkInputUser() throws MissingCredentialsException{
+        if(this.inputTextUser == null || "".equals(this.inputTextUser)){
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Username wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage(null, success);
+            throw new MissingCredentialsException("kein Nutzername");
         }
     }
+    public boolean showDefaultPic(AvatarDTO avatar) {
+        boolean res = true;
+        if (avatar != null) {
+            if (avatar.getImageHash() != -1) {
+                res = false;
+            } else {
+                res = true;
+            }
+        } else {
+            res = true;
+        }
+        return res;
+    }
+
     public void checkSubmitLinkCredentials() throws MissingCredentialsException{
          if(this.inputTexTURL == null || "".equals(this.inputTexTURL)){
             FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "URL wird benötigt!");
@@ -241,31 +221,11 @@ public class Viewmodel implements Serializable {
         }
     }
     public String submitLink() {
-<<<<<<< HEAD
         try{
             this.checkInputUser();
             this.checkSubmitLinkCredentials();
         } catch (MissingCredentialsException ex) { 
             return null;
-=======
-        if (this.inputTextUser == null || "".equals(this.inputTextUser)) {
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Username wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage(null, success);
-        }
-        if (this.inputTexTURL == null || "".equals(this.inputTexTURL)) {
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "URL wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage(null, success);
-        }
-        if (this.inputTextDescription == null || "".equals(this.inputTextDescription)) {
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Beschreibung wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage(null, success);
-        } else {
-            refreshState();
-            PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
-            ctrl.addPost(post, this.currentUser);
-            refreshState();
-            return BOARD;
->>>>>>> caa125315d473a88841432ed52579bc51f69d0be
         }
             refreshState();
             PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
