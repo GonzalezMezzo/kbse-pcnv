@@ -24,8 +24,9 @@ import javax.persistence.OneToOne;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "SystemUser.findAll", query= "SELECT s FROM SystemUser s"),
-    @NamedQuery(name = "SystemUser.findByUsername", query="SELECT s FROM SystemUser s WHERE s.username = :username")
+    @NamedQuery(name = "SystemUser.findAll", query = "SELECT s FROM SystemUser s")
+    ,
+    @NamedQuery(name = "SystemUser.findByUsername", query = "SELECT s FROM SystemUser s WHERE s.username = :username")
 })
 public class SystemUser implements Serializable {
 
@@ -49,7 +50,7 @@ public class SystemUser implements Serializable {
     @Basic
     private String email;
 
-    @OneToOne(targetEntity = Avatar.class, optional = true )
+    @OneToOne(targetEntity = Avatar.class)
     private Avatar avatar;
 
     @OneToMany(targetEntity = Post.class, mappedBy = "author")

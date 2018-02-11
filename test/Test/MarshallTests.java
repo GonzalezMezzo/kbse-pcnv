@@ -5,11 +5,11 @@
  */
 package Test;
 
-import access.AvatarDTO;
-import access.CommentDTO;
-import access.PostDTO;
-import access.RatingDTO;
-import access.SystemUserDTO;
+import access.DTO.AvatarDTO;
+import access.DTO.CommentDTO;
+import access.DTO.PostDTO;
+import access.DTO.RatingDTO;
+import access.DTO.SystemUserDTO;
 import entities.Post;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -89,9 +89,15 @@ public class MarshallTests {
     }
     @Test
     public void AvatarDTOtoJsonandBack() throws IOException{
+<<<<<<< HEAD
         
         byte[] test = "avatartest".getBytes();
         AvatarDTO avatar = new AvatarDTO(Arrays.hashCode(test),test);
+=======
+        byte[] param = "avatartest".getBytes();
+        int hash = param.hashCode();
+        AvatarDTO avatar = new AvatarDTO(hash,"image/jpeg",param);
+>>>>>>> caa125315d473a88841432ed52579bc51f69d0be
         JsonObject o = avatar.toJsonObejct();
         AvatarDTO jsonAvatar = AvatarDTO.toPOJO(o);
         assertEquals(avatar.getImageHash(),jsonAvatar.getImageHash());

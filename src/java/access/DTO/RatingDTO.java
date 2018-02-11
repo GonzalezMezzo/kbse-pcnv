@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package access;
+package access.DTO;
 
+import access.builder.RatingBuilder;
 import entities.Rating;
 import java.io.Serializable;
 import java.math.BigDecimal;

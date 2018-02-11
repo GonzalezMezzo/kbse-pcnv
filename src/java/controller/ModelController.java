@@ -5,11 +5,11 @@
  */
 package controller;
 
-import access.AvatarDTO;
-import access.CommentDTO;
-import access.PostDTO;
-import access.RatingDTO;
-import access.SystemUserDTO;
+import access.DTO.AvatarDTO;
+import access.DTO.CommentDTO;
+import access.DTO.PostDTO;
+import access.DTO.RatingDTO;
+import access.DTO.SystemUserDTO;
 import db.Persistence;
 import java.io.Serializable;
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -58,7 +58,7 @@ public class ModelController implements Serializable {
             db.addComment(comment, p, currentUser);
             return true;  
     }
-    
+
     public boolean addRating(PostDTO p, RatingDTO r, SystemUserDTO u) {
         try {
             db.addRating(p, r, u);
@@ -84,9 +84,9 @@ public class ModelController implements Serializable {
         }
         return true;
     }
-    
+
     public boolean deleteRating(String userName) {
-    try {
+        try {
             db.deleteRatings(userName);
         } catch (EJBException e) {
             /**
@@ -97,8 +97,7 @@ public class ModelController implements Serializable {
         }
         return true;
     }
-        
-        
+
     public void refreshState() {
         this.postList = db.getAllPosts();
         this.userList = db.getAllUsers();
@@ -121,7 +120,7 @@ public class ModelController implements Serializable {
             return true;
         } catch (EJBException e) {
             System.out.println("updateSystemUser -> exception");
-            System.out.println(e.getCause().toString());
+            //System.out.println(e.getCause().toString());
             return false;
         }
     }
@@ -135,9 +134,7 @@ public class ModelController implements Serializable {
              * todo: error handling
              */
             System.out.println("addUser -> exception");
-            //System.out.println(e.getCause().toString());
-            System.out.println("addUser -> try edit instead...");
-            return updateSystemUser(user);
+            return false;
         }
     }
 
@@ -168,7 +165,7 @@ public class ModelController implements Serializable {
     }
 
     public SystemUserDTO getSystemUser(Long userId) {
-        if(userId == null) {
+        if (userId == null) {
             return null;
         } else {
             return SystemUserDTO.toSystemUserDTO(db.getUser(userId));
@@ -176,13 +173,15 @@ public class ModelController implements Serializable {
     }
 
     public SystemUserDTO getSystemUser(String username) {
-        if(username == null) {
+        if (username == null) {
             return null;
         } else {
             return SystemUserDTO.toSystemUserDTO(db.getUser(username));
         }
     }
 
-    
+    public AvatarDTO getAvatar(int uploadedAvatarHash) {
+        return db.getAvatar(uploadedAvatarHash);
+    }
 
 }

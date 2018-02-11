@@ -27,6 +27,7 @@
                 </b:navbarLinks>
             </h:form>
         </b:navBar>
+<<<<<<< HEAD
         
         <b:growl id="growlUserControl" placement-align="center" placementFrom="top" show-detail="true"
              global-only="false"
@@ -35,6 +36,13 @@
              animation-exit="animated flipOutX"
              escape="true" />
         
+=======
+
+        <b:growl id="growlMsg" globalOnly="true" placementFrom="bottom"
+                 show-detail="true" show-summary="false" allowDismiss="true"
+                 delay="10000" escape="true" />
+
+>>>>>>> caa125315d473a88841432ed52579bc51f69d0be
         <b:container>
             <b:panel title="User" icon="user" icon-align="left" showCollapseLink="false">
                 <b:form enctype="multipart/form-data">
@@ -60,7 +68,7 @@
                                     <h:outputText value="E-Mail:"/>
                                 </b:column>
                                 <b:column >
-                                    <b:inputText placeholder="sample@sample.com" id="email" mask="email" value="#{viewmodel.inputTextEMail}">
+                                    <b:inputText placeholder="sample@sample.com" id="email" value="#{viewmodel.inputTextEMail}">
                                         <f:facet name="prepend">
                                             <h:outputText value="@" />
                                         </f:facet>
@@ -102,14 +110,12 @@
                             </b:row>
                         </b:column>
                         <b:column col-md="6">                           
-                            <b:thumbnail>
-                                <img data-src="holder.js/100%x180/sky" alt="Generic placeholder thumbnail"/>
+                            <b:thumbnail >
+                                <h:graphicImage value="image?id=#{viewmodel.currentUser.avatar.imageHash}" rendered="#{!viewmodel.showDefaultPic(viewmodel.currentUser.avatar)}"/>
+                                <h:graphicImage value="/images/default_avatar.jpg" rendered="#{viewmodel.showDefaultPic(viewmodel.currentUser.avatar)}"/>
                                 <f:facet name="caption" transient="false">
                                     <p>Upload Image-File</p>
                                     <h:inputFile id="file" value="#{viewmodel.uploadedAvatar}" validator="#{viewmodel.validateFile}"/>
-                                    <b:commandButton value="Upload" action="#{viewmodel.upload}">
-                                        <f:ajax execute="file" render="@all"/>
-                                    </b:commandButton>
                                 </f:facet>
                             </b:thumbnail>
                         </b:column>
@@ -117,7 +123,9 @@
                     <b:row>
                         <b:column>
                             <b:messages id="nachrichten" showDetail="true" showSummary="false" />
-                            <b:commandButton value="Submit Changes" action="#{viewmodel.changeUser()}" large-screen="full-width"/>
+                            <b:commandButton value="Submit Changes" action="#{viewmodel.changeUser()}" large-screen="full-width">
+                                <f:ajax execute="file,username,email,fname,lname" render="@form"/>
+                            </b:commandButton>
                         </b:column>
                     </b:row>                    
                 </b:form>

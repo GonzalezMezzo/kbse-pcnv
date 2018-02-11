@@ -5,11 +5,11 @@
  */
 package db;
 
-import access.AvatarDTO;
-import access.CommentDTO;
-import access.PostDTO;
-import access.RatingDTO;
-import access.SystemUserDTO;
+import access.DTO.AvatarDTO;
+import access.DTO.CommentDTO;
+import access.DTO.PostDTO;
+import access.DTO.RatingDTO;
+import access.DTO.SystemUserDTO;
 import entities.Avatar;
 import entities.Comment;
 import entities.Post;
@@ -17,9 +17,11 @@ import entities.Rating;
 import entities.SystemUser;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 /**
  *
@@ -50,36 +52,36 @@ public class Persistence {
         em.merge(su);
         //em.merge(post);
     }
-    
-    public void addRating(PostDTO post, RatingDTO r, SystemUserDTO u){
-        
+
+    public void addRating(PostDTO post, RatingDTO r, SystemUserDTO u) {
+
         Rating rating = r.toRating();
 
         SystemUser su = em.createNamedQuery("SystemUser.findByUsername", SystemUser.class).setParameter("username", u.getUsername()).getSingleResult();
         Post p = em.createNamedQuery("Post.findByUrl", Post.class).setParameter("url", post.getUrl()).getSingleResult();
-        
+
         su.addRating(rating);
         p.addRating(rating);
         p.calcTotalRating();
         em.persist(rating);
         em.merge(p);
         em.merge(su);
-    
+
     }
-    
+
     public void deleteRatings(String userName) {
         SystemUser su = em.createNamedQuery("SystemUser.findByUsername", SystemUser.class).setParameter("username", userName).getSingleResult();
         List<PostDTO> postList = getAllPosts();
-        for (PostDTO p: postList){
-                for(RatingDTO  r: p.getRatings()){
-                    if(su.getUsername().equals(r.getUser().getUsername())){
-                        Post tmp = em.find(Post.class, p.getId());
-                        tmp.removeRating(em.find(Rating.class, r.getId()));
-                        tmp.calcTotalRating();
-                        em.merge(tmp);
-                    }
+        for (PostDTO p : postList) {
+            for (RatingDTO r : p.getRatings()) {
+                if (su.getUsername().equals(r.getUser().getUsername())) {
+                    Post tmp = em.find(Post.class, p.getId());
+                    tmp.removeRating(em.find(Rating.class, r.getId()));
+                    tmp.calcTotalRating();
+                    em.merge(tmp);
                 }
             }
+        }
         em.merge(su);
     }
 
@@ -88,10 +90,10 @@ public class Persistence {
         //p.getComments().add(c.toComment());
         //em.merge(p);
         Comment com = c.toComment();
-        
+
         SystemUser su = em.createNamedQuery("SystemUser.findByUsername", SystemUser.class).setParameter("username", currentUser.getUsername()).getSingleResult();
         Post p = em.createNamedQuery("Post.findByUrl", Post.class).setParameter("url", post.getUrl()).getSingleResult();
-        
+
         su.addComment(com);
         p.addComment(com);
         com.setAuthor(su);
@@ -154,15 +156,27 @@ public class Persistence {
         Avatar tmp = avatarDTO.toAvatar();
         em.persist(tmp);
     }
-    
+
     public Post getPost(String url) {
-        return em.createNamedQuery("Post.findByUrl", Post.class).setParameter("url", url).getSingleResult();
+        Post res = null;
+        try {
+            res = em.createNamedQuery("Post.findByUrl", Post.class).setParameter("url", url).getSingleResult();
+        } catch (EJBException e) {
+            res = null;
+        }
+        return res;
     }
-    
+
     public SystemUser getUser(String username) {
-        return em.createNamedQuery("SystemUser.findByUsername", SystemUser.class).setParameter("username", username).getSingleResult();
+        SystemUser res = null;
+        try {
+            res = em.createNamedQuery("SystemUser.findByUsername", SystemUser.class).setParameter("username", username).getSingleResult();
+        } catch (NoResultException e) {
+            res = null;
+        }
+        return res;
     }
-    
+
     public SystemUser getUser(Long userId) {
         return em.find(SystemUser.class, userId);
     }
@@ -173,6 +187,10 @@ public class Persistence {
 
     public PostDTO getPost(Long id) {
         return PostDTO.toPostDTO(em.find(Post.class, id));
-    }    
+    }
+
+    public AvatarDTO getAvatar(int uploadedAvatarHash) {
+        return AvatarDTO.toAvatarDTO(em.createNamedQuery("Avatar.findByHash", Avatar.class).setParameter("hash", uploadedAvatarHash).getSingleResult());
+    }
 
 }

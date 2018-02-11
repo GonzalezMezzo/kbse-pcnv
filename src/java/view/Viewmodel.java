@@ -5,12 +5,14 @@
  */
 package view;
 
-import access.CommentDTO;
-import access.PostDTO;
-import access.SystemUserDTO;
-import access.AvatarDTO;
-import access.RatingDTO;
+import access.DTO.CommentDTO;
+import access.DTO.PostDTO;
+import access.DTO.SystemUserDTO;
+import access.DTO.AvatarDTO;
+import access.DTO.RatingDTO;
 import controller.ModelController;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -31,10 +33,14 @@ import javax.ejb.EJBException;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.NoResultException;
+import javax.servlet.ServletContext;
 import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
 
@@ -57,8 +63,6 @@ public class Viewmodel implements Serializable {
     private static final String ABOUT = "/about.xhtml?faces-redirect=true";
     private static final String POST = "/post.xhtml?faces-redirect=true";
 
-    private static final boolean SAVE_IMAGES_TO_DISK = false;
-
     private List<PostDTO> postList;
     private List<SystemUserDTO> userList;
     private Map<PostDTO, RatingDTO> ratingCollector;
@@ -78,7 +82,9 @@ public class Viewmodel implements Serializable {
     private PostDTO currentPost;
 
     private Part uploadedAvatar;
+    private int uploadedAvatarHash;
     private byte[] parsedAvatar;
+    private AvatarDTO persistedAvatar;
 
     Long postId;
     String username;
@@ -130,6 +136,7 @@ public class Viewmodel implements Serializable {
         return RATING;
     }
 
+<<<<<<< HEAD
     public String postLink() {
         return INDEX;
     }
@@ -153,6 +160,61 @@ public class Viewmodel implements Serializable {
             FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Username wird benötigt!");
             FacesContext.getCurrentInstance().addMessage(null, success);
             throw new MissingCredentialsException("kein Nutzername");
+=======
+    public boolean showDefaultPic(AvatarDTO avatar) {
+        boolean res = true;
+        if (avatar != null) {
+            if (avatar.getImageHash() != -1) {
+                res = false;
+            } else {
+                res = true;
+            }
+        } else {
+            res = true;
+        }
+        return res;
+    }
+
+    public String changeUser() {
+
+        SystemUserDTO user = null;
+        SystemUserDTO systemUser = null;
+
+        if (this.inputTextUser == null || "".equals(this.inputTextUser)) {
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Username wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage(null, success);
+            return null;
+        } else {
+
+            refreshState();
+
+            systemUser = ctrl.getSystemUser(this.inputTextUser);
+
+            if (!upload() && (this.uploadedAvatar == null)) {
+                if (systemUser == null) {
+                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, ctrl.getAvatar(-1));
+                    ctrl.addSystemUser(user);
+                } else {
+                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, systemUser.getAvatar());
+                    ctrl.updateSystemUser(user);
+                }
+            } else {
+                if (systemUser == null) {
+                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, this.persistedAvatar);
+                    ctrl.addSystemUser(user);
+                } else {
+                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, this.persistedAvatar);
+                    ctrl.updateSystemUser(user);
+                }
+
+            }
+            this.currentUser = user;
+            this.username = user.getUsername();
+            refreshState();
+
+            //ratingCollector = new int[postList.size()];
+            return USER_CONTROL;
+>>>>>>> caa125315d473a88841432ed52579bc51f69d0be
         }
     }
     public void checkSubmitLinkCredentials() throws MissingCredentialsException{
@@ -179,11 +241,31 @@ public class Viewmodel implements Serializable {
         }
     }
     public String submitLink() {
+<<<<<<< HEAD
         try{
             this.checkInputUser();
             this.checkSubmitLinkCredentials();
         } catch (MissingCredentialsException ex) { 
             return null;
+=======
+        if (this.inputTextUser == null || "".equals(this.inputTextUser)) {
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Username wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage(null, success);
+        }
+        if (this.inputTexTURL == null || "".equals(this.inputTexTURL)) {
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "URL wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage(null, success);
+        }
+        if (this.inputTextDescription == null || "".equals(this.inputTextDescription)) {
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Beschreibung wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage(null, success);
+        } else {
+            refreshState();
+            PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
+            ctrl.addPost(post, this.currentUser);
+            refreshState();
+            return BOARD;
+>>>>>>> caa125315d473a88841432ed52579bc51f69d0be
         }
             refreshState();
             PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
@@ -224,7 +306,8 @@ public class Viewmodel implements Serializable {
     }
 
     public void refreshState() {
-        if (this.currentPost != null) {
+        ctrl.refreshState();
+        /*if (this.currentPost != null) {
             postId = this.currentPost.getId();
             this.currentPost = ctrl.getPost(postId);
 
@@ -232,7 +315,11 @@ public class Viewmodel implements Serializable {
         if (this.currentUser != null) {
             username = this.currentUser.getUsername();
             this.currentUser = ctrl.getSystemUser(username);
+        }*/
+        if (this.postId != null) {
+            this.currentPost = ctrl.getPost(postId);
         }
+        this.currentUser = ctrl.getSystemUser(username);
         this.postList = ctrl.getPostList();
         this.userList = ctrl.getUserList();
 
@@ -245,6 +332,7 @@ public class Viewmodel implements Serializable {
         ctrl.refreshState();
         this.postList = ctrl.getPostList();
         this.currentPost = i;
+        this.postId = i.getId();
         return POST;
     }
 
@@ -299,45 +387,32 @@ public class Viewmodel implements Serializable {
         return false;
     }
 
-    /**
-     * fetches rating input for post at pos i
-     *
-     * @param i
-     */
     public void addRating(PostDTO post) {
         System.out.println(post);
         System.out.println(inputTextNumber);
         ratingCollector.put(post, new RatingDTO(inputTextNumber, currentUser, post));
     }
 
-    public String upload() {
+    public boolean upload() {
+        boolean res = false;
         Part uploadedFile = this.uploadedAvatar;
-        final Path destination = Paths.get(System.getProperty("user.dir") + "\\tempImage.jpeg");
-        List<Byte> byteList;
-        int hash = 0;
-        AvatarDTO avatar = null;
         InputStream bytes = null;
-        if (null != uploadedFile) {
+        if (uploadedFile != null) {
             try {
-                if (SAVE_IMAGES_TO_DISK) {
-                    bytes = uploadedFile.getInputStream();
-                    Files.copy(bytes, destination, REPLACE_EXISTING);
-                }
                 bytes = uploadedFile.getInputStream();
                 this.parsedAvatar = IOUtils.toByteArray(bytes);
-                //this.parsedAvatar = toByteArray(bytes);
-                //byteList = Arrays.asList(this.parsedAvatar);
-                //hash = calculateImageHash(this.parsedAvatar);
+                this.uploadedAvatarHash = calculateImageHash(this.parsedAvatar);
 
-                avatar = new AvatarDTO(hash, this.parsedAvatar);
+                this.persistedAvatar = new AvatarDTO(this.uploadedAvatarHash, uploadedFile.getContentType(), this.parsedAvatar);
 
-                ctrl.addAvatar(avatar);
+                res = ctrl.addAvatar(this.persistedAvatar);
+                this.persistedAvatar = ctrl.getAvatar(uploadedAvatarHash);
+
             } catch (IOException ex) {
-                Logger.getLogger(Viewmodel.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("upload -> Exception");
             }
         }
-
-        return USER_CONTROL;
+        return res;
     }
 
     //1048576 = 1mb
@@ -383,15 +458,7 @@ public class Viewmodel implements Serializable {
 
     }
 
-    private Byte[] convertByteList(byte[] b) {
-        Byte[] res = new Byte[b.length];
-        for (int i = 0; i < b.length; i++) {
-            res[i] = b[i];
-        }
-        return res;
-    }
-
-    private int calculateImageHash(Byte[] image) {
+    private int calculateImageHash(byte[] image) {
         return Arrays.hashCode(image);
     }
 
@@ -517,6 +584,14 @@ public class Viewmodel implements Serializable {
 
     public void setUploadedAvatar(Part uploadedAvatar) {
         this.uploadedAvatar = uploadedAvatar;
+    }
+
+    public byte[] getParsedAvatar() {
+        return parsedAvatar;
+    }
+
+    public void setParsedAvatar(byte[] parsedAvatar) {
+        this.parsedAvatar = parsedAvatar;
     }
 
 }
