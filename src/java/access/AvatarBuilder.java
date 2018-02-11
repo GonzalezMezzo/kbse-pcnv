@@ -15,7 +15,8 @@ import java.util.ArrayList;
 public class AvatarBuilder {
     private long id;
     private int imageHash;
-    private byte[] image;
+    private String contentType;
+    private byte[] imagePath;
 
     private AvatarBuilder() {}
     
@@ -33,16 +34,23 @@ public class AvatarBuilder {
         return this;
     }
     
+    public AvatarBuilder contentType(String contentType) {
+        this.contentType = contentType;
+        return this;
+    }
+    
     public AvatarBuilder image(byte[] image) {
-        this.image = image;
+        this.imagePath = image;
         return this;
     }
     
     public Avatar build() {
         Avatar res = new Avatar();
         res.setId(id);
-        res.setImage(image);
+        res.setImage(imagePath);
         res.setImageHash(imageHash);
         return res;
     }
+
+    
 }

@@ -27,11 +27,11 @@
                 </b:navbarLinks>
             </h:form>
         </b:navBar>
-        
+
         <b:growl id="growlMsg" globalOnly="true" placementFrom="bottom"
-         show-detail="true" show-summary="false" allowDismiss="true"
-         delay="10000" escape="true" />
-        
+                 show-detail="true" show-summary="false" allowDismiss="true"
+                 delay="10000" escape="true" />
+
         <b:container>
             <b:panel title="User" icon="user" icon-align="left" showCollapseLink="false">
                 <b:form enctype="multipart/form-data">
@@ -99,8 +99,9 @@
                             </b:row>
                         </b:column>
                         <b:column col-md="6">                           
-                            <b:thumbnail>
-                                <img data-src="holder.js/100%x180/sky" alt="Generic placeholder thumbnail"/>
+                            <b:thumbnail >
+                                <h:graphicImage value="image?id=#{viewmodel.currentUser.avatar.imageHash}" rendered="#{!viewmodel.showDefaultPic(viewmodel.currentUser.avatar)}"/>
+                                <h:graphicImage value="/images/default_avatar.jpg" rendered="#{viewmodel.showDefaultPic(viewmodel.currentUser.avatar)}"/>
                                 <f:facet name="caption" transient="false">
                                     <p>Upload Image-File</p>
                                     <h:inputFile id="file" value="#{viewmodel.uploadedAvatar}" validator="#{viewmodel.validateFile}"/>

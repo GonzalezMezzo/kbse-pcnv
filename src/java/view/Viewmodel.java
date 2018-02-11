@@ -11,6 +11,8 @@ import access.SystemUserDTO;
 import access.AvatarDTO;
 import access.RatingDTO;
 import controller.ModelController;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -27,13 +29,18 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJBException;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.NoResultException;
+import javax.servlet.ServletContext;
 import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
 
@@ -56,8 +63,6 @@ public class Viewmodel implements Serializable {
     private static final String ABOUT = "/about.xhtml?faces-redirect=true";
     private static final String POST = "/post.xhtml?faces-redirect=true";
 
-    private static final boolean SAVE_IMAGES_TO_DISK = false;
-
     private List<PostDTO> postList;
     private List<SystemUserDTO> userList;
     private Map<PostDTO, RatingDTO> ratingCollector;
@@ -79,6 +84,7 @@ public class Viewmodel implements Serializable {
     private Part uploadedAvatar;
     private int uploadedAvatarHash;
     private byte[] parsedAvatar;
+    private AvatarDTO persistedAvatar;
 
     Long postId;
     String username;
@@ -127,18 +133,49 @@ public class Viewmodel implements Serializable {
         return POST;
     }
 
-    public String changeUser() {
-        SystemUserDTO user;
-        refreshState();
-        upload();
-        if (this.uploadedAvatar != null) {
-            user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, ctrl.getAvatar(this.uploadedAvatarHash));
+    public boolean showDefaultPic(AvatarDTO avatar) {
+        boolean res = true;
+        if (avatar != null) {
+            if (avatar.getImageHash() != -1) {
+                res = false;
+            } else {
+                res = true;
+            }
         } else {
-            user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail);
+            res = true;
         }
-        ctrl.addSystemUser(user);
+        return res;
+    }
+
+    public String changeUser() {
+        SystemUserDTO user = null;
+        SystemUserDTO systemUser = null;
         refreshState();
+
+        systemUser = ctrl.getSystemUser(this.inputTextUser);
+
+        if (!upload() && (this.uploadedAvatar == null)) {
+            if (systemUser == null) {
+                user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, ctrl.getAvatar(-1));
+                ctrl.addSystemUser(user);
+            } else {
+                user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, systemUser.getAvatar());
+                ctrl.updateSystemUser(user);
+            }
+        } else {
+            if (systemUser == null) {
+                user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, this.persistedAvatar);
+                ctrl.addSystemUser(user);
+            } else {
+                user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, this.persistedAvatar);
+                ctrl.updateSystemUser(user);
+            }
+            
+        }
         this.currentUser = user;
+        this.username = user.getUsername();
+        refreshState();
+        
         //ratingCollector = new int[postList.size()];
         return USER_CONTROL;
     }
@@ -177,7 +214,8 @@ public class Viewmodel implements Serializable {
     }
 
     public void refreshState() {
-        if (this.currentPost != null) {
+        ctrl.refreshState();
+        /*if (this.currentPost != null) {
             postId = this.currentPost.getId();
             this.currentPost = ctrl.getPost(postId);
 
@@ -185,7 +223,11 @@ public class Viewmodel implements Serializable {
         if (this.currentUser != null) {
             username = this.currentUser.getUsername();
             this.currentUser = ctrl.getSystemUser(username);
+        }*/
+        if(this.postId != null) {
+            this.currentPost = ctrl.getPost(postId);
         }
+        this.currentUser = ctrl.getSystemUser(username);
         this.postList = ctrl.getPostList();
         this.userList = ctrl.getUserList();
 
@@ -244,45 +286,32 @@ public class Viewmodel implements Serializable {
         return false;
     }
 
-    /**
-     * fetches rating input for post at pos i
-     *
-     * @param i
-     */
     public void addRating(PostDTO post) {
         System.out.println(post);
         System.out.println(inputTextNumber);
         ratingCollector.put(post, new RatingDTO(inputTextNumber, currentUser, post));
     }
 
-    public String upload() {
+    public boolean upload() {
+        boolean res = false;
         Part uploadedFile = this.uploadedAvatar;
-        final Path destination = Paths.get(System.getProperty("user.dir") + "\\tempImage.jpeg");
-        List<Byte> byteList;
-        int hash = 0;
-        AvatarDTO avatar = null;
         InputStream bytes = null;
-        if (null != uploadedFile) {
+        if (uploadedFile != null) {
             try {
-                if (SAVE_IMAGES_TO_DISK) {
-                    bytes = uploadedFile.getInputStream();
-                    Files.copy(bytes, destination, REPLACE_EXISTING);
-                }
                 bytes = uploadedFile.getInputStream();
                 this.parsedAvatar = IOUtils.toByteArray(bytes);
-                //this.parsedAvatar = toByteArray(bytes);
-                //byteList = Arrays.asList(this.parsedAvatar);
                 this.uploadedAvatarHash = calculateImageHash(this.parsedAvatar);
 
-                avatar = new AvatarDTO(this.uploadedAvatarHash, this.parsedAvatar);
+                this.persistedAvatar = new AvatarDTO(this.uploadedAvatarHash, uploadedFile.getContentType(), this.parsedAvatar);
 
-                ctrl.addAvatar(avatar);
+                res = ctrl.addAvatar(this.persistedAvatar);
+                this.persistedAvatar = ctrl.getAvatar(uploadedAvatarHash);
+
             } catch (IOException ex) {
-                Logger.getLogger(Viewmodel.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("upload -> Exception");
             }
         }
-
-        return USER_CONTROL;
+        return res;
     }
 
     //1048576 = 1mb
@@ -326,14 +355,6 @@ public class Viewmodel implements Serializable {
             throw new ValidatorException(new FacesMessage(ex.getMessage()));
         }
 
-    }
-
-    private Byte[] convertByteList(byte[] b) {
-        Byte[] res = new Byte[b.length];
-        for (int i = 0; i < b.length; i++) {
-            res[i] = b[i];
-        }
-        return res;
     }
 
     private int calculateImageHash(byte[] image) {
@@ -462,6 +483,14 @@ public class Viewmodel implements Serializable {
 
     public void setUploadedAvatar(Part uploadedAvatar) {
         this.uploadedAvatar = uploadedAvatar;
+    }
+
+    public byte[] getParsedAvatar() {
+        return parsedAvatar;
+    }
+
+    public void setParsedAvatar(byte[] parsedAvatar) {
+        this.parsedAvatar = parsedAvatar;
     }
 
 }

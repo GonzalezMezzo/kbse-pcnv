@@ -32,13 +32,9 @@
             <b:panel collapsible="false" collapsed="false">
                 <f:facet name="heading">
                     <b:form>
-                        <b:icon name="star"/>
+                        <b:icon name="star" size="lg"/>
                         <h:outputText value="ID: #{viewmodel.currentPost.id}&nbsp;"/>
                         <h:outputText value="Website: #{viewmodel.currentPost.url}"/>
-                        <b:buttonGroup size="xs" pull="right">
-                            <b:button icon="plus" look="success"/>
-                            <b:button icon="minus" look="danger"/>
-                        </b:buttonGroup>
                     </b:form>
                 </f:facet>
                 <b:form>
@@ -66,20 +62,15 @@
         <ui:repeat value="#{viewmodel.currentPost.comments}" var="comment" varStatus="i">
             <b:container>
                 <b:panel collapsible="false" collapsed="false" title="&#35;#{i.index}">
-                    <!--f:facet name="heading">
-                        <b:form>
-                            <b:icon name="star"/>
-                            <h:outputText value="ID: 1337 "/>
-                            <h:outputText value="Website: www.aliexpress.com"/>
-                            <b:buttonGroup size="xs" pull="right">
-                                <b:button icon="plus" look="success"/>
-                                <b:button icon="minus" look="danger"/>
-                            </b:buttonGroup>
-                        </b:form>
-                    </f:facet-->
                     <b:form>
                         <b:row>
                             <b:column col-md="2">
+                                <b:row>
+                                    <b:thumbnail>
+                                        <h:graphicImage value="image?id=#{comment.creatorId.avatar.imageHash}" rendered="#{!viewmodel.showDefaultPic(comment.creatorId.avatar)}"/>
+                                        <h:graphicImage value="/images/default_avatar.jpg" rendered="#{viewmodel.showDefaultPic(comment.creatorId.avatar)}"/>
+                                    </b:thumbnail>
+                                </b:row>
                                 <b:row>
                                     <b:column>
                                         <h:outputText value="Username:"/>
@@ -97,7 +88,7 @@
                                 </b:row>
                             </b:column>
                             <b:column col-md="10">
-                                <b:inputTextarea readonly="true" rows="4" value="#{comment.message}"/>
+                                <b:inputTextarea readonly="true" rows="8" value="#{comment.message}"/>
                             </b:column>
                         </b:row>
                     </b:form>
@@ -109,7 +100,10 @@
                 <b:form>
                     <b:row>
                         <b:column col-md="2">
-                            
+                            <b:thumbnail>
+                                <h:graphicImage value="image?id=#{viewmodel.currentUser.avatar.imageHash}" rendered="#{viewmodel.currentUser != null}"/>
+                                <h:graphicImage value="/images/default_avatar.jpg" rendered="#{viewmodel.currentUser == null}"/>
+                            </b:thumbnail>
                         </b:column>
                         <b:column col-md="10">
                             <b:inputTextarea readonly="false" rows="4" value="#{viewmodel.inputCommentMessage}"/>

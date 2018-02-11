@@ -23,23 +23,27 @@ public class AvatarDTO implements Serializable {
 
     private Long id;
     private int imageHash;
+    private String contentType;
     private byte[] image;
 
     public AvatarDTO() {
         this.id = -1L;
+        this.contentType = "image/jpeg";
         this.imageHash = -1;
         this.image = new byte[1];
     }
 
-    public AvatarDTO(int imageHash, byte[] image) {
+    public AvatarDTO(int imageHash, String contentType, byte[] image) {
         //this.id = 0L;
         this.imageHash = imageHash;
+        this.contentType = contentType;
         this.image = image;
     }
 
-    public AvatarDTO(long id, int imageHash, byte[] image) {
+    public AvatarDTO(long id, int imageHash,String contentType, byte[] image) {
         this.id = id;
         this.imageHash = imageHash;
+        this.contentType = contentType;
         this.image = image;
     }
 
@@ -47,14 +51,14 @@ public class AvatarDTO implements Serializable {
         if (a == null) {
             return null;
         }
-        return new AvatarDTO(a.getId(), a.getImageHash(), a.getImage());
+        return new AvatarDTO(a.getId(), a.getImageHash(), a.getContentType(),a.getImage());
     }
 
     public Avatar toAvatar() {
         if (this.id == null) {
-            return AvatarBuilder.create().imageHash(this.imageHash).image(this.image).build();
+            return AvatarBuilder.create().imageHash(this.imageHash).contentType(this.contentType).image(this.image).build();
         } else {
-            return AvatarBuilder.create().id(this.id).imageHash(this.imageHash).image(this.image).build();
+            return AvatarBuilder.create().id(this.id).imageHash(this.imageHash).contentType(this.contentType).image(this.image).build();
         }
     }
 
