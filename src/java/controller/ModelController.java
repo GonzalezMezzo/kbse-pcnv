@@ -55,16 +55,8 @@ public class ModelController implements Serializable {
     }
 
     public boolean addComment(CommentDTO comment, PostDTO p, SystemUserDTO currentUser) {
-        try {
             db.addComment(comment, p, currentUser);
-            return true;
-        } catch (EJBException e) {
-            /**
-             * todo: error handling
-             */
-            System.out.println("addComment -> exception");
-            return false;
-        }
+            return true;  
     }
 
     public boolean addRating(PostDTO p, RatingDTO r, SystemUserDTO u) {

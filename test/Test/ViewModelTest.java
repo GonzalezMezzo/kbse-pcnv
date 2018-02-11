@@ -135,7 +135,7 @@ public class ViewModelTest {
         Post p = em.find(Post.class, p1.getId());
         assertEquals(null,p);
         }
-    }/*
+    }
     @Test(expected = LinkNotFoundException.class)
     public void testCase1(){
         view.setInputTexTURL("test1URL");
@@ -148,7 +148,7 @@ public class ViewModelTest {
         view.changeUser();
         view.delete(post);
         view.selectPost(post);     
-    }/*
+    }
     @Test(expected = LinkNotFoundException.class)
     public void testCase2() throws Exception{
         view.setInputTexTURL("test2URL");
@@ -177,8 +177,8 @@ public class ViewModelTest {
             view.submitComment();
         }
     }
-    @Test(expected = MissingCredentialsException.class)
-    public void testCase3() throws Exception{
+    @Test()
+    public void TestCase3() throws Exception{
         view.setInputTexTURL("test3URL");
         view.setInputTextDescription("test3Description");
         view.setInputTextUser(null);
@@ -194,5 +194,4 @@ public class ViewModelTest {
         view.changeUser();
         view.submitLink();
     }
-*/
 }
