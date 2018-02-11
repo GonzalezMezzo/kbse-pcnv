@@ -37,7 +37,7 @@ public class CommentDTO implements Serializable {
 
     public CommentDTO(String message, SystemUserDTO creatorId, PostDTO ownerId) {
         this.creatorId = creatorId;
-        this.timeStamp = new SimpleDateFormat("HHmmss_ddMMyyyy").format(Calendar.getInstance().getTime());
+        this.timeStamp = new SimpleDateFormat("HH:mm:ss - dd.MM.yyyy").format(Calendar.getInstance().getTime());
         this.message = message;
         this.ownerId = ownerId;
     }
@@ -56,7 +56,6 @@ public class CommentDTO implements Serializable {
         this.message = message;
         this.ownerId = ownerId;
     }
-
     public static CommentDTO toCommentDTO(Comment c) {
         if (c == null) {
             return null;
