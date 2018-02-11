@@ -66,7 +66,7 @@ public class AvatarDTO implements Serializable {
     public JsonObject toJsonObejct() {
         JsonObjectBuilder js = Json.createObjectBuilder();
         Gson gson = new Gson();
-        String byteList = gson.toJson(this.image, List.class);
+        String byteList = gson.toJson(this.image, byte[].class);
         if (this.id != null) {
             js.add("id", this.id);
         }
@@ -78,10 +78,10 @@ public class AvatarDTO implements Serializable {
     public static AvatarDTO toPOJO(JsonObject js) {
         AvatarDTO a = new AvatarDTO();
         Gson gson = new Gson();
-
+        if(js.getJsonNumber("id")!= null)
         a.setId(js.getJsonNumber("id").longValue());
         a.setImageHash(js.getInt("imageHash"));
-        a.setImage(gson.fromJson(js.getString("image"), new TypeToken<List<Byte>>() {
+        a.setImage(gson.fromJson(js.getString("image"), new TypeToken<byte[]>() {
         }.getType()));
         return a;
     }
