@@ -152,40 +152,40 @@ public class Viewmodel implements Serializable {
         SystemUserDTO user = null;
         SystemUserDTO systemUser = null;
 
-        if(this.inputTextUser == null || "".equals(this.inputTextUser)){
+        if (this.inputTextUser == null || "".equals(this.inputTextUser)) {
             FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Username wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage(null, success); 
+            FacesContext.getCurrentInstance().addMessage(null, success);
             return null;
-        }else{
-            
-        refreshState();
-
-        systemUser = ctrl.getSystemUser(this.inputTextUser);
-
-        if (!upload() && (this.uploadedAvatar == null)) {
-            if (systemUser == null) {
-                user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, ctrl.getAvatar(-1));
-                ctrl.addSystemUser(user);
-            } else {
-                user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, systemUser.getAvatar());
-                ctrl.updateSystemUser(user);
-            }
         } else {
-            if (systemUser == null) {
-                user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, this.persistedAvatar);
-                ctrl.addSystemUser(user);
+
+            refreshState();
+
+            systemUser = ctrl.getSystemUser(this.inputTextUser);
+
+            if (!upload() && (this.uploadedAvatar == null)) {
+                if (systemUser == null) {
+                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, ctrl.getAvatar(-1));
+                    ctrl.addSystemUser(user);
+                } else {
+                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, systemUser.getAvatar());
+                    ctrl.updateSystemUser(user);
+                }
             } else {
-                user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, this.persistedAvatar);
-                ctrl.updateSystemUser(user);
+                if (systemUser == null) {
+                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, this.persistedAvatar);
+                    ctrl.addSystemUser(user);
+                } else {
+                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, this.persistedAvatar);
+                    ctrl.updateSystemUser(user);
+                }
+
             }
-            
-        }
-        this.currentUser = user;
-        this.username = user.getUsername();
-        refreshState();
-        
-        //ratingCollector = new int[postList.size()];
-        return USER_CONTROL;
+            this.currentUser = user;
+            this.username = user.getUsername();
+            refreshState();
+
+            //ratingCollector = new int[postList.size()];
+            return USER_CONTROL;
         }
     }
 
@@ -198,22 +198,23 @@ public class Viewmodel implements Serializable {
     }
 
     public String submitLink() {
-       if(this.inputTextUser == null || "".equals(this.inputTextUser)){
+        if (this.inputTextUser == null || "".equals(this.inputTextUser)) {
             FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Username wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage(null, success); 
-        }if(this.inputTexTURL == null || "".equals(this.inputTexTURL)){
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "URL wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage(null, success); 
-        }if(this.inputTextDescription == null || "".equals(this.inputTextDescription)){
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Beschreibung wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage(null, success); 
+            FacesContext.getCurrentInstance().addMessage(null, success);
         }
-        else{
-        refreshState();
-        PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
-        ctrl.addPost(post, this.currentUser);
-        refreshState();
-        return BOARD;
+        if (this.inputTexTURL == null || "".equals(this.inputTexTURL)) {
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "URL wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage(null, success);
+        }
+        if (this.inputTextDescription == null || "".equals(this.inputTextDescription)) {
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Beschreibung wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage(null, success);
+        } else {
+            refreshState();
+            PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
+            ctrl.addPost(post, this.currentUser);
+            refreshState();
+            return BOARD;
         }
         return null;
     }
@@ -244,7 +245,7 @@ public class Viewmodel implements Serializable {
             username = this.currentUser.getUsername();
             this.currentUser = ctrl.getSystemUser(username);
         }*/
-        if(this.postId != null) {
+        if (this.postId != null) {
             this.currentPost = ctrl.getPost(postId);
         }
         this.currentUser = ctrl.getSystemUser(username);
