@@ -1,7 +1,7 @@
 package view;
 
-import access.AvatarBuilder;
-import access.AvatarDTO;
+import access.builder.AvatarBuilder;
+import access.DTO.AvatarDTO;
 import controller.ModelController;
 import entities.Avatar;
 import java.io.IOException;

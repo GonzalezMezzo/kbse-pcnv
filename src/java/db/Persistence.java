@@ -5,11 +5,11 @@
  */
 package db;
 
-import access.AvatarDTO;
-import access.CommentDTO;
-import access.PostDTO;
-import access.RatingDTO;
-import access.SystemUserDTO;
+import access.DTO.AvatarDTO;
+import access.DTO.CommentDTO;
+import access.DTO.PostDTO;
+import access.DTO.RatingDTO;
+import access.DTO.SystemUserDTO;
 import entities.Avatar;
 import entities.Comment;
 import entities.Post;

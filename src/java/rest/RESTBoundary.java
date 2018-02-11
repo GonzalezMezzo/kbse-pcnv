@@ -3,14 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller;
+package rest;
 
-import access.AvatarDTO;
-import access.CommentDTO;
-import access.PostDTO;
-import access.RatingDTO;
-import access.SystemUserDTO;
+import access.DTO.AvatarDTO;
+import access.DTO.CommentDTO;
+import access.DTO.PostDTO;
+import access.DTO.RatingDTO;
+import access.DTO.SystemUserDTO;
 import com.google.gson.Gson;
+import controller.ModelController;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;

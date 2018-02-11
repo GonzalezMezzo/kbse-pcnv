@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package view;
+package rest;
 
-import access.AvatarDTO;
-import access.CommentDTO;
-import access.PostDTO;
-import access.RatingDTO;
-import access.SystemUserDTO;
+import access.DTO.AvatarDTO;
+import access.DTO.CommentDTO;
+import access.DTO.PostDTO;
+import access.DTO.RatingDTO;
+import access.DTO.SystemUserDTO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.Serializable;
@@ -34,7 +34,7 @@ import javax.ws.rs.core.MediaType;
  * @author philippnienhuser
  */
 @Dependent
-public class RestFrontendController implements Serializable {
+public class RESTClient implements Serializable {
 
     private final static String ADRESS = "http://localhost:8080/kbse-pcnv/r";
 

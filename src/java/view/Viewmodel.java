@@ -5,11 +5,11 @@
  */
 package view;
 
-import access.CommentDTO;
-import access.PostDTO;
-import access.SystemUserDTO;
-import access.AvatarDTO;
-import access.RatingDTO;
+import access.DTO.CommentDTO;
+import access.DTO.PostDTO;
+import access.DTO.SystemUserDTO;
+import access.DTO.AvatarDTO;
+import access.DTO.RatingDTO;
 import controller.ModelController;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -261,6 +261,7 @@ public class Viewmodel implements Serializable {
         ctrl.refreshState();
         this.postList = ctrl.getPostList();
         this.currentPost = i;
+        this.postId = i.getId();
         return POST;
     }
 

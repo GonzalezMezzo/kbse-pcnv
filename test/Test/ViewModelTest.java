@@ -1,8 +1,8 @@
 package Test;
 
 
-import access.CommentDTO;
-import access.PostDTO;
+import access.DTO.CommentDTO;
+import access.DTO.PostDTO;
 import db.Persistence;
 import entities.Post;
 import java.io.File;

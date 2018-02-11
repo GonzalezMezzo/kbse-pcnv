@@ -11,12 +11,6 @@
         <title>KBSE - #{vieselectPostwmodel.currentPost.id}&nbsp;#{viewmodel.currentPost.url}</title>
     </h:head>
     <h:body>
-        <!--b:modal id="editVote" title="Modal Example" styleClass="modalPseudoClass">
-            <f:facet name="footer">
-                <b:button value="Close" dismiss="modal" />
-                <b:button value="Ok" look="primary" dismiss="modal" />
-            </f:facet>
-        </b:modal-->
         <b:navBar brand="SuperDuperForum" fluid="false" inverse="true" position="top" sticky="false">
             <h:form>
                 <b:navbarLinks>
@@ -41,9 +35,10 @@
                     <b:row>
                         <b:column col-md="2">
                             <b:row>
-                                <b:column>
-                                    <h:outputText value="Username:"/>
-                                </b:column>
+                                <b:thumbnail>
+                                    <h:graphicImage value="image?id=#{viewmodel.currentPost.creatorId.avatar.imageHash}" rendered="#{!viewmodel.showDefaultPic(viewmodel.currentPost.creatorId.avatar)}"/>
+                                    <h:graphicImage value="/images/default_avatar.jpg" rendered="#{viewmodel.showDefaultPic(viewmodel.currentPost.creatorId.avatar)}"/>
+                                </b:thumbnail>
                             </b:row>
                             <b:row>
                                 <b:column>
@@ -52,7 +47,7 @@
                             </b:row>
                         </b:column>
                         <b:column col-md="10">
-                            <b:inputTextarea readonly="true" rows="4" value="#{viewmodel.currentPost.description}"/>
+                            <b:inputTextarea readonly="true" rows="10" value="#{viewmodel.currentPost.description}"/>
                         </b:column>
                     </b:row>
                 </b:form>
@@ -73,11 +68,6 @@
                                 </b:row>
                                 <b:row>
                                     <b:column>
-                                        <h:outputText value="Username:"/>
-                                    </b:column>
-                                </b:row>
-                                <b:row>
-                                    <b:column>
                                         <h:outputText value="#{comment.creatorId.username}"/>
                                     </b:column>
                                 </b:row>
@@ -88,7 +78,7 @@
                                 </b:row>
                             </b:column>
                             <b:column col-md="10">
-                                <b:inputTextarea readonly="true" rows="8" value="#{comment.message}"/>
+                                <b:inputTextarea readonly="true" rows="12" value="#{comment.message}"/>
                             </b:column>
                         </b:row>
                     </b:form>
@@ -100,17 +90,24 @@
                 <b:form>
                     <b:row>
                         <b:column col-md="2">
-                            <b:thumbnail>
-                                <h:graphicImage value="image?id=#{viewmodel.currentUser.avatar.imageHash}" rendered="#{viewmodel.currentUser != null}"/>
-                                <h:graphicImage value="/images/default_avatar.jpg" rendered="#{viewmodel.currentUser == null}"/>
-                            </b:thumbnail>
+                            <b:row>
+                                <b:thumbnail>
+                                    <h:graphicImage value="image?id=#{viewmodel.currentUser.avatar.imageHash}" rendered="#{viewmodel.currentUser != null}"/>
+                                    <h:graphicImage value="/images/default_avatar.jpg" rendered="#{viewmodel.currentUser == null}"/>
+                                </b:thumbnail>
+                            </b:row>
                         </b:column>
                         <b:column col-md="10">
-                            <b:inputTextarea readonly="false" rows="4" value="#{viewmodel.inputCommentMessage}"/>
+                            <b:inputTextarea readonly="false" rows="10" value="#{viewmodel.inputCommentMessage}"/>
                         </b:column>
                     </b:row>
                     <b:row>
-                        <b:commandButton action="#{viewmodel.submitComment()}" value="Submit"/>
+                        <b:column col-md="2">
+                            <h:outputText value="#{viewmodel.currentUser.username}(You)"/>
+                        </b:column>
+                        <b:column col-md="10">
+                            <b:commandButton action="#{viewmodel.submitComment()}" value="Submit" large-screen="full-width"/>
+                        </b:column>
                     </b:row>
                 </b:form>
             </b:panel>
