@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJBException;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -125,24 +126,6 @@ public class Viewmodel implements Serializable {
     public static String getPOST() {
         return POST;
     }
-
-    public String changeUser() {
-        if(this.inputTextUser == null || "".equals(this.inputTextUser)){
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Username wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage(null, success); 
-            return null;
-        }else{
-            
-        refreshState();
-        SystemUserDTO user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail);
-        ctrl.addSystemUser(user);
-        refreshState();
-        this.currentUser = user;
-        //ratingCollector = new int[postList.size()];
-        return USER_CONTROL;
-        }
-    }
-
     public String rating() {
         return RATING;
     }
@@ -150,29 +133,71 @@ public class Viewmodel implements Serializable {
     public String postLink() {
         return INDEX;
     }
-
+    public String changeUser(){
+        try{
+            this.checkInputUser();
+        }catch(MissingCredentialsException ex){
+            return null;
+        }        
+        refreshState();
+        SystemUserDTO user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail);
+        ctrl.addSystemUser(user);
+        refreshState();
+        this.currentUser = user;
+        //ratingCollector = new int[postList.size()];
+        return USER_CONTROL;
+        
+    }
+    public void checkInputUser() throws MissingCredentialsException{
+        if(this.inputTextUser == null || "".equals(this.inputTextUser)){
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Username wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage(null, success);
+            throw new MissingCredentialsException("kein Nutzername");
+        }
+    }
+    public void checkSubmitLinkCredentials() throws MissingCredentialsException{
+         if(this.inputTexTURL == null || "".equals(this.inputTexTURL)){
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "URL wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage("submitLink", success); 
+            throw new MissingCredentialsException("keine URL");
+        }else if(this.inputTextDescription == null || "".equals(this.inputTextDescription)){
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Beschreibung wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage("submitLink", success);
+            throw new MissingCredentialsException("keine Beschreibung");
+        }
+    }
+    public void checkSubmitCommentCredentials() throws MissingCredentialsException{
+        if(this.currentUser == null || "".equals(this.currentUser.getUsername())){
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Username wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage("submitLink", success);
+            throw new MissingCredentialsException("kein Username");
+        }
+        else if(this.inputCommentMessage == null || "".equals(this.inputCommentMessage)){
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Kommentar wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage("submitLink", success); 
+            throw new MissingCredentialsException("kein Kommentar");
+        }
+    }
     public String submitLink() {
-       if(this.inputTextUser == null || "".equals(this.inputTextUser)){
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Username wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage(null, success); 
-        }if(this.inputTexTURL == null || "".equals(this.inputTexTURL)){
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "URL wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage(null, success); 
-        }if(this.inputTextDescription == null || "".equals(this.inputTextDescription)){
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Beschreibung wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage(null, success); 
+        try{
+            this.checkInputUser();
+            this.checkSubmitLinkCredentials();
+        } catch (MissingCredentialsException ex) { 
+            return null;
         }
-        else{
-        refreshState();
-        PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
-        ctrl.addPost(post, this.currentUser);
-        refreshState();
-        return BOARD;
-        }
-        return null;
+            refreshState();
+            PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
+            ctrl.addPost(post, this.currentUser);
+            refreshState();
+            return BOARD;
     }
 
     public String delete(PostDTO p) {
+        try{
+             this.checkInputUser();
+        }catch(MissingCredentialsException ex){
+            return null;
+        }
         refreshState();
         ctrl.deletePost(p.getId());
         refreshState();
@@ -180,9 +205,20 @@ public class Viewmodel implements Serializable {
     }
 
     public String submitComment() {
+        try{
+            this.checkSubmitCommentCredentials();
+        }catch(MissingCredentialsException ex){
+            return null;
+        }       
         refreshState();
         CommentDTO comment = new CommentDTO(this.inputCommentMessage, this.currentUser, this.currentPost);
-        ctrl.addComment(comment, this.currentPost, this.currentUser);
+        try {
+            ctrl.addComment(comment, this.currentPost, this.currentUser);
+        } catch (EJBException e) {
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "DatenbankFehler", "Inhalt wurde gelöscht!");
+            FacesContext.getCurrentInstance().addMessage(null, success);
+            return null;
+        }
         refreshState();
         return POST;
     }
@@ -231,17 +267,25 @@ public class Viewmodel implements Serializable {
     }
 
     public String submitRating() {
-        if (validate() == true) {//method stub
-
-            //delete every previous rating for this user
-            ctrl.deleteRating(currentUser.getUsername());
-            //add individual ratings for this submit    
-            for (Map.Entry<PostDTO, RatingDTO> entry : ratingCollector.entrySet()) {
-                ctrl.addRating(entry.getKey(), entry.getValue(), currentUser);
-            }
+        try{
+            this.checkInputUser();
+        }catch(MissingCredentialsException ex){
+            return  null;
         }
-        refreshState();
-        return BOARD;
+        if (validate() == true) {//method stub
+                //delete every previous rating for this user
+                ctrl.deleteRating(currentUser.getUsername());
+                //add individual ratings for this submit    
+                for (Map.Entry<PostDTO, RatingDTO> entry : ratingCollector.entrySet()) {
+                    ctrl.addRating(entry.getKey(), entry.getValue(), currentUser);
+                }
+                refreshState();
+                return BOARD;
+        }else{
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Es können nur 10 Bewertungs-Punkte vergeben werden!");
+            FacesContext.getCurrentInstance().addMessage(null, success);
+            return null;
+        }
     }
 
     public boolean validate() {

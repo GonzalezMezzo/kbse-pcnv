@@ -29,6 +29,11 @@
         </b:navBar>
 
         <b:container>
+        <b:growl id="growlPost" placement-align="center" placementFrom="top" show-detail="true"
+         global-only="false"
+         show-summary="false" allow-dismiss="true"
+         animation-enter="animated bounceInDown"
+         animation-exit="animated flipOutY"/>
             <b:panel collapsible="false" collapsed="false">
                 <f:facet name="heading">
                     <b:form>
@@ -116,6 +121,7 @@
                         </b:column>
                     </b:row>
                     <b:row>
+                        <b:messages id="submitComment" showDetail="true" showSummary="false" />
                         <b:commandButton action="#{viewmodel.submitComment()}" value="Submit"/>
                     </b:row>
                 </b:form>
