@@ -28,7 +28,7 @@
             </h:form>
         </b:navBar>
         <b:container>
-            <b:panel title="Add Website for Rating" icon="flag" icon-align="left" collapsible="true" collapsed="true">
+            <b:panel title="Add Website for Rating" icon="flag" icon-align="left" collapsible="true" collapsed="false">
                 <b:form>
                     <b:row>
                         <b:column>
@@ -53,7 +53,8 @@
                         </b:column>
                     </b:row>
                     <b:row>
-                        <b:column>                        
+                        <b:column>       
+                            <b:messages id="nachrichten" showDetail="true" showSummary="false" />
                             <b:commandButton value="Submit" action="#{viewmodel.submitLink()}" large-screen="full-width"/>
                         </b:column>
                     </b:row>
