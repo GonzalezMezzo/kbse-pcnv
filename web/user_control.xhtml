@@ -27,7 +27,12 @@
                 </b:navbarLinks>
             </h:form>
         </b:navBar>
-
+        <b:growl id="growlUserControl" placement-align="center" placementFrom="top" show-detail="true"
+             global-only="false"
+             show-summary="false" allow-dismiss="true"
+             animation-enter="animated bounceInDown"
+             animation-exit="animated flipOutX"
+             escape="true" />
         <b:container>
             <b:panel title="User" icon="user" icon-align="left" showCollapseLink="false">
                 <b:form enctype="multipart/form-data">
@@ -95,18 +100,22 @@
                             </b:row>
                         </b:column>
                         <b:column col-md="6">                           
-                            <b:thumbnail>
-                                <img data-src="holder.js/100%x180/sky" alt="Generic placeholder thumbnail"/>
+                            <b:thumbnail >
+                                <h:graphicImage value="image?id=#{viewmodel.currentUser.avatar.imageHash}" rendered="#{!viewmodel.showDefaultPic(viewmodel.currentUser.avatar)}"/>
+                                <h:graphicImage value="/images/default_avatar.jpg" rendered="#{viewmodel.showDefaultPic(viewmodel.currentUser.avatar)}"/>
                                 <f:facet name="caption" transient="false">
                                     <p>Upload Image-File</p>
-                                    <h:inputFile/>
+                                    <h:inputFile id="file" value="#{viewmodel.uploadedAvatar}" validator="#{viewmodel.validateFile}"/>
                                 </f:facet>
                             </b:thumbnail>
                         </b:column>
                     </b:row>
                     <b:row>
                         <b:column>
-                            <b:commandButton value="Submit Changes" action="#{viewmodel.changeUser()}" large-screen="full-width"/>
+                            <b:messages id="nachrichten" showDetail="true" showSummary="false" />
+                            <b:commandButton value="Submit Changes" action="#{viewmodel.changeUser()}" large-screen="full-width">
+                                <f:ajax execute="file,username,email,fname,lname" render="@form"/>
+                            </b:commandButton>
                         </b:column>
                     </b:row>                    
                 </b:form>

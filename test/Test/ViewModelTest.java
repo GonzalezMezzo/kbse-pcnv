@@ -1,8 +1,9 @@
 package Test;
 
 
-import access.CommentDTO;
-import access.PostDTO;
+
+import access.DTO.CommentDTO;
+import access.DTO.PostDTO;
 import db.Persistence;
 import entities.Post;
 import java.io.File;
@@ -47,10 +48,7 @@ public class ViewModelTest {
     
     @Before
     public void setUp(){
-        view.setInputTextUser("TestUser");
-        view.setInputTextEMail("TestEmail");
-        view.setInputTextFName("TestVorname");
-        view.setInputTextLName("TestNachname");
+
     }
     
     @After
@@ -59,6 +57,12 @@ public class ViewModelTest {
     }
    @Test
     public void TestsubmitLink() throws Exception{
+        view.setInputTextUser("TestUser");
+        view.setInputTextEMail("TestEmail");
+        view.setInputTextFName("TestVorname");
+        view.setInputTextLName("TestNachname");
+        view.changeUser();
+
         view.setInputTexTURL("TestURL");
         view.setInputTextDescription("TestDescription");
         view.submitLink();
@@ -72,38 +76,44 @@ public class ViewModelTest {
             throw new Exception("Post nicht in Postlist");
         } else {
             Post p2 = em.find(Post.class,p1.getId());
-            assertEquals(p1.toPost().getCreator(),p2.getCreator(),"TestUser");
+            assertEquals(p1.toPost().getAuthor().getUsername(),p2.getAuthor().getUsername(),"TestUser");
             assertEquals(p1.toPost().getDescription(),p2.getDescription(),"TestDescription");
             assertEquals(p1.toPost().getUrl(),p2.getUrl(),"TestURL");       
         }
     }
    
     @Test
-    public void TestsubmitComment() throws Exception{   
-        view.setInputTexTURL("commenttesturl");
-        view.setInputTextDescription("commenttestdescription");
-        view.setInputTextUser("CommentSubmitter");
+    public void TestsubmitComment() throws Exception{  
+        view.setInputTextUser("TestUser2");
+        view.setInputTextEMail("TestEmail2");
+        view.setInputTextFName("TestVorname2");
+        view.setInputTextLName("TestNachname2");
+        view.changeUser();
+        view.setInputTexTURL("TestURL2");
+        view.setInputTextDescription("TestDescription2");
         view.submitLink();
         List<PostDTO> list = view.getPostList();
         PostDTO p1 = null;
         for(PostDTO p : list){
-            if(p.getUrl().equals("commenttesturl") && p.getDescription().equals("commenttestdescription"))
+            if(p.getUrl().equals("TestURL2") && p.getDescription().equals("TestDescription2"))
                 p1 = p;
         }
         if(p1==null){
             throw new Exception("Post nicht in Postlist");
         } else {
+            view.setInputTextUser("CommentSubmitter");
+            view.changeUser();
             view.selectPost(p1);
             view.setInputCommentMessage("submitCommentTest");
             view.submitComment();
             list = view.getPostList();
             for(PostDTO p : list){
-                if(p.getUrl().equals("commenttesturl") && p.getDescription().equals("commenttestdescription"))
+                if(p.getUrl().equals("TestURL2") && p.getDescription().equals("TestDescription2"))
                     p1 = p;
             } 
             CommentDTO c = p1.getComments().get(0);
-            assertEquals(c.getCreator(),"CommentSubmitter");
-            assertEquals(c.getMessage(),"submitCommentTest");       
+            assertEquals("CommentSubmitter",c.getCreatorId().getUsername());
+            assertEquals("submitCommentTest",c.getMessage());       
         }
     }
     @Test
@@ -151,7 +161,7 @@ public class ViewModelTest {
         List<PostDTO> list = view.getPostList();
         PostDTO p1 = null;
         for(PostDTO p : list){
-            if(p.getUrl().equals("test2URL") && p.getDescription().equals("test2Description") &&p.getCreator().equals("user3"))
+            if(p.getUrl().equals("test2URL") && p.getDescription().equals("test2Description") &&p.getCreatorId().getUsername().equals("user3"))
                 p1 = p;
         }
         if(p1==null){
@@ -169,8 +179,8 @@ public class ViewModelTest {
             view.submitComment();
         }
     }
-    @Test(expected = MissingCredentialsException.class)
-    public void testCase3() throws Exception{
+    @Test()
+    public void TestCase3() throws Exception{
         view.setInputTexTURL("test3URL");
         view.setInputTextDescription("test3Description");
         view.setInputTextUser(null);
@@ -186,4 +196,6 @@ public class ViewModelTest {
         view.changeUser();
         view.submitLink();
     }
+
 }
+

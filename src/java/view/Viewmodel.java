@@ -5,17 +5,31 @@
  */
 package view;
 
-import access.CommentDTO;
-import access.PostDTO;
+import access.DTO.CommentDTO;
+import access.DTO.PostDTO;
+import access.DTO.SystemUserDTO;
+import access.DTO.AvatarDTO;
+import access.DTO.RatingDTO;
 import controller.ModelController;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJBException;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.Part;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -35,8 +49,10 @@ public class Viewmodel implements Serializable {
     private static final String USER_CONTROL = "/user_control.xhtml?faces-redirect=true";
     private static final String ABOUT = "/about.xhtml?faces-redirect=true";
     private static final String POST = "/post.xhtml?faces-redirect=true";
-    
-    private List<PostDTO> postList; 
+
+    private List<PostDTO> postList;
+    private List<SystemUserDTO> userList;
+    private Map<PostDTO, RatingDTO> ratingCollector;
     private String inputTextUser;
     private String inputTextFName;
     private String inputTextLName;
@@ -44,15 +60,28 @@ public class Viewmodel implements Serializable {
     private String inputTextDescription;
     private String inputTexTURL;
     private int inputTextNumber;
-    
-    private String inputCommentMessage;
-    
-    private int[] ratingCollector;
 
+
+    private String inputCommentUser;
+    private String inputCommentMessage;
+
+    //private int[] ratingCollector;
+    private SystemUserDTO currentUser;
     private PostDTO currentPost;
+
+    private Part uploadedAvatar;
+    private int uploadedAvatarHash;
+    private byte[] parsedAvatar;
+    private AvatarDTO persistedAvatar;
+
+    Long postId;
+    String username;
 
     @PostConstruct
     public void init() {
+        ratingCollector = new HashMap();
+        postId = null;
+        username = null;
         /*
         this.inputTextUser = "User";
         this.inputTextDescription = "Dies das, ein bisschen länger";
@@ -61,17 +90,10 @@ public class Viewmodel implements Serializable {
         this.inputTextLName = "Peter";
         this.inputTexTURL = "www.google.de";
         this.inputTextNumber = 0;
-        */
+         */
+        ctrl.addAvatar(new AvatarDTO());
 
         refreshState();
-        /**
-         * CRITICAL CODE !!!!!!!
-         */
-        //currentPost = postList.get(0);
-        /**
-         * CRITICAL CODE !!!!!!!
-         */
-        ratingCollector = new int[postList.size()];
     }
 
     /* routing */
@@ -98,11 +120,6 @@ public class Viewmodel implements Serializable {
     public static String getPOST() {
         return POST;
     }
-
-    public String changeUser() {
-        return USER_CONTROL;
-    }
-
     public String rating() {
         return RATING;
     }
@@ -110,97 +127,277 @@ public class Viewmodel implements Serializable {
     public String postLink() {
         return INDEX;
     }
+    public String changeUser(){
+        try{
+            this.checkInputUser();
+        }catch(MissingCredentialsException ex){
+            return null;
+        }        
+           SystemUserDTO user = null;
+        SystemUserDTO systemUser = null;
+                    systemUser = ctrl.getSystemUser(this.inputTextUser);
 
+            if (!upload() && (this.uploadedAvatar == null)) {
+                if (systemUser == null) {
+                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, ctrl.getAvatar(-1));
+                    ctrl.addSystemUser(user);
+                } else {
+                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, systemUser.getAvatar());
+                    ctrl.updateSystemUser(user);
+                }
+            } else {
+                if (systemUser == null) {
+                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, this.persistedAvatar);
+                    ctrl.addSystemUser(user);
+                } else {
+                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, this.persistedAvatar);
+                    ctrl.updateSystemUser(user);
+                }
+
+            }
+               refreshState();
+            this.currentUser = user;
+            this.username = user.getUsername();
+            refreshState();
+
+            //ratingCollector = new int[postList.size()];
+            return USER_CONTROL;
+        
+    }
+    public void checkInputUser() throws MissingCredentialsException{
+        if(this.inputTextUser == null || "".equals(this.inputTextUser)){
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Username wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage(null, success);
+            throw new MissingCredentialsException("kein Nutzername");
+        }
+    }
+    public boolean showDefaultPic(AvatarDTO avatar) {
+        boolean res = true;
+        if (avatar != null) {
+            if (avatar.getImageHash() != -1) {
+                res = false;
+            } else {
+                res = true;
+            }
+        } else {
+            res = true;
+        }
+        return res;
+    }
+
+    public void checkSubmitLinkCredentials() throws MissingCredentialsException{
+         if(this.inputTexTURL == null || "".equals(this.inputTexTURL)){
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "URL wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage("submitLink", success); 
+            throw new MissingCredentialsException("keine URL");
+        }else if(this.inputTextDescription == null || "".equals(this.inputTextDescription)){
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Beschreibung wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage("submitLink", success);
+            throw new MissingCredentialsException("keine Beschreibung");
+        }
+    }
+    public void checkSubmitCommentCredentials() throws MissingCredentialsException{
+        if(this.currentUser == null || "".equals(this.currentUser.getUsername())){
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Username wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage("submitLink", success);
+            throw new MissingCredentialsException("kein Username");
+        }
+        else if(this.inputCommentMessage == null || "".equals(this.inputCommentMessage)){
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Kommentar wird benötigt!");
+            FacesContext.getCurrentInstance().addMessage("submitLink", success); 
+            throw new MissingCredentialsException("kein Kommentar");
+        }
+    }
     public String submitLink() {
-        PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.inputTextUser, 0, new HashMap<String, Integer>());
-        post.getRatings().put(inputTextUser, 0);
-        ctrl.addPost(post);
-        refreshState();
-        return BOARD;
+        try{
+            this.checkInputUser();
+            this.checkSubmitLinkCredentials();
+        } catch (MissingCredentialsException ex) { 
+            return null;
+        }
+            refreshState();
+            PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
+            ctrl.addPost(post, this.currentUser);
+            refreshState();
+            return BOARD;
     }
 
     public String delete(PostDTO p) {
+        try{
+             this.checkInputUser();
+        }catch(MissingCredentialsException ex){
+            return null;
+        }
+        refreshState();
         ctrl.deletePost(p.getId());
         refreshState();
         return USER_CONTROL;
     }
 
     public String submitComment() {
-        CommentDTO comment = new CommentDTO(this.inputCommentMessage, this.inputTextUser, this.currentPost.getId());
-        ctrl.addComment(comment);
+        try{
+            this.checkSubmitCommentCredentials();
+        }catch(MissingCredentialsException ex){
+            return null;
+        }       
+        refreshState();
+        CommentDTO comment = new CommentDTO(this.inputCommentMessage, this.currentUser, this.currentPost);
+        try {
+            ctrl.addComment(comment, this.currentPost, this.currentUser);
+        } catch (EJBException e) {
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "DatenbankFehler", "Inhalt wurde gelöscht!");
+            FacesContext.getCurrentInstance().addMessage(null, success);
+            return null;
+        }
         refreshState();
         return POST;
     }
 
     public void refreshState() {
-        Long id = null;
-        if(this.currentPost != null) {
-            id = this.currentPost.getId();
+        ctrl.refreshState();
+        if (this.postId != null) {
+            this.currentPost = ctrl.getPost(postId);
         }
-        this.postList = ctrl.refreshState();
-        ratingCollector = new int[postList.size()];
-       
-        if(id != null) {
-        for (PostDTO postDTO : postList) {
-            if(postDTO.getId() == id) {
-                this.currentPost = postDTO;
-            }
-        }
-        }
-        
+        this.currentUser = ctrl.getSystemUser(username);
+        this.postList = ctrl.getPostList();
+        this.userList = ctrl.getUserList();
+
+        ratingCollector = new HashMap();
         inputTextNumber = 0;
+        ctrl.refreshState();
     }
-    
+
     public String selectPost(PostDTO i) {
-        this.postList = ctrl.refreshState();
+        ctrl.refreshState();
+        this.postList = ctrl.getPostList();
         this.currentPost = i;
+        this.postId = i.getId();
         return POST;
     }
 
-    /**
-     * Get user's rating on index i on the current rendered list of posts
-     *
-     * @param i
-     * @return rating
-     */
     public int getPersonalRating(int i) {
         //int rating = this.postList.get(i).getRatings().get(inputTextUser);
         return 0;
     }
 
     public boolean renderInputForRating(int i) {
-        if (inputTextUser.equals(postList.get(i).getCreator())) {
+        if (inputTextUser.equals(postList.get(i).getCreatorId())) {
             return false;
         }
         return true;
     }
 
-    public void submitRating() {
+    public String submitRating() {
+        try{
+            this.checkInputUser();
+        }catch(MissingCredentialsException ex){
+            return  null;
+        }
         if (validate() == true) {//method stub
-            for (int i = 0; i < ratingCollector.length; i++) {
-                if (ratingCollector[i] != 0) {
-                    this.postList.get(i).getRatings().put(inputTextUser, new Integer(ratingCollector[i]));
+                //delete every previous rating for this user
+                ctrl.deleteRating(currentUser.getUsername());
+                //add individual ratings for this submit    
+                for (Map.Entry<PostDTO, RatingDTO> entry : ratingCollector.entrySet()) {
+                    ctrl.addRating(entry.getKey(), entry.getValue(), currentUser);
                 }
-                ctrl.updateRatings(this.postList);
-            }
-            refreshState();
+                refreshState();
+                return BOARD;
+        }else{
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Es können nur 10 Bewertungs-Punkte vergeben werden!");
+            FacesContext.getCurrentInstance().addMessage(null, success);
+            return null;
         }
     }
 
-    /**
-     * fetches rating input for post at pos i
-     *
-     * @param i
-     */
-    public void addRating(int i) {
-        //ratingCollector[i] = inputTextNumber;
+    public boolean validate() {
+        int res = 0;
+        for (Map.Entry<PostDTO, RatingDTO> entry : ratingCollector.entrySet()) {
+            res += entry.getValue().getRatedValue();
+        }
+        if (res <= 10 && res >= 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public void addRating(PostDTO post) {
+        System.out.println(post);
+        System.out.println(inputTextNumber);
+        ratingCollector.put(post, new RatingDTO(inputTextNumber, currentUser, post));
+    }
+
+    public boolean upload() {
+        boolean res = false;
+        Part uploadedFile = this.uploadedAvatar;
+        InputStream bytes = null;
+        if (uploadedFile != null) {
+            try {
+                bytes = uploadedFile.getInputStream();
+                this.parsedAvatar = IOUtils.toByteArray(bytes);
+                this.uploadedAvatarHash = calculateImageHash(this.parsedAvatar);
+
+                this.persistedAvatar = new AvatarDTO(this.uploadedAvatarHash, uploadedFile.getContentType(), this.parsedAvatar);
+
+                res = ctrl.addAvatar(this.persistedAvatar);
+                this.persistedAvatar = ctrl.getAvatar(uploadedAvatarHash);
+
+            } catch (IOException ex) {
+                System.out.println("upload -> Exception");
+            }
+        }
+        return res;
+    }
+
+    //1048576 = 1mb
+    public void validateFile(FacesContext ctx, UIComponent comp, Object value) throws ValidatorException {
+        List<FacesMessage> msgs = new ArrayList<>();
+        Part file = (Part) value;
+        if (file != null) {
+            if (file.getSize() > 1048576) {
+                msgs.add(new FacesMessage("file too big"));
+            }
+            if (!file.getContentType().endsWith("jpeg")) {
+                msgs.add(new FacesMessage("Select JPEG file"));
+            }
+            if (!"image/jpeg".equals(file.getContentType())) {
+                msgs.add(new FacesMessage("not a jpeg file"));
+            }
+            if (!msgs.isEmpty()) {
+                throw new ValidatorException(msgs);
+            }
+        }
+    }
+
+    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+        Part file = (Part) value;
+        FacesMessage message = null;
+        try {
+            if (file == null || file.getSize() <= 0 || file.getContentType().isEmpty()) {
+                message = new FacesMessage("Select a valid file");
+            } else if (!file.getContentType().endsWith("jpeg")) {
+                message = new FacesMessage("Select JPEG file");
+            } else if (file.getSize() > 2000000) {
+                message = new FacesMessage("File size too big. File size allowed is less than or equal to 2 MB.");
+            }
+
+            if (message != null && !message.getDetail().isEmpty()) {
+                message.setSeverity(FacesMessage.SEVERITY_ERROR);
+                throw new ValidatorException(message);
+            }
+
+        } catch (ValidatorException ex) {
+            throw new ValidatorException(new FacesMessage(ex.getMessage()));
+        }
+
+    }
+
+    private int calculateImageHash(byte[] image) {
+        return Arrays.hashCode(image);
     }
 
     /*--------------------------------------------------------------------------
     getter
     --------------------------------------------------------------------------*/
-    
-
     public String getInputTexTURL() {
         return inputTexTURL;
     }
@@ -208,7 +405,7 @@ public class Viewmodel implements Serializable {
     public void setInputTexTURL(String inputTexTURL) {
         this.inputTexTURL = inputTexTURL;
     }
-    
+
     public String getInputTextFName() {
         return inputTextFName;
     }
@@ -257,6 +454,7 @@ public class Viewmodel implements Serializable {
         this.postList = postList;
     }
 
+    /*
     public int[] getRatingCollector() {
         return ratingCollector;
     }
@@ -264,7 +462,7 @@ public class Viewmodel implements Serializable {
     public void setRatingCollector(int[] ratingCollector) {
         this.ratingCollector = ratingCollector;
     }
-
+     */
     public int getInputTextNumber() {
         return inputTextNumber;
     }
@@ -287,18 +485,37 @@ public class Viewmodel implements Serializable {
     public void setInputCommentMessage(String inputCommentMessage) {
         this.inputCommentMessage = inputCommentMessage;
     }
-    
-    private boolean validate() {
-        int n1 = 0;
-        for (int i = 0; i < ratingCollector.length; i++) {
-            n1 += ratingCollector[i];
 
-            System.out.println("test" + n1);
-            if (ratingCollector[i] < 0 || ratingCollector[i] > 10 || n1 > 10) {
-                return false;
-            }
-        }
-        return true;
+    public SystemUserDTO getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(SystemUserDTO currentUser) {
+        this.currentUser = currentUser;
+    }
+
+    public Map<PostDTO, RatingDTO> getRatingCollector() {
+        return ratingCollector;
+    }
+
+    public void setRatingCollector(Map<PostDTO, RatingDTO> ratingCollector) {
+        this.ratingCollector = ratingCollector;
+    }
+
+    public Part getUploadedAvatar() {
+        return uploadedAvatar;
+    }
+
+    public void setUploadedAvatar(Part uploadedAvatar) {
+        this.uploadedAvatar = uploadedAvatar;
+    }
+
+    public byte[] getParsedAvatar() {
+        return parsedAvatar;
+    }
+
+    public void setParsedAvatar(byte[] parsedAvatar) {
+        this.parsedAvatar = parsedAvatar;
     }
 
 }

@@ -28,7 +28,13 @@
             </h:form>
         </b:navBar>
         <b:container>
-            <b:panel title="Add Website for Rating" icon="flag" icon-align="left" collapsible="true" collapsed="true">
+            <b:growl id="growlBoard" placementFrom="top" placement-align="center"  show-detail="true"
+            global-only="false"
+            show-summary="false" allow-dismiss="true"
+            animation-enter="animated bounceInDown"
+            animation-exit="animated flipOutX"
+            escape="true" />
+            <b:panel title="Add Website for Rating" icon="flag" icon-align="left" collapsible="true" collapsed="false">
                 <b:form>
                     <b:row>
                         <b:column>
@@ -53,7 +59,8 @@
                         </b:column>
                     </b:row>
                     <b:row>
-                        <b:column>                        
+                        <b:column>       
+                            <b:messages id="submitLink" showDetail="true" showSummary="false" />
                             <b:commandButton value="Submit" action="#{viewmodel.submitLink()}" large-screen="full-width"/>
                         </b:column>
                     </b:row>
@@ -65,14 +72,24 @@
             <b:form>
                 <b:panel collapsible="true" collapsed="false" title="All Threads" icon="flag">
                     <h:outputText value="Some text..."/>
+                    <b:message id="rating" showDetail="true" />
+                    <b:commandButton value="Submit Ratings" action="#{viewmodel.submitRating()}"/>
                     <!--TODO add eventlistener-->
-                    <b:dataTable value="#{viewmodel.postList}" var="post" responsive="true" fixed-header="true">
+                    <b:dataTable value="#{viewmodel.postList}" var="post" responsive="true" fixed-header="true" >
+                        <b:dataTableColumn value="#{viewmodel.postList.indexOf(post) +1}" label="#" order="asc"/>
                         <b:dataTableColumn value="#{post.id}" label="ID" order="asc"/>
                         <b:dataTableColumn value="#{post.url}" label="Website"/>
-                        <b:dataTableColumn value="#{post.creator}" label="OP"/>
+                        <b:dataTableColumn value="#{post.creatorId.username}" label="OP"/>
                         <b:dataTableColumn value="#{post.totalRating}" label="Total Rating"/>
+                        <b:dataTableColumn label="Your Rating" >
+                            <b:inputText value="#{viewmodel.inputTextNumber}" rendered="#{not viewmodel.currentUser.username.equals(post.creatorId.username)}">
+                                <f:ajax listener="#{viewmodel.addRating(post)}"/>
+                            </b:inputText>
+                                <h:outputText value="#{viewmodel.ratingCollector[viewmodel.postList.indexOf(post)]}" rendered="#{viewmodel.currentUser.username.equals(post.creatorId.username)}" />
+                        </b:dataTableColumn>
+
                         <b:dataTableColumn label="Tools">
-                            <b:commandButton value="View" icon="search" look="primary" size="xs" action="#{viewmodel.selectPost(post)}"/>                            
+                            <b:commandButton value="View" icon="search" look="primary" size="xs" action="#{viewmodel.selectPost(post)}"/> 
                         </b:dataTableColumn>
                     </b:dataTable>
                 </b:panel>

@@ -11,12 +11,6 @@
         <title>KBSE - About</title>
     </h:head>
     <h:body>
-        <!--b:modal id="editVote" title="Modal Example" styleClass="modalPseudoClass">
-            <f:facet name="footer">
-                <b:button value="Close" dismiss="modal" />
-                <b:button value="Ok" look="primary" dismiss="modal" />
-            </f:facet>
-        </b:modal-->
         <b:navBar brand="SuperDuperForum" fluid="false" inverse="true" position="top" sticky="false">
             <h:form>
                 <b:navbarLinks>
@@ -29,9 +23,36 @@
         </b:navBar>
         <b:container>
             <b:jumbotron>
-                <h1>Hello, world!</h1>
-                <p>This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
-                <p><a class="btn btn-primary btn-lg">Learn more</a></p>
+                <h1>About</h1>
+                <h2>KBSE Projekt WiSe 17/18</h2>
+                <p>
+                    Dies ist ein Abschlussprojekt des Moduls "Komponentenbasierte Softwareentwicklung." 
+                    Ziel war es eine Onlineplatform zur Bewertung von URLs erstellen. Es sollten jedoch 
+                    nicht mehr als 10 Punkte pro Nutzer vergeben werden können. Zusätzlich wurde eine 
+                    Kommentar- und Avatarfunktion hinzugefügt.
+                </p>
+                <p>
+                    Ein Nutzer muss sich zunächst "anmelden", in dem er in der UserControl einen Usernamen 
+                    eingibt (optional: E-Mail, Vorname, Nachname). Da keine Userverwaltung gefordert war, kann sich 
+                    auf dieser Platform jeder als jeder ausgeben. Es findet lediglich eine Zuordnung von Nutzer zu 
+                    abgegebenen Post bzw. von Nutzer zu abgegebenen Kommenatar statt. Die hochgeladenen Avatare
+                    existieren nur ein Mal in der Datenbank, da beim Upload ein abgleich der Hashes stattfindet.
+                </p>
+                
+                <p>Verwendete Technologien:
+                <ul>
+                    <li>Java8 EE</li>
+                    <li>JUnit 4.12</li>
+                    <li>JSF</li>
+                    <li>JPA</li>
+                    <li>JTA</li>
+                    <li>Arquillian 1.1.13</li>
+                    <li>Shrinkwrap 1.2.6</li>
+                    <li>BootsFaces 1.2.0</li>
+                    <li>Apache CommonsIO 2.6</li>
+                    <li>Google GSON 2.6.2</li>
+                    <li>GlassFish 4.1.1</li>
+                </ul></p>
             </b:jumbotron>
         </b:container>
     </h:body>
