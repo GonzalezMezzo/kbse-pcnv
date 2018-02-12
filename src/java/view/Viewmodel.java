@@ -11,23 +11,14 @@ import access.DTO.SystemUserDTO;
 import access.DTO.AvatarDTO;
 import access.DTO.RatingDTO;
 import controller.ModelController;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJBException;
 import javax.enterprise.context.SessionScoped;
@@ -36,11 +27,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.NoResultException;
-import javax.servlet.ServletContext;
 import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
 
@@ -53,7 +41,7 @@ import org.apache.commons.io.IOUtils;
 public class Viewmodel implements Serializable {
 
     @Inject
-    //RestFrontendController ctrl;
+    //RESTClient ctrl;
     ModelController ctrl;
 
     private static final String INDEX = "/index.xhtml?faces-redirect=true";
@@ -107,7 +95,11 @@ public class Viewmodel implements Serializable {
 
         refreshState();
     }
-
+    
+    public void redirect() throws IOException{
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        externalContext.redirect("http://stackoverflow.com/%22)");
+    }
     /* routing */
     public static String getINDEX() {
         return INDEX;
@@ -172,7 +164,6 @@ public class Viewmodel implements Serializable {
             this.username = user.getUsername();
             refreshState();
 
-            //ratingCollector = new int[postList.size()];
             return USER_CONTROL;
         
     }
@@ -480,16 +471,7 @@ public class Viewmodel implements Serializable {
     public void setPostList(List<PostDTO> postList) {
         this.postList = postList;
     }
-
-    /*
-    public int[] getRatingCollector() {
-        return ratingCollector;
-    }
-
-    public void setRatingCollector(int[] ratingCollector) {
-        this.ratingCollector = ratingCollector;
-    }
-     */
+    
     public int getInputTextNumber() {
         return inputTextNumber;
     }

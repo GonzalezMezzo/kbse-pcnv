@@ -78,7 +78,9 @@
                     <b:dataTable value="#{viewmodel.postList}" var="post" responsive="true" fixed-header="true" >
                         <b:dataTableColumn value="#{viewmodel.postList.indexOf(post) +1}" label="#" order="asc"/>
                         <b:dataTableColumn value="#{post.id}" label="ID" order="asc"/>
-                        <b:dataTableColumn value="#{post.url}" label="Website"/>
+                        <b:dataTableColumn value="" label="Website">
+                            <h:outputLink value="https://#{post.url}">#{post.url}</h:outputLink>    
+                        </b:dataTableColumn>
                         <b:dataTableColumn value="#{post.creatorId.username}" label="OP"/>
                         <b:dataTableColumn value="#{post.totalRating}" label="Total Rating"/>
                         <b:dataTableColumn label="Your Rating" >

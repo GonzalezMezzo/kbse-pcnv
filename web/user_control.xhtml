@@ -141,7 +141,9 @@
                             </tr>
                         </f:facet>
                         <b:dataTableColumn value="#{post.id}" />
-                        <b:dataTableColumn value="#{post.url}"/>
+                        <b:dataTableColumn value="">
+                            <h:outputLink value="https://#{post.url}">#{post.url}</h:outputLink>    
+                        </b:dataTableColumn>
                         <b:dataTableColumn >
                             <b:badge value="#{post.comments.size()}"/>
                         </b:dataTableColumn>
