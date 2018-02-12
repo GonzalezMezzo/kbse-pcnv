@@ -42,7 +42,7 @@
                         </b:column>
                         <b:column>
                             <b:inputText id="url" placeholder="www.sample.com" value="#{viewmodel.inputTexTURL}">
-                                <f:validateRegex pattern="w{3}\w{2,3}(\S*)?$" />
+                                <f:validateRegex pattern=(w{3})\.([a-zA-Z0-9-_]{1,}\.?)+([a-zA-Z]{2,6})" />
                             </b:inputText>
                         </b:column>
                         <b:column>
