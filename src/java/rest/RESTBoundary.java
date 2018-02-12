@@ -43,6 +43,11 @@ public class RESTBoundary {
     @Context
     private UriInfo uriInfo;
 
+    /**
+     * adds a Post to the Model.Uses /addPost Route
+     * @param jo PostDTO as JsonObject to be added to the Model
+     * @return boolean as a JsonObject
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -53,6 +58,11 @@ public class RESTBoundary {
         return Json.createObjectBuilder().add("success", mdlctrl.addPost(p, u)).build();
     }
     
+    /**
+     * adds an AvatarImage to the Model. Uses /addAvatar route.
+     * @param jo AvatarDTO as JsonObject to be added to the Model
+     * @return boolean as a JsonObject
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -62,6 +72,11 @@ public class RESTBoundary {
         return Json.createObjectBuilder().add("success", mdlctrl.addAvatar(avatar)).build();
     }
     
+    /**
+     * adds a SystemUser to the Model. Uses /addSystemUser route.
+     * @param jo SystemUserDTO as JsonObject to be added to the Model.
+     * @return boolean as JsonObject.
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -71,6 +86,11 @@ public class RESTBoundary {
         return Json.createObjectBuilder().add("success", mdlctrl.addSystemUser(user)).build();
     }
     
+    /**
+     * Updates new SystemUserdata with the model. Uses /updateSystemUser route.
+     * @param jo SystemUserDTO as a JsonObject
+     * @return boolean as JsonObject.
+     */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -80,6 +100,11 @@ public class RESTBoundary {
         return Json.createObjectBuilder().add("success", mdlctrl.updateSystemUser(user)).build();
     }
 
+    /**
+     * Deletes a Post from the Model. uses /deletePost/{id} route.
+     * @param id id of the Post
+     * @return  boolean as JsonObject
+     */
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/deletePost/{id}")
@@ -87,24 +112,23 @@ public class RESTBoundary {
         return Json.createObjectBuilder().add("success", mdlctrl.deletePost(id)).build();
     }
     
+    /**
+     * deletes  Ratings of given User. Uses /deleteRating/{username} route.
+     * @param userName which Rating should be deleted.
+     * @return boolean as JsonObject
+     */
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/deleteRating/{userName}")
     public JsonObject deleteRating(@PathParam("userName") String userName) {
         return Json.createObjectBuilder().add("success", mdlctrl.deleteRating(userName)).build();
     }
+    /**
+     * Adds a Comment to the Model. uses /addComment route.
+     * @param jo CommentDTO as jsonObject
+     * @return boolean as JsonObject
+     */
 
-    /*
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/refreshState")
-    public JsonObject refreshState() {
-        JsonArrayBuilder builder = Json.createArrayBuilder();
-        mdlctrl.refreshState();
-        List<PostDTO> list = mdlctrl.getPostList();
-        Gson gson = new Gson();
-        return Json.createObjectBuilder().add("list", gson.toJson(list)).build();
-    }*/
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -118,6 +142,11 @@ public class RESTBoundary {
         return Json.createObjectBuilder().add("success", true).build();
     }
     
+    /**
+     * adds a Rating to the Model.Uses /addRating route.
+     * @param jo jsonObect containing RatingDTO, PostDTO and SystemUserDTO classes
+     * @return boolean as jsonObject
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -130,6 +159,10 @@ public class RESTBoundary {
         return Json.createObjectBuilder().add("success", true).build();
     }
 
+    /**
+     * returns all Posts in a List as a JsonObject.Uses /getPostList route.
+     * @return List of PostDTO objects as a JsonObject
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getPostList")
@@ -140,6 +173,10 @@ public class RESTBoundary {
         return Json.createObjectBuilder().add("list", gson.toJson(list)).build();
     }
 
+    /**
+     * returns all User in a List as a jsonObject.Uses /getUserList route
+     * @return List of systemUserDTO objects as a jsonObject.
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getUserList")
@@ -150,6 +187,11 @@ public class RESTBoundary {
         return Json.createObjectBuilder().add("list", gson.toJson(list)).build();
     }
     
+    /**
+     * Returns a SystemUser with given Username String as a jsonObject.Uses /getSystemUser/{username} route.
+     * @param username SystemUsername to be searched for
+     * @return SystemUserDTO as jsonObject.
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getSystemUser/{username}")
@@ -158,6 +200,11 @@ public class RESTBoundary {
         return Json.createObjectBuilder().add("user", user.toJsonObject()).build();
     }
     
+    /**
+     * Returns a PostDTO with given ID as a jsonObject.Uses /getPost/{post} route.
+     * @param postId belonging to the post 
+     * @return PostDTO as jsonObject.
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getPost/{post}")

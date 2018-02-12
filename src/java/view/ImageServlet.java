@@ -13,17 +13,32 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ *
+ * @author chrschae
+ */
 @WebServlet("/image/*")
 public class ImageServlet extends HttpServlet {
 
     @Inject
     private ModelController ctrl;
     private AvatarDTO imageDAO;
-
+    
+    /**
+     *
+     * @throws ServletException
+     */
     public void init() throws ServletException {
         this.imageDAO = AvatarDTO.toAvatarDTO(AvatarBuilder.create().build());
     }
 
+    /**
+     * On HttpRequest, this method returns an avatar image from the Model to be displayed in the view.The Content Type of the response is "image/jpeg".
+     * @param request with parameter ID for the imageHash
+     * @param response HttpResponse containing the requested Image
+     * @throws ServletException
+     * @throws IOException
+     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         String imageId = request.getParameter("id");

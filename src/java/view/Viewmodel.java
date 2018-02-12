@@ -97,11 +97,6 @@ public class Viewmodel implements Serializable {
 
         refreshState();
     }
-    
-    public void redirect() throws IOException{
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        externalContext.redirect("http://stackoverflow.com/%22)");
-    }
     /* routing */
     public static String getINDEX() {
         return INDEX;
@@ -133,6 +128,10 @@ public class Viewmodel implements Serializable {
     public String postLink() {
         return INDEX;
     }
+    /**
+     * Validates UserInput information and submits user data to the Model.
+     * @return redirect String USER_CONTROL or null if the user input is invalid.
+     */
     public String changeUser(){
         try{
             this.checkInputUser();
@@ -169,6 +168,10 @@ public class Viewmodel implements Serializable {
             return USER_CONTROL;
         
     }
+    /**
+     * Checks for a valid Username input in the inputTextUser field. If information is invalid, a MissingCredentialsException is thrown.
+     * @throws MissingCredentialsException  Exception which is thrown when the user input is invalid.
+     */
     public void checkInputUser() throws MissingCredentialsException{
         if(this.inputTextUser == null || "".equals(this.inputTextUser)){
             FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Username wird benötigt!");
@@ -176,6 +179,11 @@ public class Viewmodel implements Serializable {
             throw new MissingCredentialsException("kein Nutzername");
         }
     }
+    /**
+     * Returns true if avatar hash is nor equals -1
+     * @param avatar
+     * @return 
+     */
     public boolean showDefaultPic(AvatarDTO avatar) {
         boolean res = true;
         if (avatar != null) {
@@ -189,7 +197,11 @@ public class Viewmodel implements Serializable {
         }
         return res;
     }
-
+    /**
+     * Checks for valid user input. Field inputTextURL and inputTextDescription are checked for null and empty Strings.
+     * If invalid information is found, a growl error message is omitted.
+     * @throws MissingCredentialsException  Exception to be thrown if user input is invalid
+     */
     public void checkSubmitLinkCredentials() throws MissingCredentialsException{
          if(this.inputTexTURL == null || "".equals(this.inputTexTURL)){
             FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "URL wird benötigt!");
@@ -201,6 +213,11 @@ public class Viewmodel implements Serializable {
             throw new MissingCredentialsException("keine Beschreibung");
         }
     }
+       /**
+     * Checks for valid user input. Field currentUser and inputCommentMessage are checked for null and empty Strings.
+     * If invalid information is found, a growl error message is omitted.
+     * @throws MissingCredentialsException  Exception to be thrown if user input is invalid
+     */
     public void checkSubmitCommentCredentials() throws MissingCredentialsException{
         if(this.currentUser == null || "".equals(this.currentUser.getUsername())){
             FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Username wird benötigt!");
@@ -213,6 +230,10 @@ public class Viewmodel implements Serializable {
             throw new MissingCredentialsException("kein Kommentar");
         }
     }
+    /**
+     * Validates user input and submits a new Post to the model.
+     * @return redirect String to BOARD or null if input is invalid
+     */
     public String submitLink() {
         try{
             this.checkInputUser();
@@ -226,7 +247,11 @@ public class Viewmodel implements Serializable {
             refreshState();
             return BOARD;
     }
-
+    /**
+     * deletes a Post from the Model. Checks for a valid Username
+     * @param p Post to be deleted
+     * @return redirect Sring USER_CONTROL or null if the input is invalid.
+     */
     public String delete(PostDTO p) {
         try{
              this.checkInputUser();
@@ -238,7 +263,10 @@ public class Viewmodel implements Serializable {
         refreshState();
         return USER_CONTROL;
     }
-
+    /**
+     * Submits a Comment to the Model. checks for invalid user input.
+     * @return redirect String POST or null if user input is invalid or the post is deleted.
+     */
     public String submitComment() {
         try{
             this.checkSubmitCommentCredentials();
@@ -257,7 +285,9 @@ public class Viewmodel implements Serializable {
         refreshState();
         return POST;
     }
-
+    /**
+     * Updates currentUser, postList and userList with updated data from the model.
+     */
     public void refreshState() {
         ctrl.refreshState();
         /*if (this.currentPost != null) {
@@ -277,10 +307,14 @@ public class Viewmodel implements Serializable {
         this.userList = ctrl.getUserList();
 
         ratingCollector = new HashMap();
-        inputTextNumber = new String("0");
+        inputTextNumber = "0";
         ctrl.refreshState();
     }
-
+    /**
+     * Sets the current active post to the passed PostDTO object, then redirects the view to this Post.
+     * @param i PostDTO object 
+     * @return redirect String POST page
+     */
     public String selectPost(PostDTO i) {
         ctrl.refreshState();
         this.postList = ctrl.getPostList();
@@ -306,7 +340,10 @@ public class Viewmodel implements Serializable {
         }
         return true;
     }
-
+    /**
+     * Checks user input for the rating submission. After validation, the submitted ratings are added to the model.
+     * @return redirect String BOARD or null if user input is invalid
+     */
     public String submitRating() {
         try{
             this.checkInputUser();
@@ -328,7 +365,10 @@ public class Viewmodel implements Serializable {
             return null;
         }
     }
-
+    /**
+     * validates if given Ratings are between 0 and 10
+     * @return True if input is valid. False if input is invalid
+     */
     public boolean validate() {
         int res = 0;
         for (Map.Entry<PostDTO, RatingDTO> entry : ratingCollector.entrySet()) {
@@ -339,13 +379,19 @@ public class Viewmodel implements Serializable {
         }
         return false;
     }
-
+    /**
+     * adds a Single Rating to a post. Rating is stored in a Hashmap.
+     * @param post Post, where the rating should be added.
+     */
     public void addRating(PostDTO post) {
         System.out.println(post);
         System.out.println(inputTextNumber);
         ratingCollector.put(post, new RatingDTO(Integer.parseInt(inputTextNumber), currentUser, post));
     }
-
+    /**
+     * adds an avatar image to the model.
+     * @return true if upload was successful or false if given input was invalid
+     */
     public boolean upload() {
         boolean res = false;
         Part uploadedFile = this.uploadedAvatar;
@@ -367,12 +413,19 @@ public class Viewmodel implements Serializable {
         }
         return res;
     }
-
-    //1048576 = 1mb
+    /**
+     * checks the file for size and format. Filesize should be not bigger than 1048576 Bytes or 1 Mebibyte.
+     * The only valid FileFormat is JPEG.
+     * @param ctx FacesContext in which the File is validated
+     * @param comp UIComponent
+     * @param value File to be validated
+     * @throws ValidatorException Exception that is thrown when the input is invalid.
+     */
     public void validateFile(FacesContext ctx, UIComponent comp, Object value) throws ValidatorException {
         List<FacesMessage> msgs = new ArrayList<>();
         Part file = (Part) value;
         if (file != null) {
+                          //1048576 = 1mb
             if (file.getSize() > 1048576) {
                 msgs.add(new FacesMessage("file too big"));
             }
@@ -387,7 +440,14 @@ public class Viewmodel implements Serializable {
             }
         }
     }
-
+  /**
+     * checks the file for size and format. Filesize should be not bigger than 2000000 Bytes or 2 Megabyte.
+     * The only valid FileFormat is JPEG.
+     * @param context FacesContext in which the File is validated
+     * @param component UIComponent
+     * @param value File to be validated
+     * @throws ValidatorException Exception that is thrown when the input is invalid.
+     */
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
         Part file = (Part) value;
         FacesMessage message = null;
@@ -410,7 +470,11 @@ public class Viewmodel implements Serializable {
         }
 
     }
-
+    /**
+     * returns Arrays.HashCode(image)
+     * @param image to be hashed
+     * @return hashCode
+     */
     private int calculateImageHash(byte[] image) {
         return Arrays.hashCode(image);
     }
