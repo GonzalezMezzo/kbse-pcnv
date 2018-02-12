@@ -84,7 +84,8 @@
                         <b:dataTableColumn value="#{post.creatorId.username}" label="OP"/>
                         <b:dataTableColumn value="#{post.totalRating}" label="Total Rating"/>
                         <b:dataTableColumn label="Your Rating" >
-                            <b:inputText value="#{viewmodel.inputTextNumber}" rendered="#{not viewmodel.currentUser.username.equals(post.creatorId.username)}">
+                            <b:inputText value="#{viewmodel.inputTextNumber}" validatorMessage="Eingabe ungültig." rendered="#{not viewmodel.currentUser.username.equals(post.creatorId.username)}" id="table">
+                                <f:validateRegex pattern="[0-9]|10"/>
                                 <f:ajax listener="#{viewmodel.addRating(post)}"/>
                             </b:inputText>
                                 <h:outputText value="#{viewmodel.ratingCollector[viewmodel.postList.indexOf(post)]}" rendered="#{viewmodel.currentUser.username.equals(post.creatorId.username)}" />
@@ -93,6 +94,7 @@
                         <b:dataTableColumn label="Tools">
                             <b:commandButton value="View" icon="search" look="primary" size="xs" action="#{viewmodel.selectPost(post)}"/> 
                         </b:dataTableColumn>
+                        <b:message for="table"/>
                     </b:dataTable>
                 </b:panel>
             </b:form>
