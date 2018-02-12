@@ -41,7 +41,9 @@
                             <h:outputText value="Website:"/>
                         </b:column>
                         <b:column>
-                            <b:inputText id="url" placeholder="www.sample.com" value="#{viewmodel.inputTexTURL}"/>
+                            <b:inputText id="url" placeholder="www.sample.com" value="#{viewmodel.inputTexTURL}" validatorMessage="Bitte eine gültige URL angeben! Muster: www.subdomain.domain.TLD">
+                                <f:validateRegex pattern="(w{3})\.([a-zA-Z0-9-_]{1,}\.?)+(\.)([a-zA-Z]{2,6})" />
+                            </b:inputText>
                         </b:column>
                         <b:column>
                             <b:message for="url" />
@@ -79,7 +81,7 @@
                         <b:dataTableColumn value="#{viewmodel.postList.indexOf(post) +1}" label="#" order="asc"/>
                         <b:dataTableColumn value="#{post.id}" label="ID" order="asc"/>
                         <b:dataTableColumn value="" label="Website">
-                            <h:outputLink value="https://#{post.url}">#{post.url}</h:outputLink>    
+                            <h:outputLink value="http://#{post.url}">#{post.url}</h:outputLink>    
                         </b:dataTableColumn>
                         <b:dataTableColumn value="#{post.creatorId.username}" label="OP"/>
                         <b:dataTableColumn value="#{post.totalRating}" label="Total Rating"/>
