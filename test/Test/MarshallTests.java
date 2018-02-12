@@ -10,16 +10,9 @@ import access.DTO.CommentDTO;
 import access.DTO.PostDTO;
 import access.DTO.RatingDTO;
 import access.DTO.SystemUserDTO;
-import entities.Post;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import javax.json.Json;
 import javax.json.JsonObject;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -90,12 +83,12 @@ public class MarshallTests {
     @Test
     public void AvatarDTOtoJsonandBack() throws IOException{
         byte[] param = "avatartest".getBytes();
-        int hash = param.hashCode();
+        int hash = Arrays.hashCode(param);
         AvatarDTO avatar = new AvatarDTO(hash,"image/jpeg",param);
         JsonObject o = avatar.toJsonObejct();
         AvatarDTO jsonAvatar = AvatarDTO.toPOJO(o);
         assertEquals(avatar.getImageHash(),jsonAvatar.getImageHash());
-    //    assertEquals(avatar.getImage().hashCode(),jsonAvatar.getImage().hashCode());      
+        assertEquals(Arrays.hashCode(avatar.getImage()),Arrays.hashCode(jsonAvatar.getImage()));      
     }
     @Test
     public void RatingDTOtoJSONandBack(){

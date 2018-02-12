@@ -60,7 +60,8 @@ public class Viewmodel implements Serializable {
     private String inputTextEMail;
     private String inputTextDescription;
     private String inputTexTURL;
-    private int inputTextNumber;
+    
+    private String inputTextNumber;
 
     private String inputCommentUser;
     private String inputCommentMessage;
@@ -79,6 +80,7 @@ public class Viewmodel implements Serializable {
 
     @PostConstruct
     public void init() {
+        //javax.faces.convert.IntegerConverter.STRING_ID = "hallo";
         ratingCollector = new HashMap();
         postId = null;
         username = null;
@@ -275,7 +277,7 @@ public class Viewmodel implements Serializable {
         this.userList = ctrl.getUserList();
 
         ratingCollector = new HashMap();
-        inputTextNumber = 0;
+        inputTextNumber = new String("0");
         ctrl.refreshState();
     }
 
@@ -341,7 +343,7 @@ public class Viewmodel implements Serializable {
     public void addRating(PostDTO post) {
         System.out.println(post);
         System.out.println(inputTextNumber);
-        ratingCollector.put(post, new RatingDTO(inputTextNumber, currentUser, post));
+        ratingCollector.put(post, new RatingDTO(Integer.parseInt(inputTextNumber), currentUser, post));
     }
 
     public boolean upload() {
@@ -472,11 +474,11 @@ public class Viewmodel implements Serializable {
         this.postList = postList;
     }
     
-    public int getInputTextNumber() {
+    public String getInputTextNumber() {
         return inputTextNumber;
     }
 
-    public void setInputTextNumber(int inputTextNumber) {
+    public void setInputTextNumber(String inputTextNumber) {
         this.inputTextNumber = inputTextNumber;
     }
 

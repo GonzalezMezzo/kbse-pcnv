@@ -121,8 +121,8 @@ public class ViewModelTest {
         view.setInputTexTURL("testDelete");
         view.setInputTextDescription("testDeleteDesc");
         view.submitLink();
-        List<PostDTO> list = view.getPostList();
         PostDTO p1 = null;
+        List<PostDTO> list = view.getPostList();
         for(PostDTO p : list){
             if(p.getUrl().equals("testDelete") && p.getDescription().equals("testDeleteDesc"))
                 p1 = p;
@@ -130,26 +130,32 @@ public class ViewModelTest {
         if(p1==null){
             throw new Exception("Post nicht in Postlist");
         } else {
-        view.selectPost(p1);
         view.delete(p1);
         Post p = em.find(Post.class, p1.getId());
         assertEquals(null,p);
         }
     }
-    @Test(expected = LinkNotFoundException.class)
-    public void testCase1(){
+    @Test(expected = NullPointerException.class)
+    public void testCase1() throws Exception{
         view.setInputTexTURL("test1URL");
         view.setInputTextDescription("test1Description");
         view.setInputTextUser("user1");
         view.submitLink();
+        PostDTO p1 = null;
         List<PostDTO> list = view.getPostList();
-        PostDTO post = list.get(0);
-        view.setInputTextUser("user2");
+        for(PostDTO p : list){
+            if(p.getUrl().equals("testDelete") && p.getDescription().equals("testDeleteDesc"))
+                p1 = p;
+        }
+        if(p1==null){
+            throw new Exception("Post nicht in Postlist");
+        } else {
+           view.setInputTextUser("user2");
         view.changeUser();
-        view.delete(post);
-        view.selectPost(post);     
+        view.delete(p1);
+        }    
     }
-    @Test(expected = LinkNotFoundException.class)
+    @Test(expected = NullPointerException.class)
     public void testCase2() throws Exception{
         view.setInputTexTURL("test2URL");
         view.setInputTextDescription("test2Description");
@@ -177,7 +183,7 @@ public class ViewModelTest {
             view.submitComment();
         }
     }
-    @Test()
+    @Test(expected = NullPointerException.class)
     public void TestCase3() throws Exception{
         view.setInputTexTURL("test3URL");
         view.setInputTextDescription("test3Description");
@@ -185,7 +191,7 @@ public class ViewModelTest {
         view.changeUser();
         view.submitLink();
     }
-    @Test(expected = MissingCredentialsException.class)
+    @Test(expected = NullPointerException.class)
     public void testCase4() throws Exception{
         //gleich wie 3 nur mit null
         view.setInputTexTURL("test4URL");
