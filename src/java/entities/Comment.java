@@ -39,34 +39,67 @@ public class Comment implements Serializable {
     //@ManyToOne(targetEntity = Post.class)
     //private Post post;
 
+    /**
+     *
+     * @return
+     */
+
     public Long getId() {
         return this.id;
     }
 
+    /**
+     *
+     * @param id
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getMessage() {
         return this.message;
     }
 
+    /**
+     *
+     * @param message
+     */
     public void setMessage(String message) {
         this.message = message;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTimestamp() {
         return this.timestamp;
     }
 
+    /**
+     *
+     * @param timestamp
+     */
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 
+    /**
+     *
+     * @return
+     */
     public SystemUser getAuthor() {
         return this.author;
     }
 
+    /**
+     *
+     * @param author
+     */
     public void setAuthor(SystemUser author) {
         this.author = author;
     }

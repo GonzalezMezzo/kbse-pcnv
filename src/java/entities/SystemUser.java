@@ -62,54 +62,106 @@ public class SystemUser implements Serializable {
     @OneToMany(targetEntity = Rating.class, mappedBy = "user", orphanRemoval = true)
     private List<Rating> ratings;
 
+    /**
+     *
+     * @return
+     */
     public Long getId() {
         return this.id;
     }
 
+    /**
+     *
+     * @param id
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getUsername() {
         return this.username;
     }
 
+    /**
+     *
+     * @param username
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getFname() {
         return this.fname;
     }
 
+    /**
+     *
+     * @param fname
+     */
     public void setFname(String fname) {
         this.fname = fname;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getLname() {
         return this.lname;
     }
 
+    /**
+     *
+     * @param lname
+     */
     public void setLname(String lname) {
         this.lname = lname;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getEmail() {
         return this.email;
     }
 
+    /**
+     *
+     * @param email
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     *
+     * @return
+     */
     public Avatar getAvatar() {
         return this.avatar;
     }
 
+    /**
+     *
+     * @param avatar
+     */
     public void setAvatar(Avatar avatar) {
         this.avatar = avatar;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Post> getPosts() {
         if (posts == null) {
             posts = new ArrayList<>();
@@ -117,20 +169,36 @@ public class SystemUser implements Serializable {
         return this.posts;
     }
 
+    /**
+     *
+     * @param posts
+     */
     public void setPosts(List<Post> posts) {
         this.posts = posts;
     }
 
+    /**
+     *
+     * @param post
+     */
     public void addPost(Post post) {
         getPosts().add(post);
         post.setAuthor(this);
     }
 
+    /**
+     *
+     * @param post
+     */
     public void removePost(Post post) {
         getPosts().remove(post);
         post.setAuthor(null);
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Comment> getComments() {
         if (comments == null) {
             comments = new ArrayList<>();
@@ -138,20 +206,36 @@ public class SystemUser implements Serializable {
         return this.comments;
     }
 
+    /**
+     *
+     * @param comments
+     */
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
+    /**
+     *
+     * @param comment
+     */
     public void addComment(Comment comment) {
         getComments().add(comment);
         comment.setAuthor(this);
     }
 
+    /**
+     *
+     * @param comment
+     */
     public void removeComment(Comment comment) {
         getComments().remove(comment);
         comment.setAuthor(null);
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Rating> getRatings() {
         if (ratings == null) {
             ratings = new ArrayList<>();
@@ -159,15 +243,27 @@ public class SystemUser implements Serializable {
         return this.ratings;
     }
 
+    /**
+     *
+     * @param ratings
+     */
     public void setRatings(List<Rating> ratings) {
         this.ratings = ratings;
     }
 
+    /**
+     *
+     * @param rating
+     */
     public void addRating(Rating rating) {
         getRatings().add(rating);
         rating.setUser(this);
     }
 
+    /**
+     *
+     * @param rating
+     */
     public void removeRating(Rating rating) {
         getRatings().remove(rating);
         rating.setUser(null);

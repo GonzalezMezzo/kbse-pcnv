@@ -24,7 +24,6 @@ import javax.ejb.EJBException;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
@@ -60,7 +59,7 @@ public class Viewmodel implements Serializable {
     private String inputTextEMail;
     private String inputTextDescription;
     private String inputTexTURL;
-    
+
     private String inputTextNumber;
 
     private String inputCommentUser;
@@ -84,19 +83,10 @@ public class Viewmodel implements Serializable {
         ratingCollector = new HashMap();
         postId = null;
         username = null;
-        /*
-        this.inputTextUser = "User";
-        this.inputTextDescription = "Dies das, ein bisschen länger";
-        this.inputTextEMail = "sample@sample.com";
-        this.inputTextFName = "Hans";
-        this.inputTextLName = "Peter";
-        this.inputTexTURL = "www.google.de";
-        this.inputTextNumber = 0;
-         */
         ctrl.addAvatar(new AvatarDTO());
-
         refreshState();
     }
+
     /* routing */
     public static String getINDEX() {
         return INDEX;
@@ -121,6 +111,7 @@ public class Viewmodel implements Serializable {
     public static String getPOST() {
         return POST;
     }
+
     public String rating() {
         return RATING;
     }
@@ -128,61 +119,68 @@ public class Viewmodel implements Serializable {
     public String postLink() {
         return INDEX;
     }
+
     /**
      * Validates UserInput information and submits user data to the Model.
-     * @return redirect String USER_CONTROL or null if the user input is invalid.
+     *
+     * @return redirect String USER_CONTROL or null if the user input is
+     * invalid.
      */
-    public String changeUser(){
-        try{
-            this.checkInputUser();
-        }catch(MissingCredentialsException ex){
-            return null;
-        }        
-           SystemUserDTO user = null;
+    public String changeUser() {
+
+        SystemUserDTO user = null;
         SystemUserDTO systemUser = null;
-                    systemUser = ctrl.getSystemUser(this.inputTextUser);
+        systemUser = ctrl.getSystemUser(this.inputTextUser);
 
-            if (!upload() && (this.uploadedAvatar == null)) {
-                if (systemUser == null) {
-                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, ctrl.getAvatar(-1));
-                    ctrl.addSystemUser(user);
-                } else {
-                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, systemUser.getAvatar());
-                    ctrl.updateSystemUser(user);
-                }
+        if (!upload() && (this.uploadedAvatar == null)) {
+            if (systemUser == null) {
+                user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, ctrl.getAvatar(-1));
+                ctrl.addSystemUser(user);
             } else {
-                if (systemUser == null) {
-                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, this.persistedAvatar);
-                    ctrl.addSystemUser(user);
-                } else {
-                    user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, this.persistedAvatar);
-                    ctrl.updateSystemUser(user);
-                }
-
+                user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, systemUser.getAvatar());
+                ctrl.updateSystemUser(user);
             }
-               refreshState();
-            this.currentUser = user;
-            this.username = user.getUsername();
-            refreshState();
+        } else {
+            if (systemUser == null) {
+                user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, this.persistedAvatar);
+                ctrl.addSystemUser(user);
+            } else {
+                user = new SystemUserDTO(this.inputTextUser, this.inputTextFName, this.inputTextLName, this.inputTextEMail, this.persistedAvatar);
+                ctrl.updateSystemUser(user);
+            }
 
-            return USER_CONTROL;
-        
-    }
-    /**
-     * Checks for a valid Username input in the inputTextUser field. If information is invalid, a MissingCredentialsException is thrown.
-     * @throws MissingCredentialsException  Exception which is thrown when the user input is invalid.
-     */
-    public void checkInputUser() throws MissingCredentialsException{
-        if(this.inputTextUser == null || "".equals(this.inputTextUser)){
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Username wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage(null, success);
-            throw new MissingCredentialsException("kein Nutzername");
         }
+        refreshState();
+        this.currentUser = user;
+        this.username = user.getUsername();
+        refreshState();
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Aktion erfolgreich!"));
+        return USER_CONTROL;
+
     }
+
+    /**
+     * Checks for a valid Username input in the inputTextUser field. If
+     * information is invalid, a MissingCredentialsException is thrown.
+     *
+     * @throws MissingCredentialsException Exception which is thrown when the
+     * user input is invalid.
+     */
+    /* public void checkInputUser() throws MissingCredentialsException {
+        if (FacesContext.getCurrentInstance() != null) {
+            if (this.inputTextUser == null || "".equals(this.inputTextUser)) {
+                FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Username wird benötigt!");
+                FacesContext.getCurrentInstance().addMessage(null, success);
+                throw new MissingCredentialsException("kein Nutzername");
+            }
+        }
+    }*/
     /**
      * Returns true if avatar hash is nor equals -1
+     *
      * @param avatar
-     * @return 
+     * @return
      */
     public boolean showDefaultPic(AvatarDTO avatar) {
         boolean res = true;
@@ -197,108 +195,148 @@ public class Viewmodel implements Serializable {
         }
         return res;
     }
+
     /**
-     * Checks for valid user input. Field inputTextURL and inputTextDescription are checked for null and empty Strings.
-     * If invalid information is found, a growl error message is omitted.
-     * @throws MissingCredentialsException  Exception to be thrown if user input is invalid
+     * Checks for valid user input. Field inputTextURL and inputTextDescription
+     * are checked for null and empty Strings. If invalid information is found,
+     * a growl error message is omitted.
+     *
+     * @throws MissingCredentialsException Exception to be thrown if user input
+     * is invalid
      */
-    public void checkSubmitLinkCredentials() throws MissingCredentialsException{
-         if(this.inputTexTURL == null || "".equals(this.inputTexTURL)){
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "URL wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage("submitLink", success); 
-            throw new MissingCredentialsException("keine URL");
-        }else if(this.inputTextDescription == null || "".equals(this.inputTextDescription)){
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Beschreibung wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage("submitLink", success);
-            throw new MissingCredentialsException("keine Beschreibung");
+    /* public void checkSubmitLinkCredentials() throws MissingCredentialsException {
+        if (FacesContext.getCurrentInstance() != null) {
+            if (this.inputTexTURL == null || "".equals(this.inputTexTURL)) {
+                FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "URL wird benötigt!");
+                FacesContext.getCurrentInstance().addMessage(null, success);
+                throw new MissingCredentialsException("keine URL");
+            } else if (this.inputTextDescription == null || "".equals(this.inputTextDescription)) {
+                FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Beschreibung wird benötigt!");
+                FacesContext.getCurrentInstance().addMessage(null, success);
+                throw new MissingCredentialsException("keine Beschreibung");
+            }
+        }
+    }*/
+    public void validateLink(FacesContext ctx, UIComponent comp, Object value) {
+        List<FacesMessage> msgs = new ArrayList();
+        if (this.currentUser == null || "".equals(this.currentUser.getUsername())) {
+            msgs.add(new FacesMessage(FacesMessage.SEVERITY_ERROR, null, "Username wird benötigt!"));
+        }
+        if (value.toString().isEmpty()) {
+            msgs.add(new FacesMessage(FacesMessage.SEVERITY_ERROR, null, "URL wird benötigt!"));
+        } else if (!value.toString().matches("(w{3})\\.([a-zA-Z0-9-_]{1,}\\.?)+(\\.)([a-zA-Z]{2,6})")) {
+            msgs.add(new FacesMessage(FacesMessage.SEVERITY_ERROR, null, "Bitte gültige URL angeben! Muster: www.subdomain.domain.TLD"));
+        }
+        if (!msgs.isEmpty()) {
+            throw new ValidatorException(msgs);
         }
     }
-       /**
-     * Checks for valid user input. Field currentUser and inputCommentMessage are checked for null and empty Strings.
-     * If invalid information is found, a growl error message is omitted.
-     * @throws MissingCredentialsException  Exception to be thrown if user input is invalid
-     */
-    public void checkSubmitCommentCredentials() throws MissingCredentialsException{
-        if(this.currentUser == null || "".equals(this.currentUser.getUsername())){
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Username wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage("submitLink", success);
-            throw new MissingCredentialsException("kein Username");
+
+    public void validateComment(FacesContext ctx, UIComponent comp, Object value) {
+        List<FacesMessage> msgs = new ArrayList();
+        if (this.currentUser == null || "".equals(this.currentUser.getUsername())) {
+            msgs.add(new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Username wird benötigt!"));
         }
-        else if(this.inputCommentMessage == null || "".equals(this.inputCommentMessage)){
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Kommentar wird benötigt!");
-            FacesContext.getCurrentInstance().addMessage("submitLink", success); 
-            throw new MissingCredentialsException("kein Kommentar");
+        if (value == null || value.toString().isEmpty()) {
+            msgs.add(new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Kommentar wird benötigt!"));
+        }
+        if (!msgs.isEmpty()) {
+            throw new ValidatorException(msgs);
         }
     }
+
+    /**
+     * Checks for valid user input. Field currentUser and inputCommentMessage
+     * are checked for null and empty Strings. If invalid information is found,
+     * a growl error message is omitted.
+     *
+     * @throws MissingCredentialsException Exception to be thrown if user input
+     * is invalid
+     */
+
+    /*public void checkSubmitCommentCredentials() throws MissingCredentialsException {
+        if (FacesContext.getCurrentInstance() != null) {
+            if (this.currentUser == null || "".equals(this.currentUser.getUsername())) {
+                FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Username wird benötigt!");
+                FacesContext.getCurrentInstance().addMessage(null, success);
+                throw new MissingCredentialsException("kein Username");
+            } else if (this.inputCommentMessage == null || "".equals(this.inputCommentMessage)) {
+                FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Eingabefehler", "Kommentar wird benötigt!");
+                FacesContext.getCurrentInstance().addMessage(null, success);
+                throw new MissingCredentialsException("kein Kommentar");
+            }
+        }*/
     /**
      * Validates user input and submits a new Post to the model.
+     *
      * @return redirect String to BOARD or null if input is invalid
      */
     public String submitLink() {
-        try{
-            this.checkInputUser();
-            this.checkSubmitLinkCredentials();
-        } catch (MissingCredentialsException ex) { 
+        refreshState();
+        PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
+        try {
+            ctrl.addPost(post, this.currentUser);
+        } catch (EJBException e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "URL gibt es bereits!"));
             return null;
         }
-            refreshState();
-            PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
-            ctrl.addPost(post, this.currentUser);
-            refreshState();
-            return BOARD;
+        refreshState();
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Aktion erfolgreich!"));
+        return BOARD;
     }
+
     /**
      * deletes a Post from the Model. Checks for a valid Username
+     *
      * @param p Post to be deleted
      * @return redirect Sring USER_CONTROL or null if the input is invalid.
      */
     public String delete(PostDTO p) {
-        try{
-             this.checkInputUser();
-        }catch(MissingCredentialsException ex){
-            return null;
+        refreshState();
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+        try {
+            ctrl.deletePost(p.getId());
+        } catch (EJBException e) {
+           
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "", "Post wurde bereits gelöscht!"));
+            return USER_CONTROL;
         }
         refreshState();
-        ctrl.deletePost(p.getId());
-        refreshState();
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Aktion erfolgreich!"));
         return USER_CONTROL;
     }
+
     /**
      * Submits a Comment to the Model. checks for invalid user input.
-     * @return redirect String POST or null if user input is invalid or the post is deleted.
+     *
+     * @return redirect String POST or null if user input is invalid or the post
+     * is deleted.
      */
     public String submitComment() {
-        try{
-            this.checkSubmitCommentCredentials();
-        }catch(MissingCredentialsException ex){
-            return null;
-        }       
         refreshState();
         CommentDTO comment = new CommentDTO(this.inputCommentMessage, this.currentUser, this.currentPost);
         try {
             ctrl.addComment(comment, this.currentPost, this.currentUser);
         } catch (EJBException e) {
-            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "DatenbankFehler", "Inhalt wurde gelöscht!");
-            FacesContext.getCurrentInstance().addMessage(null, success);
+            if (FacesContext.getCurrentInstance() != null) {
+                FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "DatenbankFehler", "Inhalt wurde gelöscht!");
+                FacesContext.getCurrentInstance().addMessage(null, success);
+            }
             return null;
         }
         refreshState();
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Aktion erfolgreich!"));
         return POST;
     }
+
     /**
-     * Updates currentUser, postList and userList with updated data from the model.
+     * Updates currentUser, postList and userList with updated data from the
+     * model.
      */
     public void refreshState() {
         ctrl.refreshState();
-        /*if (this.currentPost != null) {
-            postId = this.currentPost.getId();
-            this.currentPost = ctrl.getPost(postId);
-
-        }
-        if (this.currentUser != null) {
-            username = this.currentUser.getUsername();
-            this.currentUser = ctrl.getSystemUser(username);
-        }*/
         if (this.postId != null) {
             this.currentPost = ctrl.getPost(postId);
         }
@@ -310,9 +348,12 @@ public class Viewmodel implements Serializable {
         inputTextNumber = "0";
         ctrl.refreshState();
     }
+
     /**
-     * Sets the current active post to the passed PostDTO object, then redirects the view to this Post.
-     * @param i PostDTO object 
+     * Sets the current active post to the passed PostDTO object, then redirects
+     * the view to this Post.
+     *
+     * @param i PostDTO object
      * @return redirect String POST page
      */
     public String selectPost(PostDTO i) {
@@ -340,33 +381,41 @@ public class Viewmodel implements Serializable {
         }
         return true;
     }
+
     /**
-     * Checks user input for the rating submission. After validation, the submitted ratings are added to the model.
+     * Checks user input for the rating submission. After validation, the
+     * submitted ratings are added to the model.
+     *
      * @return redirect String BOARD or null if user input is invalid
      */
     public String submitRating() {
-        try{
-            this.checkInputUser();
-        }catch(MissingCredentialsException ex){
-            return  null;
+
+        if (this.currentUser == null) {
+            FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Username benötigt.");
+            FacesContext.getCurrentInstance().addMessage(null, success);
+            return null;
         }
         if (validate() == true) {//method stub
-                //delete every previous rating for this user
-                ctrl.deleteRating(currentUser.getUsername());
-                //add individual ratings for this submit    
-                for (Map.Entry<PostDTO, RatingDTO> entry : ratingCollector.entrySet()) {
-                    ctrl.addRating(entry.getKey(), entry.getValue(), currentUser);
-                }
-                refreshState();
-                return BOARD;
-        }else{
+            //delete every previous rating for this user
+            ctrl.deleteRating(currentUser.getUsername());
+            //add individual ratings for this submit    
+            for (Map.Entry<PostDTO, RatingDTO> entry : ratingCollector.entrySet()) {
+                ctrl.addRating(entry.getKey(), entry.getValue(), currentUser);
+            }
+            refreshState();
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Aktion erfolgreich!"));
+            return BOARD;
+        } else {
             FacesMessage success = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Es können nur 10 Bewertungs-Punkte vergeben werden!");
             FacesContext.getCurrentInstance().addMessage(null, success);
             return null;
         }
     }
+
     /**
-     * validates if given Ratings are between 0 and 10
+     * validates if sum of given Ratings are between 0 and 10
+     *
      * @return True if input is valid. False if input is invalid
      */
     public boolean validate() {
@@ -379,8 +428,10 @@ public class Viewmodel implements Serializable {
         }
         return false;
     }
+
     /**
      * adds a Single Rating to a post. Rating is stored in a Hashmap.
+     *
      * @param post Post, where the rating should be added.
      */
     public void addRating(PostDTO post) {
@@ -388,8 +439,10 @@ public class Viewmodel implements Serializable {
         System.out.println(inputTextNumber);
         ratingCollector.put(post, new RatingDTO(Integer.parseInt(inputTextNumber), currentUser, post));
     }
+
     /**
      * adds an avatar image to the model.
+     *
      * @return true if upload was successful or false if given input was invalid
      */
     public boolean upload() {
@@ -413,19 +466,22 @@ public class Viewmodel implements Serializable {
         }
         return res;
     }
+
     /**
-     * checks the file for size and format. Filesize should be not bigger than 1048576 Bytes or 1 Mebibyte.
-     * The only valid FileFormat is JPEG.
+     * checks the file for size and format. Filesize should be not bigger than
+     * 1048576 Bytes or 1 Mebibyte. The only valid FileFormat is JPEG.
+     *
      * @param ctx FacesContext in which the File is validated
      * @param comp UIComponent
      * @param value File to be validated
-     * @throws ValidatorException Exception that is thrown when the input is invalid.
+     * @throws ValidatorException Exception that is thrown when the input is
+     * invalid.
      */
     public void validateFile(FacesContext ctx, UIComponent comp, Object value) throws ValidatorException {
         List<FacesMessage> msgs = new ArrayList<>();
         Part file = (Part) value;
         if (file != null) {
-                          //1048576 = 1mb
+            //1048576 = 1mb
             if (file.getSize() > 1048576) {
                 msgs.add(new FacesMessage("file too big"));
             }
@@ -440,13 +496,16 @@ public class Viewmodel implements Serializable {
             }
         }
     }
-  /**
-     * checks the file for size and format. Filesize should be not bigger than 2000000 Bytes or 2 Megabyte.
-     * The only valid FileFormat is JPEG.
+
+    /**
+     * checks the file for size and format. Filesize should be not bigger than
+     * 2000000 Bytes or 2 Megabyte. The only valid FileFormat is JPEG.
+     *
      * @param context FacesContext in which the File is validated
      * @param component UIComponent
      * @param value File to be validated
-     * @throws ValidatorException Exception that is thrown when the input is invalid.
+     * @throws ValidatorException Exception that is thrown when the input is
+     * invalid.
      */
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
         Part file = (Part) value;
@@ -470,9 +529,11 @@ public class Viewmodel implements Serializable {
         }
 
     }
+
     /**
      * returns Arrays.HashCode(image)
-     * @param image to be hashed
+     *
+     * @param image
      * @return hashCode
      */
     private int calculateImageHash(byte[] image) {
@@ -537,7 +598,7 @@ public class Viewmodel implements Serializable {
     public void setPostList(List<PostDTO> postList) {
         this.postList = postList;
     }
-    
+
     public String getInputTextNumber() {
         return inputTextNumber;
     }

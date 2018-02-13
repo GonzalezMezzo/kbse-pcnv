@@ -44,40 +44,76 @@ public class Avatar implements Serializable {
     private byte[] image;
 
     //TODO: delete later
+
+    /**
+     *
+     */
     public Avatar() {
         this.imageHash = -1;
         this.contentType = "image/jpeg";
         this.image = new byte[1];
     }  
 
+    /**
+     *
+     * @return
+     */
     public Long getId() {
         return this.id;
     }
 
+    /**
+     *
+     * @param id
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getImageHash() {
         return this.imageHash;
     }
 
+    /**
+     *
+     * @param imageHash
+     */
     public void setImageHash(int imageHash) {
         this.imageHash = imageHash;
     }
 
+    /**
+     *
+     * @return
+     */
     public byte[] getImage() {
         return this.image;
     }
 
+    /**
+     *
+     * @param path
+     */
     public void setImage(byte[] path) {
         this.image = path;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getContentType() {
         return contentType;
     }
 
+    /**
+     *
+     * @param contentType
+     */
     public void setContentType(String contentType) {
         this.contentType = contentType;
     }

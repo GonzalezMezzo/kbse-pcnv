@@ -43,7 +43,8 @@
                                     <h:outputText value="Username:"/>
                                 </b:column>
                                 <b:column >
-                                    <b:inputText placeholder="Username" id="username" value="#{viewmodel.inputTextUser}">
+                                    <b:inputText placeholder="Username" id="username" value="#{viewmodel.inputTextUser}" validator-message="Username wird benötigt.">
+                                         <f:validateRequired />
                                         <f:facet name="prepend">
                                             <b:icon name="user" />
                                         </f:facet>
@@ -112,7 +113,6 @@
                     </b:row>
                     <b:row>
                         <b:column>
-                            <b:messages id="nachrichten" showDetail="true" showSummary="false" />
                             <b:commandButton value="Submit Changes" action="#{viewmodel.changeUser()}" large-screen="full-width">
                                 <f:ajax execute="file,username,email,fname,lname" render="@form"/>
                             </b:commandButton>

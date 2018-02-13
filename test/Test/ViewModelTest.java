@@ -1,9 +1,7 @@
 package Test;
 
-
 import access.DTO.CommentDTO;
 import access.DTO.PostDTO;
-import db.Persistence;
 import entities.Post;
 import java.io.File;
 import java.util.List;
@@ -15,11 +13,10 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import view.LinkNotFoundException;
-import view.MissingCredentialsException;
 import view.Viewmodel;
 
 /*
@@ -27,35 +24,26 @@ import view.Viewmodel;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author philippnienhuser
  */
 @RunWith(Arquillian.class)
 public class ViewModelTest {
+
     @Inject
     Viewmodel view;
     @Inject
     private EntityManager em;
-    
+    private PostDTO post = null;
+
     @Deployment
-    public static WebArchive createDeployment(){
+    public static WebArchive createDeployment() {
         return ShrinkWrap.createFromZipFile(WebArchive.class, new File("dist/kbse-pcnv.war"));
     }
-    
-    
-    @Before
-    public void setUp(){
 
-    }
-    
-    @After
-    public void tearDown(){
-        
-    }
-   @Test
-    public void TestsubmitLink() throws Exception{
+    @Before
+    public void setUp() throws Exception {
         view.setInputTextUser("TestUser");
         view.setInputTextEMail("TestEmail");
         view.setInputTextFName("TestVorname");
@@ -65,139 +53,78 @@ public class ViewModelTest {
         view.setInputTextDescription("TestDescription");
         view.submitLink();
         List<PostDTO> list = view.getPostList();
-        PostDTO p1 = null;
-        for(PostDTO p : list){
-            if(p.getUrl().equals("TestURL") && p.getDescription().equals("TestDescription"))
-                p1 = p;
+        for (PostDTO p : list) {
+            if (p.getUrl().equals("TestURL") && p.getDescription().equals("TestDescription")) {
+                post = p;
+            }
         }
-        if(p1==null){
+        if (post == null) {
             throw new Exception("Post nicht in Postlist");
-        } else {
-            Post p2 = em.find(Post.class,p1.getId());
-            assertEquals(p1.toPost().getAuthor().getUsername(),p2.getAuthor().getUsername(),"TestUser");
-            assertEquals(p1.toPost().getDescription(),p2.getDescription(),"TestDescription");
-            assertEquals(p1.toPost().getUrl(),p2.getUrl(),"TestURL");       
         }
     }
-   
+
+    @After
+    public void tearDown() {
+        view.delete(post);
+    }
+
     @Test
-    public void TestsubmitComment() throws Exception{  
-        view.setInputTextUser("TestUser2");
-        view.setInputTextEMail("TestEmail2");
-        view.setInputTextFName("TestVorname2");
-        view.setInputTextLName("TestNachname2");
-        view.changeUser();
-        view.setInputTexTURL("TestURL2");
-        view.setInputTextDescription("TestDescription2");
-        view.submitLink();
-        List<PostDTO> list = view.getPostList();
-        PostDTO p1 = null;
-        for(PostDTO p : list){
-            if(p.getUrl().equals("TestURL2") && p.getDescription().equals("TestDescription2"))
-                p1 = p;
-        }
-        if(p1==null){
-            throw new Exception("Post nicht in Postlist");
-        } else {
-            view.setInputTextUser("CommentSubmitter");
-            view.changeUser();
-            view.selectPost(p1);
-            view.setInputCommentMessage("submitCommentTest");
-            view.submitComment();
-            list = view.getPostList();
-            for(PostDTO p : list){
-                if(p.getUrl().equals("TestURL2") && p.getDescription().equals("TestDescription2"))
-                    p1 = p;
-            } 
-            CommentDTO c = p1.getComments().get(0);
-            assertEquals("CommentSubmitter",c.getCreatorId().getUsername());
-            assertEquals("submitCommentTest",c.getMessage());       
-        }
+    public void TestsubmitLink() throws Exception {
+        Post p2 = em.find(Post.class, post.getId());
+        assertEquals(post.toPost().getAuthor().getUsername(), p2.getAuthor().getUsername(), "TestUser");
+        assertEquals(post.toPost().getDescription(), p2.getDescription(), "TestDescription");
+        assertEquals(post.toPost().getUrl(), p2.getUrl(), "TestURL");
     }
+
     @Test
-    public void TestdeletePost() throws Exception{
-        view.setInputTextUser("deleter");
+    public void TestsubmitComment() throws Exception {
+        view.setInputTextUser("CommentSubmitter");
         view.changeUser();
-        view.setInputTexTURL("testDelete");
-        view.setInputTextDescription("testDeleteDesc");
-        view.submitLink();
-        PostDTO p1 = null;
+        view.selectPost(post);
+        view.setInputCommentMessage("submitCommentTest");
+        view.submitComment();
         List<PostDTO> list = view.getPostList();
-        for(PostDTO p : list){
-            if(p.getUrl().equals("testDelete") && p.getDescription().equals("testDeleteDesc"))
-                p1 = p;
+        for (PostDTO p : list) {
+            if (p.getUrl().equals("TestURL") && p.getDescription().equals("TestDescription")) {
+                post = p;
+            }
         }
-        if(p1==null){
-            throw new Exception("Post nicht in Postlist");
-        } else {
-        view.delete(p1);
-        Post p = em.find(Post.class, p1.getId());
-        assertEquals(null,p);
+        CommentDTO c = post.getComments().get(0);
+        assertEquals("CommentSubmitter", c.getCreatorId().getUsername());
+        assertEquals("submitCommentTest", c.getMessage());
+    }
+
+    @Test()
+    public void LinkGibtEsNichtMehrBeimKommentierenTest() throws Exception {
+        view.setInputTextUser("tester");
+        view.changeUser();
+        view.selectPost(post);
+        view.setInputTextUser("TestUser");
+        view.changeUser();
+        view.delete(post);
+        view.setInputTextUser("tester");
+        view.changeUser();
+        view.setInputCommentMessage("comment");
+        if (view.submitComment() != null) {
+            fail("SubmitComment muss null zurückgeben");
         }
     }
-    @Test(expected = NullPointerException.class)
-    public void testCase1() throws Exception{
-        view.setInputTexTURL("test1URL");
-        view.setInputTextDescription("test1Description");
-        view.setInputTextUser("user1");
-        view.submitLink();
-        PostDTO p1 = null;
-        List<PostDTO> list = view.getPostList();
-        for(PostDTO p : list){
-            if(p.getUrl().equals("testDelete") && p.getDescription().equals("testDeleteDesc"))
-                p1 = p;
-        }
-        if(p1==null){
-            throw new Exception("Post nicht in Postlist");
-        } else {
-           view.setInputTextUser("user2");
-        view.changeUser();
-        view.delete(p1);
-        }    
-    }
-    @Test(expected = NullPointerException.class)
-    public void testCase2() throws Exception{
-        view.setInputTexTURL("test2URL");
-        view.setInputTextDescription("test2Description");
-        view.setInputTextUser("user3");
-        view.changeUser();
-        view.submitLink();
-        List<PostDTO> list = view.getPostList();
-        PostDTO p1 = null;
-        for(PostDTO p : list){
-            if(p.getUrl().equals("test2URL") && p.getDescription().equals("test2Description") &&p.getCreatorId().getUsername().equals("user3"))
-                p1 = p;
-        }
-        if(p1==null){
-            throw new Exception("Post nicht in Postlist");
-        } else {
-            view.setInputTextUser("user4");
-            view.changeUser();
-            view.selectPost(p1);
-            view.setInputTextUser("user3");
-            view.changeUser();
-            view.delete(p1);
-            view.setInputTextUser("user4");
-            view.changeUser();
-            view.setInputCommentMessage("testcase2Message");
-            view.submitComment();
-        }
-    }
-    @Test(expected = NullPointerException.class)
-    public void TestCase3() throws Exception{
-        view.setInputTexTURL("test3URL");
-        view.setInputTextDescription("test3Description");
+
+    @Test()
+    public void userOhneNamePostetLink() throws Exception {
         view.setInputTextUser(null);
         view.changeUser();
-        view.submitLink();
+        if (view.submitLink() != null) {
+            fail("submitLink muss null zurückgeben");
+        }
     }
-    @Test(expected = NullPointerException.class)
-    public void testCase4() throws Exception{
-        //gleich wie 3 nur mit null
-        view.setInputTexTURL("test4URL");
-        view.setInputTextDescription("test4Description");
-        view.setInputTextUser("");
-        view.changeUser();
-        view.submitLink();
+
+    @Test()
+    public void userOhneNamePostetKommentar() throws Exception {
+        view.setInputTextUser("kommentierer");
+        view.setInputCommentMessage("test");
+        if (view.submitComment() != null) {
+            fail("submitComment muss null zurückgeben");
+        }
     }
 }

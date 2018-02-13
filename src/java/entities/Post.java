@@ -54,46 +54,90 @@ public class Post implements Serializable {
     @OneToMany(targetEntity = Rating.class, orphanRemoval = true)
     private List<Rating> ratings;
 
+    /**
+     *
+     * @return
+     */
     public Long getId() {
         return this.id;
     }
 
+    /**
+     *
+     * @param id
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getUrl() {
         return this.url;
     }
 
+    /**
+     *
+     * @param url
+     */
     public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDescription() {
         return this.description;
     }
 
+    /**
+     *
+     * @param description
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getTotalRating() {
         return this.totalRating;
     }
 
+    /**
+     *
+     * @param totalRating
+     */
     public void setTotalRating(int totalRating) {
         this.totalRating = totalRating;
     }
 
+    /**
+     *
+     * @return
+     */
     public SystemUser getAuthor() {
         return this.author;
     }
 
+    /**
+     *
+     * @param author
+     */
     public void setAuthor(SystemUser author) {
         this.author = author;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Comment> getComments() {
         if (comments == null) {
             comments = new ArrayList<>();
@@ -101,20 +145,36 @@ public class Post implements Serializable {
         return this.comments;
     }
 
+    /**
+     *
+     * @param comments
+     */
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
+    /**
+     *
+     * @param comment
+     */
     public void addComment(Comment comment) {
         getComments().add(comment);
         //comment.setPost(this);
     }
 
+    /**
+     *
+     * @param comment
+     */
     public void removeComment(Comment comment) {
         getComments().remove(comment);
         //comment.setPost(null);
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Rating> getRatings() {
         if (ratings == null) {
             ratings = new ArrayList<>();
@@ -122,20 +182,35 @@ public class Post implements Serializable {
         return this.ratings;
     }
 
+    /**
+     *
+     * @param ratings
+     */
     public void setRatings(List<Rating> ratings) {
         this.ratings = ratings;
     }
 
+    /**
+     *
+     * @param rating
+     */
     public void addRating(Rating rating) {
         getRatings().add(rating);
         //rating.setPost(this);
     }
 
+    /**
+     *
+     * @param rating
+     */
     public void removeRating(Rating rating) {
         getRatings().remove(rating);
         //rating.setPost(null);
     }
 
+    /**
+     *
+     */
     public void calcTotalRating() {
         int res = 0;
         for (Rating rating : ratings) {

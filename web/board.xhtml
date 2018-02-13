@@ -41,8 +41,8 @@
                             <h:outputText value="Website:"/>
                         </b:column>
                         <b:column>
-                            <b:inputText id="url" placeholder="www.sample.com" value="#{viewmodel.inputTexTURL}" validatorMessage="Bitte eine gültige URL angeben! Muster: www.subdomain.domain.TLD">
-                                <f:validateRegex pattern="(w{3})\.([a-zA-Z0-9-_]{1,}\.?)+(\.)([a-zA-Z]{2,6})" />
+                            <b:inputText id="url" placeholder="www.sample.com" value="#{viewmodel.inputTexTURL}" validator="#{viewmodel.validateLink}">
+                                
                             </b:inputText>
                         </b:column>
                         <b:column>
@@ -54,7 +54,9 @@
                             <h:outputText value="Comment"/>
                         </b:column>
                         <b:column>
-                            <b:inputTextarea id="comment" placeholder="Your honourable Opininion..." value="#{viewmodel.inputTextDescription}" field-size="md"/>
+                            <b:inputTextarea id="comment" placeholder="Your honourable Opininion..." value="#{viewmodel.inputTextDescription}" field-size="md" validatorMessage="Beschreibung wird benötigt">
+                                <f:validateRequired/>
+                            </b:inputTextarea>
                         </b:column>
                         <b:column>
                             <b:message for="comment" />
@@ -62,7 +64,7 @@
                     </b:row>
                     <b:row>
                         <b:column>       
-                            <b:messages id="submitLink" showDetail="true" showSummary="false" />
+                            
                             <b:commandButton value="Submit" action="#{viewmodel.submitLink()}" large-screen="full-width"/>
                         </b:column>
                     </b:row>
@@ -86,7 +88,7 @@
                         <b:dataTableColumn value="#{post.creatorId.username}" label="OP"/>
                         <b:dataTableColumn value="#{post.totalRating}" label="Total Rating"/>
                         <b:dataTableColumn label="Your Rating" >
-                            <b:inputText value="#{viewmodel.inputTextNumber}" validatorMessage="Eingabe ungültig." rendered="#{not viewmodel.currentUser.username.equals(post.creatorId.username)}" id="table">
+                            <b:inputText value="#{viewmodel.inputTextNumber}" validatorMessage="Sie können maximal 10 Punkte verteilen." rendered="#{not viewmodel.currentUser.username.equals(post.creatorId.username)}" id="table">
                                 <f:validateRegex pattern="[0-9]|10"/>
                                 <f:ajax listener="#{viewmodel.addRating(post)}"/>
                             </b:inputText>

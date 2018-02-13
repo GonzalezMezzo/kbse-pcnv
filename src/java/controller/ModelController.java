@@ -50,10 +50,10 @@ public class ModelController implements Serializable {
      * @param u SystemUser object to be added
      * @return Boolean
      */
-    public boolean addPost(PostDTO p, SystemUserDTO u) {
+    public boolean addPost(PostDTO p, SystemUserDTO u) throws EJBException {
         try {
             db.addPost(p, u);
-        } catch (EJBException | NullPointerException e) {
+        } catch ( NullPointerException e) {
             /**
              * todo: error handling
              */
@@ -98,19 +98,12 @@ public class ModelController implements Serializable {
     /** returns true if deleting a post from the database was successful
      *
      * @param id    ID under which the Post is listed in the database
-     * @return  Boolean
+     * @return true,if deleting was successful
+     * @throws EJBException when post is not found.
      */
-    public boolean deletePost(long id) {
-        try {
+    public boolean deletePost(long id) throws EJBException{
             db.deletePost(id);
-        } catch (EJBException e) {
-            /**
-             * todo: error handling
-             */
-            System.out.println("deletePost -> exception");
-            return false;
-        }
-        return true;
+            return true;
     }
 
     /** returns true if deleting a rating from the database was successful

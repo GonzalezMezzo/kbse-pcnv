@@ -103,7 +103,7 @@
                             </b:row>
                         </b:column>
                         <b:column col-md="10">
-                            <b:inputTextarea readonly="false" rows="10" value="#{viewmodel.inputCommentMessage}"/>
+                            <b:inputTextarea readonly="false" rows="10" value="#{viewmodel.inputCommentMessage}" validator="#{viewmodel.validateComment}"/>
                         </b:column>
                     </b:row>
                     <b:row>
