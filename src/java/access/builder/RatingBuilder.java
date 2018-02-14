@@ -15,7 +15,7 @@ import java.io.Serializable;
  * @author nolde
  */
 public class RatingBuilder implements Serializable {
-    
+
     private long id;
     private int ratedValue;
     private SystemUser user;
@@ -23,31 +23,31 @@ public class RatingBuilder implements Serializable {
 
     private RatingBuilder() {
     }
-    
+
     public static RatingBuilder create() {
         return new RatingBuilder();
     }
-    
+
     public RatingBuilder id(long id) {
         this.id = id;
         return this;
     }
-    
+
     public RatingBuilder ratedValue(int ratedValue) {
         this.ratedValue = ratedValue;
         return this;
     }
-    
+
     public RatingBuilder user(SystemUser user) {
         this.user = user;
         return this;
     }
-    
+
     public RatingBuilder post(Post post) {
         this.post = post;
         return this;
     }
-    
+
     public Rating build() {
         Rating res = new Rating();
         res.setId(this.id);

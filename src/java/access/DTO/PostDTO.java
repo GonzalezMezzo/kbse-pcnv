@@ -11,13 +11,9 @@ import com.google.gson.reflect.TypeToken;
 import entities.Comment;
 import entities.Post;
 import entities.Rating;
-import entities.SystemUser;
 import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -73,7 +69,7 @@ public class PostDTO implements Serializable {
         for (Rating rating : p.getRatings()) {
             ratings.add(RatingDTO.toRatingDTO(rating));
         }
-        
+
         return new PostDTO(p.getId(), p.getUrl(), p.getDescription(), SystemUserDTO.toSystemUserDTO(p.getAuthor()), p.getTotalRating(), ratings, comments);
     }
 

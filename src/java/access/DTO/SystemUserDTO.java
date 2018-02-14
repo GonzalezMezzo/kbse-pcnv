@@ -7,13 +7,8 @@ package access.DTO;
 
 import access.builder.SystemUserBuilder;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import entities.SystemUser;
 import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;

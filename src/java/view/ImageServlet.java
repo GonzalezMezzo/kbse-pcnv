@@ -23,7 +23,7 @@ public class ImageServlet extends HttpServlet {
     @Inject
     private ModelController ctrl;
     private AvatarDTO imageDAO;
-    
+
     /**
      *
      * @throws ServletException
@@ -33,7 +33,9 @@ public class ImageServlet extends HttpServlet {
     }
 
     /**
-     * On HttpRequest, this method returns an avatar image from the Model to be displayed in the view.The Content Type of the response is "image/jpeg".
+     * On HttpRequest, this method returns an avatar image from the Model to be
+     * displayed in the view.The Content Type of the response is "image/jpeg".
+     *
      * @param request with parameter ID for the imageHash
      * @param response HttpResponse containing the requested Image
      * @throws ServletException

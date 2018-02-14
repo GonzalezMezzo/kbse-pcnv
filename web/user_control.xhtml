@@ -28,11 +28,11 @@
             </h:form>
         </b:navBar>
         <b:growl id="growlUserControl" placement-align="center" placementFrom="top" show-detail="true"
-             global-only="false"
-             show-summary="false" allow-dismiss="true"
-             animation-enter="animated bounceInDown"
-             animation-exit="animated flipOutX"
-             escape="true" />
+                 global-only="false"
+                 show-summary="false" allow-dismiss="true"
+                 animation-enter="animated bounceInDown"
+                 animation-exit="animated flipOutX"
+                 escape="true" />
         <b:container>
             <b:panel title="User" icon="user" icon-align="left" showCollapseLink="false">
                 <b:form enctype="multipart/form-data">
@@ -44,7 +44,7 @@
                                 </b:column>
                                 <b:column >
                                     <b:inputText placeholder="Username" id="username" value="#{viewmodel.inputTextUser}" validator-message="Username wird benötigt.">
-                                         <f:validateRequired />
+                                        <f:validateRequired />
                                         <f:facet name="prepend">
                                             <b:icon name="user" />
                                         </f:facet>

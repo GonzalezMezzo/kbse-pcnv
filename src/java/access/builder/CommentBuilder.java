@@ -21,8 +21,9 @@ public class CommentBuilder {
     private SystemUser creatorId;
     private Post ownerId;
 
-    private CommentBuilder(){}
-    
+    private CommentBuilder() {
+    }
+
     public static CommentBuilder create() {
         return new CommentBuilder();
     }
@@ -56,8 +57,8 @@ public class CommentBuilder {
         this.creatorId = creator;
         return this;
     }
-    
-    public CommentBuilder owner(Post owner){
+
+    public CommentBuilder owner(Post owner) {
         this.ownerId = owner;
         return this;
     }

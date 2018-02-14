@@ -32,32 +32,32 @@ public class SystemUserBuilder {
         this.id = id;
         return this;
     }
-    
+
     public SystemUserBuilder username(String username) {
         this.username = username;
         return this;
     }
-    
+
     public SystemUserBuilder firstname(String fname) {
         this.fname = fname;
         return this;
     }
-    
+
     public SystemUserBuilder lastname(String lname) {
         this.lname = lname;
         return this;
     }
-    
+
     public SystemUserBuilder email(String email) {
         this.email = email;
         return this;
     }
-    
+
     public SystemUserBuilder avatar(Avatar avatar) {
         this.avatar = avatar;
         return this;
     }
-    
+
     public SystemUser build() {
         SystemUser res = new SystemUser();
         res.setId(this.id);

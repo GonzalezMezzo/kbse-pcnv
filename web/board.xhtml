@@ -29,11 +29,11 @@
         </b:navBar>
         <b:container>
             <b:growl id="growlBoard" placementFrom="top" placement-align="center"  show-detail="true"
-            global-only="false"
-            show-summary="false" allow-dismiss="true"
-            animation-enter="animated bounceInDown"
-            animation-exit="animated flipOutX"
-            escape="true" />
+                     global-only="false"
+                     show-summary="false" allow-dismiss="true"
+                     animation-enter="animated bounceInDown"
+                     animation-exit="animated flipOutX"
+                     escape="true" />
             <b:panel title="Add Website for Rating" icon="flag" icon-align="left" collapsible="true" collapsed="false">
                 <b:form>
                     <b:row>
@@ -42,7 +42,7 @@
                         </b:column>
                         <b:column>
                             <b:inputText id="url" placeholder="www.sample.com" value="#{viewmodel.inputTexTURL}" validator="#{viewmodel.validateLink}">
-                                
+
                             </b:inputText>
                         </b:column>
                         <b:column>
@@ -64,7 +64,7 @@
                     </b:row>
                     <b:row>
                         <b:column>       
-                            
+
                             <b:commandButton value="Submit" action="#{viewmodel.submitLink()}" large-screen="full-width"/>
                         </b:column>
                     </b:row>
@@ -92,7 +92,7 @@
                                 <f:validateRegex pattern="[0-9]|10"/>
                                 <f:ajax listener="#{viewmodel.addRating(post)}"/>
                             </b:inputText>
-                                <h:outputText value="#{viewmodel.ratingCollector[viewmodel.postList.indexOf(post)]}" rendered="#{viewmodel.currentUser.username.equals(post.creatorId.username)}" />
+                            <h:outputText value="#{viewmodel.ratingCollector[viewmodel.postList.indexOf(post)]}" rendered="#{viewmodel.currentUser.username.equals(post.creatorId.username)}" />
                         </b:dataTableColumn>
 
                         <b:dataTableColumn label="Tools">

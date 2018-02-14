@@ -127,10 +127,12 @@ public class ViewModelTest {
             fail("submitComment muss null zurückgeben");
         }
     }
+
     @Test()
-    public void userVersuchtVorhandenenLinkZuPosten(){
+    public void userVersuchtVorhandenenLinkZuPosten() {
         view.setInputTexTURL("TestURL");
-        if(view.submitComment() != null)
+        if (view.submitComment() != null) {
             fail("submitComment muss null zurückgeben");
+        }
     }
 }

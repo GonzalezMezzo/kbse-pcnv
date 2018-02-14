@@ -7,16 +7,10 @@ package access.DTO;
 
 import access.builder.CommentBuilder;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import entities.Comment;
-import entities.Post;
-import entities.SystemUser;
 import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Map;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -33,7 +27,8 @@ public class CommentDTO implements Serializable {
     private SystemUserDTO creatorId;
     private PostDTO ownerId;
 
-    public CommentDTO() {}
+    public CommentDTO() {
+    }
 
     public CommentDTO(String message, SystemUserDTO creatorId, PostDTO ownerId) {
         this.creatorId = creatorId;
@@ -48,7 +43,7 @@ public class CommentDTO implements Serializable {
         this.timeStamp = timeStamp;
         this.creatorId = creatorId;
     }
-    
+
     public CommentDTO(Long id, String message, SystemUserDTO creatorId, String timestamp, PostDTO ownerId) {
         this.id = id;
         this.creatorId = creatorId;
@@ -56,6 +51,7 @@ public class CommentDTO implements Serializable {
         this.message = message;
         this.ownerId = ownerId;
     }
+
     public static CommentDTO toCommentDTO(Comment c) {
         if (c == null) {
             return null;

@@ -42,8 +42,9 @@ public class ModelController implements Serializable {
         this.userList = db.getAllUsers();
     }
 
-    /** Returns true if adding a Post to the Database was successful
-     *  
+    /**
+     * Returns true if adding a Post to the Database was successful
+     *
      * @param p PostDTO object to be added
      * @param u SystemUser object to be added
      * @return Boolean
@@ -61,26 +62,29 @@ public class ModelController implements Serializable {
         return true;
     }
 
-    /** Returns true if adding a Comment to the Database was successful
+    /**
+     * Returns true if adding a Comment to the Database was successful
      *
      * @param comment CommentDTO object to be added to the database
      * @param p PostDTO object the Comment belongs to
      * @param currentUser SystemUser object the Comment belongs to
      * @return
      */
-    public boolean addComment(CommentDTO comment, PostDTO p, SystemUserDTO currentUser){
-        try{
-        db.addComment(comment, p, currentUser);
-            return true;  
-        }catch(EJBException e){
+    public boolean addComment(CommentDTO comment, PostDTO p, SystemUserDTO currentUser) {
+        try {
+            db.addComment(comment, p, currentUser);
+            return true;
+        } catch (EJBException e) {
             return false;
-        }           
+        }
     }
 
-    /** Returns true if adding a Rating to the database was successful
+    /**
+     * Returns true if adding a Rating to the database was successful
      *
      * @param p PostDTO which belongs to the Rating
-     * @param r RatingDTO object which contain the Rating for a specific PostDTO object
+     * @param r RatingDTO object which contain the Rating for a specific PostDTO
+     * object
      * @param u SystemuserDTO object belonging to the Creator of the Comment
      */
     public boolean addRating(PostDTO p, RatingDTO r, SystemUserDTO u) {
@@ -96,25 +100,28 @@ public class ModelController implements Serializable {
         }
     }
 
-    /** returns true if deleting a post from the database was successful
+    /**
+     * returns true if deleting a post from the database was successful
      *
-     * @param id    ID under which the Post is listed in the database
+     * @param id ID under which the Post is listed in the database
      * @return true,if deleting was successful
      * @throws EJBException when post is not found.
      */
-    public boolean deletePost(long id){
-        try{
+    public boolean deletePost(long id) {
+        try {
             db.deletePost(id);
             return true;
-        }catch(EJBException e){
+        } catch (EJBException e) {
             return false;
         }
     }
 
-    /** returns true if deleting a rating from the database was successful
+    /**
+     * returns true if deleting a rating from the database was successful
      *
-     * @param userName username of the SystemUserDTO object belonging to the rating to delete
-     * @return  Boolean
+     * @param userName username of the SystemUserDTO object belonging to the
+     * rating to delete
+     * @return Boolean
      */
     public boolean deleteRating(String userName) {
         try {
@@ -129,7 +136,8 @@ public class ModelController implements Serializable {
         return true;
     }
 
-    /** updates PostList and UserList with fresh entry from the database
+    /**
+     * updates PostList and UserList with fresh entry from the database
      *
      */
     public void refreshState() {
@@ -139,6 +147,7 @@ public class ModelController implements Serializable {
 
     /**
      * get updated ratings for entries in the postList
+     *
      * @param postList PostList which ratings should be updated
      */
     public void updateRatings(List<PostDTO> postList) {
@@ -153,7 +162,9 @@ public class ModelController implements Serializable {
     }
 
     /**
-     *  Returns true  if Updating the SystemUserDTO from the database was successful
+     * Returns true if Updating the SystemUserDTO from the database was
+     * successful
+     *
      * @param su SystemUserDTO object to be updated with new data
      * @return boolean
      */
@@ -168,8 +179,9 @@ public class ModelController implements Serializable {
         }
     }
 
-    /** 
+    /**
      * return true if adding a SystemUser to the database was successful
+     *
      * @param user SystemUserDTO object to be added to the model
      * @return
      */
@@ -194,10 +206,11 @@ public class ModelController implements Serializable {
         return postList;
     }
 
-    /** 
-     *  returns Post with given postID. id cannot be null.
+    /**
+     * returns Post with given postID. id cannot be null.
+     *
      * @param id Long postID
-     * @return null if postID is null, else PostDTO 
+     * @return null if postID is null, else PostDTO
      */
     public PostDTO getPost(Long id) {
         if (id == null) {
@@ -216,9 +229,10 @@ public class ModelController implements Serializable {
     }
 
     /**
-     *  returns true if adding the avatarImage to the database was successful
+     * returns true if adding the avatarImage to the database was successful
+     *
      * @param avatarDTO avatarImage to be added to the model
-     * @return  boolean
+     * @return boolean
      */
     public boolean addAvatar(AvatarDTO avatarDTO) {
         try {
@@ -231,7 +245,9 @@ public class ModelController implements Serializable {
     }
 
     /**
-     * Converts SystemUser from the Model to the SystemUserDTO class, which is then returned
+     * Converts SystemUser from the Model to the SystemUserDTO class, which is
+     * then returned
+     *
      * @param userId SystemUserID
      * @return SystemUserDTO object identified by the id in the model
      */
@@ -244,9 +260,12 @@ public class ModelController implements Serializable {
     }
 
     /**
-     * Converts SystemUser from the Model to the SystemUserDTO class, which is then returned
+     * Converts SystemUser from the Model to the SystemUserDTO class, which is
+     * then returned
+     *
      * @param username SystemUserID
-     * @return SystemUserDTO object identified by the username String in the model
+     * @return SystemUserDTO object identified by the username String in the
+     * model
      */
     public SystemUserDTO getSystemUser(String username) {
         if (username == null) {
@@ -257,7 +276,8 @@ public class ModelController implements Serializable {
     }
 
     /**
-     *  Returns AvatarDTO from the database with given avatarHash
+     * Returns AvatarDTO from the database with given avatarHash
+     *
      * @param uploadedAvatarHash
      * @return avatarDTO
      */
