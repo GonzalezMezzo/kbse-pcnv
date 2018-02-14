@@ -416,35 +416,6 @@ public class ViewModel implements Serializable {
         return res;
     }
 
-    /**
-     * checks the file for size and format. Filesize should be not bigger than
-     * 1048576 Bytes or 1 Mebibyte. The only valid FileFormat is JPEG.
-     *
-     * @param ctx FacesContext in which the File is validated
-     * @param comp UIComponent
-     * @param value File to be validated
-     * @throws ValidatorException Exception that is thrown when the input is
-     * invalid.
-     */
-    public void validateFile(FacesContext ctx, UIComponent comp, Object value) throws ValidatorException {
-        List<FacesMessage> msgs = new ArrayList<>();
-        Part file = (Part) value;
-        if (file != null) {
-            //1048576 = 1mb
-            if (file.getSize() > 1048576) {
-                msgs.add(new FacesMessage("file too big"));
-            }
-            if (!file.getContentType().endsWith("jpeg")) {
-                msgs.add(new FacesMessage("Select JPEG file"));
-            }
-            if (!"image/jpeg".equals(file.getContentType())) {
-                msgs.add(new FacesMessage("not a jpeg file"));
-            }
-            if (!msgs.isEmpty()) {
-                throw new ValidatorException(msgs);
-            }
-        }
-    }
 
     /**
      * checks the file for size and format. Filesize should be not bigger than
