@@ -59,7 +59,8 @@
                                     <h:outputText value="E-Mail:"/>
                                 </b:column>
                                 <b:column >
-                                    <b:inputText placeholder="sample@sample.com" id="email" value="#{viewmodel.inputTextEMail}">
+                                    <b:inputText placeholder="sample@sample.com" id="email" value="#{viewmodel.inputTextEMail}" validatorMessage="Invalid Email Format">
+                                        <f:validateRegex pattern="|^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$|" />
                                         <f:facet name="prepend">
                                             <h:outputText value="@" />
                                         </f:facet>
