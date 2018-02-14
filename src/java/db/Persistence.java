@@ -68,7 +68,7 @@ public class Persistence {
      * @param r RatingDTO Rating to be added
      * @param u SystemUserDTO User who submitted  the Rating
      */
-    public void addRating(PostDTO post, RatingDTO r, SystemUserDTO u) {
+    public void addRating(PostDTO post, RatingDTO r, SystemUserDTO u) throws EJBException{
 
         Rating rating = r.toRating();
 

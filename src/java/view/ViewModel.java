@@ -5,11 +5,11 @@
  */
 package view;
 
+import access.DTO.AvatarDTO;
 import access.DTO.CommentDTO;
 import access.DTO.PostDTO;
-import access.DTO.SystemUserDTO;
-import access.DTO.AvatarDTO;
 import access.DTO.RatingDTO;
+import access.DTO.SystemUserDTO;
 import controller.ModelController;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +39,6 @@ import org.apache.commons.io.IOUtils;
 public class ViewModel implements Serializable {
 
     @Inject
-    //RESTClient ctrl;
     ModelController ctrl;
 
     private static final String INDEX = "/index.xhtml?faces-redirect=true";
