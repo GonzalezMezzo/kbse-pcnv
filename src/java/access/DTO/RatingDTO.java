@@ -8,11 +8,9 @@ package access.DTO;
 import access.builder.RatingBuilder;
 import entities.Rating;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
 
 /**
  *

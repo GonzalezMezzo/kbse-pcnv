@@ -6,7 +6,6 @@
 package access.builder;
 
 import entities.Avatar;
-import java.util.ArrayList;
 
 /**
  *
