@@ -12,14 +12,12 @@ import access.DTO.RatingDTO;
 import access.DTO.SystemUserDTO;
 import db.Persistence;
 import java.io.Serializable;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJBException;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.json.JsonValue;
 
 /**
  *
@@ -53,7 +51,7 @@ public class ModelController implements Serializable {
     public boolean addPost(PostDTO p, SystemUserDTO u) throws EJBException {
         try {
             db.addPost(p, u);
-        } catch ( NullPointerException e) {
+        } catch (EJBException | NullPointerException e) {
             /**
              * todo: error handling
              */
@@ -70,9 +68,13 @@ public class ModelController implements Serializable {
      * @param currentUser SystemUser object the Comment belongs to
      * @return
      */
-    public boolean addComment(CommentDTO comment, PostDTO p, SystemUserDTO currentUser) throws EJBException{
-            db.addComment(comment, p, currentUser);
+    public boolean addComment(CommentDTO comment, PostDTO p, SystemUserDTO currentUser){
+        try{
+        db.addComment(comment, p, currentUser);
             return true;  
+        }catch(EJBException e){
+            return false;
+        }           
     }
 
     /** Returns true if adding a Rating to the database was successful
@@ -80,7 +82,6 @@ public class ModelController implements Serializable {
      * @param p PostDTO which belongs to the Rating
      * @param r RatingDTO object which contain the Rating for a specific PostDTO object
      * @param u SystemuserDTO object belonging to the Creator of the Comment
-     * @return
      */
     public boolean addRating(PostDTO p, RatingDTO r, SystemUserDTO u) {
         try {
@@ -101,9 +102,13 @@ public class ModelController implements Serializable {
      * @return true,if deleting was successful
      * @throws EJBException when post is not found.
      */
-    public boolean deletePost(long id) throws EJBException{
+    public boolean deletePost(long id){
+        try{
             db.deletePost(id);
             return true;
+        }catch(EJBException e){
+            return false;
+        }
     }
 
     /** returns true if deleting a rating from the database was successful

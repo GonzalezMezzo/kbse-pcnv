@@ -17,7 +17,7 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import view.Viewmodel;
+import view.ViewModel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -26,13 +26,13 @@ import view.Viewmodel;
  */
 /**
  *
- * @author philippnienhuser
+ * @author chrschae
  */
 @RunWith(Arquillian.class)
 public class ViewModelTest {
 
     @Inject
-    Viewmodel view;
+    ViewModel view;
     @Inject
     private EntityManager em;
     private PostDTO post = null;
@@ -126,5 +126,11 @@ public class ViewModelTest {
         if (view.submitComment() != null) {
             fail("submitComment muss null zurückgeben");
         }
+    }
+    @Test()
+    public void userVersuchtVorhandenenLinkZuPosten(){
+        view.setInputTexTURL("TestURL");
+        if(view.submitComment() != null)
+            fail("submitComment muss null zurückgeben");
     }
 }

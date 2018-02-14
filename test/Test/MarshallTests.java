@@ -67,11 +67,9 @@ public class MarshallTests {
         CommentDTO jsonComment = CommentDTO.toPOJO(o);
         assertEquals(comment.getMessage(),jsonComment.getMessage());
         assertEquals(comment.getCreatorId().getUsername(),jsonComment.getCreatorId().getUsername());
-        //assertEquals(comment,jsonComment);
     }
     @Test
     public void SystemUserDTOtoJSONandBack(){
-        //Avatar Fehlt
         SystemUserDTO user = new SystemUserDTO("Username", "Nachname", "Vorname", "Email");
         JsonObject o = user.toJsonObject();
         SystemUserDTO jsonUser = SystemUserDTO.toPOJO(o);
@@ -79,6 +77,7 @@ public class MarshallTests {
         assertEquals(user.getFname(),jsonUser.getFname());
         assertEquals(user.getLname(),jsonUser.getLname());
         assertEquals(user.getUsername(),jsonUser.getUsername());
+        assertEquals(Arrays.hashCode(user.getAvatar().getImage()),Arrays.hashCode(jsonUser.getAvatar().getImage()));
     }
     @Test
     public void AvatarDTOtoJsonandBack() throws IOException{
