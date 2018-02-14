@@ -5,11 +5,11 @@
  */
 package view;
 
-import access.DTO.AvatarDTO;
 import access.DTO.CommentDTO;
 import access.DTO.PostDTO;
-import access.DTO.RatingDTO;
 import access.DTO.SystemUserDTO;
+import access.DTO.AvatarDTO;
+import access.DTO.RatingDTO;
 import controller.ModelController;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +39,7 @@ import org.apache.commons.io.IOUtils;
 public class ViewModel implements Serializable {
 
     @Inject
+    //RESTClient ctrl;
     ModelController ctrl;
 
     private static final String INDEX = "/index.xhtml?faces-redirect=true";
@@ -178,14 +179,11 @@ public class ViewModel implements Serializable {
         }
         return res;
     }
-
     /**
-     * Validates User Input for the SubmitLink method and outputs error messages
-     * via facemessages
-     *
+     * Validates User Input for the SubmitLink method and outputs error messages via facemessages
      * @param ctx
      * @param comp
-     * @param value
+     * @param value 
      */
     public void validateLink(FacesContext ctx, UIComponent comp, Object value) {
         List<FacesMessage> msgs = new ArrayList();
@@ -201,14 +199,11 @@ public class ViewModel implements Serializable {
             throw new ValidatorException(msgs);
         }
     }
-
     /**
-     * Validates User Input for the submitComment Method and outputs error
-     * messages via facemessages
-     *
+     * Validates User Input for the submitComment Method and outputs error messages via facemessages
      * @param ctx
      * @param comp
-     * @param value
+     * @param value 
      */
     public void validateComment(FacesContext ctx, UIComponent comp, Object value) {
         List<FacesMessage> msgs = new ArrayList();
@@ -230,8 +225,8 @@ public class ViewModel implements Serializable {
      */
     public String submitLink() {
         refreshState();
-        PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());
-        if (ctrl.addPost(post, this.currentUser) == false) {
+        PostDTO post = new PostDTO(this.inputTexTURL, this.inputTextDescription, this.currentUser, 0, new ArrayList<>());   
+        if(ctrl.addPost(post, this.currentUser) == false){
             if (FacesContext.getCurrentInstance() != null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "URL gibt es bereits!"));
             }
@@ -250,7 +245,7 @@ public class ViewModel implements Serializable {
      */
     public String delete(PostDTO p) {
         refreshState();
-        if (ctrl.deletePost(p.getId()) == false) {
+            if(ctrl.deletePost(p.getId()) == false){     
             if (FacesContext.getCurrentInstance() != null) {
                 FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "", "Post wurde bereits gelöscht!"));
@@ -271,11 +266,11 @@ public class ViewModel implements Serializable {
     public String submitComment() {
         refreshState();
         CommentDTO comment = new CommentDTO(this.inputCommentMessage, this.currentUser, this.currentPost);
-        if (ctrl.addComment(comment, this.currentPost, this.currentUser) == false) {
-            if (FacesContext.getCurrentInstance() != null) {
-                FacesMessage notFound = new FacesMessage(FacesMessage.SEVERITY_ERROR, "DatenbankFehler", "Inhalt wurde gelöscht!");
-                FacesContext.getCurrentInstance().addMessage(null, notFound);
-            }
+            if(ctrl.addComment(comment, this.currentPost, this.currentUser) == false){
+                if (FacesContext.getCurrentInstance() != null) {
+                    FacesMessage notFound = new FacesMessage(FacesMessage.SEVERITY_ERROR, "DatenbankFehler", "Inhalt wurde gelöscht!");
+                    FacesContext.getCurrentInstance().addMessage(null, notFound);
+                }
             return null;
         }
         refreshState();
@@ -315,7 +310,6 @@ public class ViewModel implements Serializable {
         this.postId = i.getId();
         return POST;
     }
-
     /**
      * Get user's rating on index i on the current rendered list of posts
      *
@@ -349,18 +343,18 @@ public class ViewModel implements Serializable {
         }
         if (validate() == true) {//method stub
             //delete every previous rating for this user           
-            ctrl.deleteRating(currentUser.getUsername());
-            //add individual ratings for this submit    
-            for (Map.Entry<PostDTO, RatingDTO> entry : ratingCollector.entrySet()) {
-                if (ctrl.addRating(entry.getKey(), entry.getValue(), currentUser) == false) {
-                    FacesMessage notFound = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Post wurde gelöscht");
-                    FacesContext.getCurrentInstance().addMessage(null, notFound);
-                    return null;
+                ctrl.deleteRating(currentUser.getUsername());
+                //add individual ratings for this submit    
+                for (Map.Entry<PostDTO, RatingDTO> entry : ratingCollector.entrySet()) {
+                    if (ctrl.addRating(entry.getKey(), entry.getValue(), currentUser) == false) {
+                        FacesMessage notFound = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Post wurde gelöscht");
+                        FacesContext.getCurrentInstance().addMessage(null, notFound);
+                        return null;
+                    }
                 }
-            }
-            refreshState();
-            this.showSuccessMessage();
-            return BOARD;
+                refreshState();
+                this.showSuccessMessage();
+                return BOARD;
         } else {
             FacesMessage fail = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Es können nur 10 Bewertungs-Punkte vergeben werden!");
             FacesContext.getCurrentInstance().addMessage(null, fail);
@@ -420,6 +414,36 @@ public class ViewModel implements Serializable {
             }
         }
         return res;
+    }
+
+    /**
+     * checks the file for size and format. Filesize should be not bigger than
+     * 1048576 Bytes or 1 Mebibyte. The only valid FileFormat is JPEG.
+     *
+     * @param ctx FacesContext in which the File is validated
+     * @param comp UIComponent
+     * @param value File to be validated
+     * @throws ValidatorException Exception that is thrown when the input is
+     * invalid.
+     */
+    public void validateFile(FacesContext ctx, UIComponent comp, Object value) throws ValidatorException {
+        List<FacesMessage> msgs = new ArrayList<>();
+        Part file = (Part) value;
+        if (file != null) {
+            //1048576 = 1mb
+            if (file.getSize() > 1048576) {
+                msgs.add(new FacesMessage("file too big"));
+            }
+            if (!file.getContentType().endsWith("jpeg")) {
+                msgs.add(new FacesMessage("Select JPEG file"));
+            }
+            if (!"image/jpeg".equals(file.getContentType())) {
+                msgs.add(new FacesMessage("not a jpeg file"));
+            }
+            if (!msgs.isEmpty()) {
+                throw new ValidatorException(msgs);
+            }
+        }
     }
 
     /**
